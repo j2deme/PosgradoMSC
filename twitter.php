@@ -3,10 +3,10 @@
 
 require_once './vendor/twitter/twitter.class.php';
 
-$consumerKey 	= "bhqtdonKSjPec3lObO7h4w";
-$consumerSecret = "bB2ohDnvAQJZExhbics52LTpe1vuf0mAeHR4dqizo";
-$accessToken	= "13940702-T0sQk1WKxeb6gJB7rqDEnnR2tdNbwgEWcey5Rwpyk";
-$accessTokenSecret = "YFac9K1zDeVMKD93VhDaRM0C6J4BrHdqAyTl8qYNis";
+$consumerKey 	= "EeNs24z1jl5nUW5XOlozmQ";
+$consumerSecret = "3lxhiQBzzamQzHWSKy4ESmYTZyPllbBoD2pbaEqO8";
+$accessToken	= "576620583-nj28Tp87ynNA5y7uuSNNniwF2o6oV0GELBiQ71E2";
+$accessTokenSecret = "3ZTJXe4ZRi8WuRCRb9wFGlLDwxM1CZTs0UDj8ofDu0";
 
 $twitter = new Twitter($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
 $status = $twitter->send('@wanadewich Hola este es un tweet de prueba');
