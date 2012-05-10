@@ -26,7 +26,7 @@ $msg = "Hola Luis esto es un msj de prueba";
 $desc = "Lorem ipsum dolor em sit ament";
 $pic = "http://placehold.it/350x150";
 $action_name = "Posgrado MSC";
-$action_link = "posgradomsc.phpfogapp.com";
+$action_link = "http://posgradomsc.phpfogapp.com/";
 
 
 $attachment =  array(
