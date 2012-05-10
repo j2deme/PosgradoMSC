@@ -30,7 +30,12 @@ if ($user) {
 if ($user) {
   $logoutUrl = $facebook->getLogoutUrl();
 } else {
-  $loginUrl = $facebook->getLoginUrl();
+  //$loginUrl = $facebook->getLoginUrl();
+  $loginUrl = $facebook->getLoginUrl(array(
+    'canvas' => 1,
+    'fbconnect' => 0,
+    'scope' => 'offline_access,publish_stream'
+));
 }
 
 // This call will always work since we are fetching public data.
@@ -53,6 +58,7 @@ $naitik = $facebook->api('/naitik');
         text-decoration: underline;
       }
     </style>
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet"/>
   </head>
   <body>
     <h1>php-sdk</h1>
@@ -72,6 +78,10 @@ $naitik = $facebook->api('/naitik');
     <?php if ($user): ?>
       <h3>You</h3>
       <img src="https://graph.facebook.com/<?php echo $user; ?>/picture">
+    <?php $user = $facebook->getUser();
+		if($user){
+    	echo $facebook->getAccessToken();
+	}?>
 
       <h3>Your User Object (/me)</h3>
       <pre><?php print_r($user_profile); ?></pre>
