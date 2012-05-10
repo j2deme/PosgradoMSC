@@ -41,8 +41,14 @@ $attachment =  array(
 //Posting to the wall of an user whose Facebook User ID is known
 try {
 	$result = $facebook->api('/'.$touid.'/feed', 'post', $attachment);
+	$ok = strpos($result, $touid);
+	if($ok)
+		echo "Posted!";
+	else
+		echo "Failure";
 } catch (FacebookApiException $e) {
 	//notify error
+	echo "Core Meltdown!";
 }
 
 //Posting to the wall of the currently logged-in Facebook user
