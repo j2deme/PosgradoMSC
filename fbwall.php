@@ -41,6 +41,7 @@ $attachment =  array(
 //Posting to the wall of an user whose Facebook User ID is known
 try {
 	$result = $facebook->api('/'.$touid.'/feed', 'post', $attachment);
+	echo $result;
 	$ok = strpos($result, $touid);
 	if($ok)
 		echo "Posted!";
