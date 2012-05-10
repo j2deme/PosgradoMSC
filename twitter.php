@@ -9,7 +9,7 @@ $accessToken	= "13940702-T0sQk1WKxeb6gJB7rqDEnnR2tdNbwgEWcey5Rwpyk";
 $accesTokenSecret = "YFac9K1zDeVMKD93VhDaRM0C6J4BrHdqAyTl8qYNis";
 
 $twitter = new Twitter($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
-$status = $twitter->send('@WanaDeWich Hola este es un tweet de prueba');
+$status = $twitter->send('Hola este es un tweet de prueba');
 
 echo $status ? 'OK' : 'ERROR';
 
