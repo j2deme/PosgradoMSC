@@ -49,6 +49,7 @@ try {
 } catch (FacebookApiException $e) {
 	//notify error
 	echo "Core Meltdown!";
+	print_r($e);
 }
 
 //Posting to the wall of the currently logged-in Facebook user
