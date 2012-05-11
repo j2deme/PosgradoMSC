@@ -1,4 +1,6 @@
 <?php
+require_once './vendor/ladybug/Ladybug/Autoloader.php';
+Ladybug\Autoloader::register();
 require_once './vendor/swiftmailer/swift_required.php';
 
 $transport = Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl')
@@ -19,5 +21,5 @@ $message = Swift_Message::newInstance($subject)
 $result = $mailer->send($message);
 
 
-print_r($result);
+ladybug_dump($result);
 ?>
