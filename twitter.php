@@ -22,7 +22,7 @@ require_once './vendor/twitter/twitter.class.php';
 	$accessTokenSecret = "IWrm5w12XWlGMsaSTs8Hmwxn8iKAHEBKMzzwzE3im4";
 	
 	$twitter = new Twitter($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
-	$status = @$twitter->send('@wanadewich Hola este es un tweet de prueba');
+	$status = @$twitter->send('@plso Hola este es una notificación de la maestría');
 	
 	echo $status ? 'OK' : 'ERROR';
 ?>
