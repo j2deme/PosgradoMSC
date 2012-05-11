@@ -9,6 +9,7 @@ $transport = Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl')
 
 $mailer = Swift_Mailer::newInstance($transport);
 
+$subject = "FBI is watching you";
 $to_addresses = array('luis.hum18@gmail.com');
 $body = "<h1>Alert!</h1>";
 $body .= "<p>This is a message from the Federal Bureau of Investigation.</p><hr/><p>We are watching you.</p>";
