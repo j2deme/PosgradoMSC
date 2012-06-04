@@ -1,7 +1,7 @@
 <?php
 
 if(isset($_POST['msg']) && isset($_POST['user'])){
-	require_once './vendor/twitter/twitter.class.php';
+	require_once './vendor/Twitter/twitter.class.php';
 
 	$consumerKey 	= "EeNs24z1jl5nUW5XOlozmQ";
 	$consumerSecret = "3lxhiQBzzamQzHWSKy4ESmYTZyPllbBoD2pbaEqO8";
@@ -14,7 +14,7 @@ if(isset($_POST['msg']) && isset($_POST['user'])){
 	echo $status ? 'OK' : 'ERROR';	
 }
 
-require_once './vendor/twitter/twitter.class.php';
+require_once './vendor/Twitter/twitter.class.php';
 
 	$consumerKey 	= "EeNs24z1jl5nUW5XOlozmQ";
 	$consumerSecret = "3lxhiQBzzamQzHWSKy4ESmYTZyPllbBoD2pbaEqO8";

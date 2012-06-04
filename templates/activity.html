@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block page_title %}{{ activity.name }}{% endblock %}
+
+{% block breadcrumb %}
+<ul class="breadcrumb">
+  {% if user.role == 1%}
+	  <li>
+	    <a href="{{ urlFor('home') }}">Inicio</a> <span class="divider">/</span>
+	  </li>
+	{% endif %}
+  <li>
+  	<a href="{{ urlFor('district', {'id': district.id}) }}">Distrito {{ district.id }}</a> <span class="divider">/</span>
+  </li>
+  <li class="active">{{ activity.name }}</li>
+</ul>
+{% endblock %}
+
+{% block content%}
+<div class="row">
+	<div class="offset3 span6">
+		<!--Order: 5,4,3,2,1,8,7,6-->
+		<div class="mobily-blocks activities btn">
+			{{ activity.name }}
+			<ul class="reset">
+				{% for task in tasks %}
+				<li>
+					<a href="{{ urlFor('task', {'district': district.id, 'activity': activity.id, 'task': task.id}) }}" class="btn {{ taskis[task.id].status }}">
+						<strong>{{ task.name|escape }}</strong>		
+					</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>	
+</div>
+{% endblock %}

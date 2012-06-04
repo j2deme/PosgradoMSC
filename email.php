@@ -1,7 +1,7 @@
 <?php
-require_once './vendor/ladybug/Ladybug/Autoloader.php';
+require_once './vendor/Ladybug/Autoloader.php';
 Ladybug\Autoloader::register();
-require_once './vendor/swiftmailer/swift_required.php';
+require_once './vendor/Swiftmailer/swift_required.php';
 
 $transport = Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl')
              ->setUsername('j2deme@gmail.com')

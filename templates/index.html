@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block page_title %}Distritos{% endblock %}
+{% block breadcrumb %}{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="offset3 span6">
+		<!--Order: 5,4,3,2,1,8,7,6-->
+		<br /><br />
+		<div class="mobily-blocks districts">
+			<ul class="reset">
+			{% for district in districts %}
+				<li>
+					<a href="{{ urlFor('district', {'id': district.id}) }}" class="btn {{ disis[district.id].status }}">
+						<strong>Distrito {{ district.id }}</strong>
+						<img src="{{ urlFor('home') }}img/distritos/dist{{ district.id }}.png" alt="Dist{{ district.id }}" width="65px"/>		
+					</a>
+				</li>
+			{% endfor %}
+			</ul>
+		</div>
+	</div>	
+</div>
+{% endblock %}
