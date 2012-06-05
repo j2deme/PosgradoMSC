@@ -30,18 +30,20 @@
 			</fieldset>
 		</form>
 		<script>
-		    $('#login-form').isHappy({
-		    fields: {
-		      '#username': {
-		        required: true,
-		        message: 'Requerido',
-		      },
-		      '#password': {
-		        required: true,
-		        message: 'Requerida',
-		      }
-		    }
-		  });
+		head.ready("happy_methods",function() {
+			$('#login-form').isHappy({
+			    fields: {
+			      '#username': {
+			        required: true,
+			        message: 'Requerido',
+			      },
+			      '#password': {
+			        required: true,
+			        message: 'Requerida',
+			      }
+			    }
+			});
+		});
 		</script>
 	</div>
 </div>
