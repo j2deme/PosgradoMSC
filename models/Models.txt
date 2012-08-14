@@ -1,0 +1,39 @@
+*- Usuario
+*-- Personal
+*-- Academico
+*-- Contacto
+*-- Laboral
+*-- Posgrado
+*-- Docente
+
+*- Eventos
+*- Publicacion
+*- Secciones
+*- Noticias
+
+=== Catalogos ===
+*- AreasInteres
+*- FormaEnterado
+*- Herramienta
+*- Idioma
+*- Institucion
+*- Lenguaje
+*- LineaInvestigacion
+*- Estado
+*- Municipio
+*- Localidad
+*- SNI
+*- Oauth
+*- Plataforma
+*- Roles
+*- PROMEP
+*- Materias
+
+== Relaciones ===
+*- UsuariosAreas
+*- UsuariosEventos
+*- UsuariosHerramientas
+*- UsuariosIdiomas
+*- UsuariosLenguajes
+*- UsuariosPlataformas
+*- UsuariosRoles

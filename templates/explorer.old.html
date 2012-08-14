@@ -1,0 +1,80 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	<div class="span12">
+		<div class="row">
+			<div class="span4">
+				<h2>Explorador de Archivos</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div id="treea" class="span11">
+			<div class="breadcrumb-wrapper">
+		        <ul class="breadcrumb">
+					{% set divider = false %}
+					{% for breadcrumb in breadcrumbs %}
+					<li>
+						{% if divider %}
+						<span class="divider">/</span>
+						{% endif %}
+						<a href="{{ breadcrumb.link }}">{{ breadcrumb.text }}</a>
+						{% set divider = true %}
+					</li>
+					{% endfor %}
+		            <li class="floatRight" style="display: hidden;">
+		                <a href="#" id="pageTopLink">Subir</a>
+		            </li>
+		        </ul>
+		    </div>
+			<div id="header" class="clearfix">
+        		<span class="fileName">Archivo</span>
+        		<span class="fileSize">Tamaño</span>
+        		<span class="fileModTime">Ultima Modificación</span>
+    		</div>
+			<ul id="directoryListing">
+			{% set type = ['even','odd']%}
+			{% for key, item in directory %}
+			<li class="{{ cycle(['even','odd'],loop.index) }}">
+				<a href="{{ item.file_path }}" class="clearfix">
+					{# {{ urlFor('explorador-archivos', {'dir': item.file_path}) }} #}
+					<span class="fileName">
+	                    <i class="dl {{ item.icon_class }}">&nbsp;</i>
+	                    {{ key }}
+	                </span>
+	                <span class="fileSize">{{ item.file_size }}</span>
+	                <span class="fileModTime">{{ item.mod_time }}</span>
+				</a>
+			</li>
+			{% endfor %}
+			</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+head.ready(function() {
+	$(function() {
+		var originalTop = $('.breadcrumb-wrapper').offset().top;
+	    checkSubnav(originalTop);
+	    $(window).scroll(function() {
+	        checkSubnav(originalTop);
+	    });
+	    $('#pageTopLink').click(function() {
+	        $('html, body').animate({ scrollTop: 0 }, 'fast'); 
+	        return false;
+	    });
+	});
+	
+	function checkSubnav(elTop) {
+		if($(window).scrollTop() >= elTop) {
+			$('body').addClass('breadcrumb-fixed');
+			$('#pageTopLink').show();
+		} else {
+			$('body').removeClass('breadcrumb-fixed');
+			$('#pageTopLink').hide();
+		}
+	}
+});
+</script>
+{% endblock %}

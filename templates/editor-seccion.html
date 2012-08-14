@@ -1,0 +1,133 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	<div class="span12">
+		<div class="row">
+			<div class="span6">
+				<h2>Editor de Sección: {{ seccion.nombre }}</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="offset1 span9">
+				<div id="loader" name="loader" class="">Cargando Editor <img src="{{ urlFor('home') }}img/loader.gif"></div>
+				<form id="editor" name="editor" method="post" class="form-horizontal hide span8" action="{{ urlFor('actualiza-seccion-post', {'id': seccion.id }) }}">
+				{#width: 800px; #}
+				<textarea id="contenido" name="contenido" class="wysihtml5 span8" style="height: 300px">
+				{% if seccion is defined %}
+				{{ seccion.contenido|raw }}
+				{% endif %}
+				</textarea>
+          		<div class="control-group">
+          			<br />
+            		<label for="contenedor" class="control-label">Contenedor</label>
+            		<div class="controls">
+            		{% set headers = ['General','Aspirantes','Alumnos','Posgrado'] %}
+              			<select id="contenedor" name="contenedor">
+                		{% for i in 0..3 %}
+                		<option value="{{ i }}" 
+                		{% if seccion.contenedor == i %}
+                		selected
+                		{% endif %}
+                		>{{ headers[i] }}</option>
+                		{% endfor %}
+              			</select>
+            		</div>
+          		</div>
+          		<div class="form-actions">
+            		<button class="btn btn-primary" type="submit"><i class="icon-save"> </i> Guardar Cambios</button>
+            		<a href="{{ urlFor('admin-secciones') }}" class="btn"><i class="icon-remove-sign"> </i> Cancelar</a>
+          		</div>
+				</form>
+{#				<form id="fileupload" action="{{ urlFor('uploader') }}" method="POST" enctype="multipart/form-data">
+			        <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+			        <div class="row fileupload-buttonbar">
+			            <div class="span7">
+			                <!-- The fileinput-button span is used to style the file input field as button -->
+			                <span class="btn btn-success fileinput-button">
+			                    <i class="icon-plus"></i>
+			                    <span>Add files...</span>
+			                    <input type="file" name="files[]" multiple>
+			                </span>
+			                <button type="submit" class="btn btn-primary start">
+			                    <i class="icon-upload"></i>
+			                    <span>Start upload</span>
+			                </button>
+			                <button type="reset" class="btn btn-warning cancel">
+			                    <i class="icon-ban-circle"></i>
+			                    <span>Cancel upload</span>
+			                </button>
+			                <button type="button" class="btn btn-danger delete">
+			                    <i class="icon-trash"></i>
+			                    <span>Delete</span>
+			                </button>
+			                <input type="checkbox" class="toggle">
+			            </div>
+			            <!-- The global progress information -->
+			            <div class="span5 fileupload-progress fade">
+			                <!-- The global progress bar -->
+			                <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+			                    <div class="bar" style="width:0%;"></div>
+			                </div>
+			                <!-- The extended global progress information -->
+			                <div class="progress-extended">&nbsp;</div>
+			            </div>
+			        </div>
+			        <!-- The loading indicator is shown during file processing -->
+			        <div class="fileupload-loading"></div>
+			        <br>
+			        <!-- The table listing the files available for upload/download -->
+			        <table role="presentation" class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
+			    </form>
+#}		
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+head.ready("app", function(){
+	head.js(
+		{wysihtml5: "{{ urlFor('home') }}js/wysihtml5-0.3.0.js"},
+		{bwysihtml5: "{{ urlFor('home') }}js/bootstrap-wysihtml5.js"},
+		{jqueryuiw: "{{ urlFor('home') }}js/jquery-file-upload/jquery.ui.widget.js"},
+		"{{ urlFor('home') }}js/jquery-file-upload/tmpl.min.js",
+		"{{ urlFor('home') }}js/jquery-file-upload/load-image.min.js",
+		"{{ urlFor('home') }}js/jquery-file-upload/canvas-to-blob.min.js",
+		"{{ urlFor('home') }}js/jquery-file-upload/jquery.iframe-transport.js",
+		"{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload.js"
+		{underscore: "{{ urlFor('home') }}js/underscore-min.js"},
+{#		{elastic: "{{ urlFor('home') }}js/jquery.elastic.js"},
+		{mentions: "{{ urlFor('home') }}js/jquery.mentionsInput.js"}
+#}
+	);
+	$(function(){
+		$('.wysihtml5').wysihtml5();
+		var modal = $('.bootstrap-wysihtml5-insert-section-link-modal');
+		var urlSelect = modal.find('.bootstrap-wysihtml5-insert-link-url');
+		{% if secciones is defined%}
+		{% for seccion in secciones %}
+			$(urlSelect).append('<option value="@{{ seccion.slug }}">{{ seccion.nombre }}</option>');
+		{% endfor %}
+			$(urlSelect).append('<option value="@relacion-aceptados">Relación de Aceptados</option>');
+			$(urlSelect).append('<option value="@plan-estudios">Estructura del Plan de Estudios</option>');
+			$(urlSelect).append('<option value="@horarios">Horarios</option>');
+			$(urlSelect).append('<option value="@publicaciones">Publicaciones</option>');
+			$(urlSelect).append('<option value="@egresados">Egresados</option>');
+			$(urlSelect).append('<option value="@matriculacion">Matriculación</option>');
+			$(urlSelect).append('<option value="@productividad-academica">Productividad Académica</option>');
+			$(urlSelect).append('<option value="@nucleo-basico-academico">Núcleo Básico Académico</option>');
+		{% endif %}
+
+		$("#loader").delay(200).fadeOut(300);		
+		$('#editor').delay(500).fadeIn(300);
+	    $('#fileupload').fileupload({
+	        dataType: 'json',
+	        done: function (e, data) {
+	            $.each(data.result, function (index, file) {
+	                $('<p/>').text(file.name).appendTo(document.body);
+	            });
+	        }
+	    });
+	});
+});
+</script>
+{% endblock %}

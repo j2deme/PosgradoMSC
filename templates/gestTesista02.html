@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3 align="center">Gestor de tesistas</h3>
+
+<button class="btn-primary" style="width: 100px; height: 35px" data-toggle="modal" href="#modTesista">
+	Nuevo tesista
+</button>
+<br />
+<br />
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th align="center" >#</th>
+			<th align="center" >Nombre Tesista</th>
+			<th align="center" >Titulo de Tesis</th>
+			<th align="center" >Generacion</th>
+			<th align="center" >Opciones</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>1</td>
+			<td>tesista</td>
+			<td> <!--a data-toggle="modal" href="#modDocTesis"-->Tesis<!--/a--> </td>
+			<td>20xx</td>
+			<td>
+				<a data-toggle="modal" href="#modInfTesista">ver</a> <!-- quitar ver incluirlo en la tabla-->
+				<a data-toggle="modal" href="#modEditTesista">editar</a>
+				<a>borrar</a>
+			</td>
+		</tr>
+
+	</tbody>
+</table>
+
+<!-- NUEVO TESISTA -->
+
+<div class="modal hide fade" id="modEditTesista">
+    <div class="modal-header">
+    	<h3>Editar Tesista</h3>
+    </div>
+    <div class="modal-body">
+    	<p>
+    		<form>
+<!--LINEA DE INVESTIGACION-->    			
+    		<div class="row">
+    			<div class="span2 offset2"><label for="lineaInv">Linea de investigacion</label> 
+    				<select id="lineaInv" name="lineaInv">Linea de investigacion
+    					<option>Ingenieria de software</option>
+    				</select>  		
+    			</div>
+    		</div>
+    		
+<!--TESISTA-->    		
+    		<div class="row">
+    			<div class="span2 offset2"><label for="tesista"> Tesista</label>
+    				<select id="tesista" name="tesista"> Elija tesista
+    							<option>Alumno1</option>
+    							<option>Alumno2</option>
+    				</select>
+    			</div>
+    		</div>
+    		
+<!--NOMBRE DE ASESOR DE TESIS-->    		
+    		<div class="row">
+    			<div class="span2 offset2"><label for="nombreAsesor">Asesor de tesis </label>
+    				<select id="nombreAsesor" name="nombreAsesor"> Elija asesor de tesis
+    							<option>Docente 1</option>
+    							<option>Docente 2</option>
+    				</select>
+    			</div>
+    		</div>    		
+
+<!--TITULO DE TESIS-->
+    		<div class="row">
+    			<div class="span2 offset2"><label for="nameTesis">Titulo de tesis </label>
+    				<input id="nameTesis" name="nameTesis" class="span2" size="50" type="text">
+    			</div>
+    		</div>
+
+<!--FECHA DE INGRESO-->    		
+    		<div class="row">
+    			<div class="span4 offset2">
+    			<label for="ingreso">Fecha de Ingreso:</label>
+    				<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+    					<input id="ingreso" name="ingreso" class="span2 datepicker" size="16" type="text" value="12-02-2012">
+    					<span class="add-on datepicker"><i class="icon-caledar"></i></span>
+    				</div>
+           		</div>
+    		</div> 
+    		
+<!--FECHA DE FIN DE CURSO-->
+    		<div class="row">
+    			<div class="span4 offset2">
+    			<label for="finCur">Fecha de fin de curso:</label>
+    				<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+    					<input id="finCur" name="finCur" class="span2 datepicker" size="16" type="text" value="12-02-2012">
+    					<span class="add-on datepicker"><i class="icon-clendar"></i></span>
+    				</div>
+           		</div>
+    		</div> 
+    		
+<!--GENERACION-->
+    		<div class="row">
+    			<div class="span2 offset2"><label for="generacion">Generacion </label>
+    				<input id="generacion" name="generacion" class="span2" size="50" type="text">
+    			</div>
+    		</div>     		
+    		    		
+<!--AGREGAR DOCUMENTO DE TESIS-->    		
+    		<div class="row">
+    			<div class="span2 offset2"><label for="tituloTesis">Documento de tesis</label> 
+    				 
+    				 	<form action="subirArchivo.php" method="post" enctype="multipart/form-data" name="form"> 
+      						<input name="archivo" type="file" id="archivo" />       						
+    				 	</form>
+    				
+    			</div>
+    		</div>   		
+    		
+<!--AGREGAR EXPOSICION DE TESIS-->    		
+    		<div class="row">
+    			<div class="span2 offset2"><label for="exposicionTesis">Exposicion de tesis</label> 
+    				 <form action="subirArchivo.php" method="post" enctype="multipart/form-data" name="form"> 
+      						<input name="archivo" type="file" id="archivo" />       						
+    				 </form>
+    			</div>
+    		</div>    		   		    		      	    		
+    		    		  		
+            </form>
+    	</p>
+    </div>
+    <div class="modal-footer">
+    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+    	<a href="#" class="btn btn-primary">Guardar</a>
+    </div>
+</div>
+
+<!-- EDITAR TESISTA-->
+
+<div class="modal hide fade" id="modTesista">
+    <div class="modal-header">
+    	<h3>Nuevo Tesista</h3>
+    </div>
+    <div class="modal-body">
+    	<p>
+    		<form>
+    		<div class="row">
+    			<div class="span2 offset2"><label for="lineaInv">Linea de investigacion</label> 
+    				<select id="lineaInv" name="lineaInv">Linea de investigacion
+    					<option>Ingenieria de software</option>
+    				</select>  		
+    			</div>
+    		</div>
+    		
+    		<div class="row">
+    			<div class="span2 offset2"><label for="tesista"> Tesista</label>
+    				<input id="tesista" name="tesista" class="span2" size="50" type="text" 
+    				placeholder="Alumno1">
+    				
+    			</div>
+    		</div>
+
+    		<div class="row">
+    			<div class="span2 offset2"><label for="nameTesis">Titulo de tesis </label>
+    				<input id="nameTesis" name="nameTesis" class="span2" size="50" type="text"
+    				placeholder="Titulo de tesis bla bla bla tesis">
+    			</div>
+    		</div>
+
+    		<div class="row">
+    			<div class="span4 offset2">
+    			<label for="fechTitulacion">Fecha de titulacion:</label>
+    			<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+    				<input id="fechTitulacion" name="fechTitulacion" class="span2" size="16" type="text" value="12-02-2012">
+    				<span class="add-on datepicker"><i class="icon-th"></i></span>
+    			</div>
+           </div>
+
+    		</div>
+    		
+    		<div class="row">
+    			<div class="span4 offset2">
+    			<label for="ingreso">Fecha de Ingreso:</label>
+    			<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+    				<input id="ingreso" name="ingreso" class="span2" size="16" type="text" value="12-02-2012">
+    				<span class="add-on datepicker"><i class="icon-th"></i></span>
+    			</div>
+           </div>
+
+    		</div>    		
+    		
+            </form>
+    	</p>
+    </div>
+    <div class="modal-footer">
+    	<a href="#" class="btn btn-danger" data-dismiss="modal">Cancelar</a> <!---->
+    	<button class="btn btn-primary" > Guardar</button>
+    </div>
+</div>
+
+<!-- VER INFORMACION DE TESISTA agregar a la tabla campos que faltan y kitar ver-->
+
+<div class="modal hide fade" id="modInfTesista">
+    <div class="modal-header">
+    	<h3>Nuevo Tesista</h3>
+    </div>
+    <div class="modal-body">
+    	<p>
+    		<form>
+    		<div class="row">
+    			<div class="span2 offset2"><label for="lineaInv">Linea de investigacion:</label> 
+    				xxxxxx 		
+    			</div>
+    		</div>
+    		
+    		<div class="row">
+    			<div class="span2 offset2"><label for="tesista"> Tesista:</label>
+    				Alumno 1
+    			</div>
+    		</div>
+
+    		<div class="row">
+    			<div class="span2 offset2"><label for="nameTesis">Titulo de tesis: </label>
+    				titulo tesis xxxxxx
+    			</div>
+    		</div>
+
+    		
+    		<div class="row">
+    			<div class="span4 offset2">
+    			<label for="ingreso">Fecha de Ingreso:</label>
+    			xx-xx-xxxx
+            </div>
+
+    		</div>    		
+    		
+            </form>
+    	</p>
+    </div>
+    <div class="modal-footer">
+    	<a href="#" class="btn" data-dismiss="modal" type="">Cerrar</a>
+<!--    	<a href="#" class="btn btn-primary">Guardar</a>  -->
+    </div>
+</div>
+
+<!-- AGREGAR DOCUMENTOS DE TESIS-->
+<div class="modal hide fade" id="modDocTesis">
+    <div class="modal-header">
+    	<h3>Documento de tesis</h3>
+    </div>
+    <div class="modal-body">
+    	<p>
+    		<form>
+    		<div class="row">
+    			<div class="span2 offset2"><label for="tituloTesis">Documento de tesis</label> 
+    				 
+    				 	<form action="subirArchivo.php" method="post" enctype="multipart/form-data" name="form"> 
+      						<input name="archivo" type="file" id="archivo" />       						
+    				 	</form>
+    				
+    			</div>
+    		</div>   		
+    		
+    		<div class="row">
+    			<div class="span2 offset2"><label for="exposicionTesis">Exposicion de tesis</label> 
+    				 <form action="subirArchivo.php" method="post" enctype="multipart/form-data" name="form"> 
+      						<input name="archivo" type="file" id="archivo" />       						
+    				 </form>
+    			</div>
+    		</div> 
+    		
+            </form>
+    	</p>
+    </div>
+    <div class="modal-footer">
+    	<a href="#" class="btn btn-danger" data-dismiss="modal">Cancelar</a> <!---->
+    	<input name="boton" class="btn btn-primary span1" id="boton" value="Enviar" />
+    </div>
+</div>
+{% endblock %}

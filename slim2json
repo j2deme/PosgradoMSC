@@ -1,0 +1,8 @@
+Para hacerlo funcionar con $handleForm()
+	if($app->request()->isAjax()){
+			$msgs = humanize_gump($validated, FALSE);
+			header("Content-Type: application/json");
+			$response = array('validationErrors' => $msgs);
+			echo json_encode($response);
+			exit;	
+		}

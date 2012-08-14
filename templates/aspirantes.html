@@ -1,0 +1,141 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	<div class="span12">
+		<div class="row">
+			<div class="span2">
+				<h2>Aspirantes</h2>
+			</div>
+			{#<div class="span2">
+				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
+					<i class="icon-user icon-white"></i> Nuevo Usuario
+				</a>
+			</div>#}
+		</div>
+		<div class="row">
+			<div class="span11">
+				<div id="results" class="hide">
+				<table id="aspirantes-table" name="aspirantes-table" class="table table-bordered table-condensed table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nombre</th>
+							<th>Creado</th>
+							<th>Actualizado</th>
+							<th>Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% if aspirantes is defined %}
+						{% for aspirante in aspirantes %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ aspirante.personal.nombre~" "~aspirante.personal.paterno~" "~aspirante.personal.materno}}</td>
+							<td>{{ aspirante.creado|date("d/m/Y") }}</td>
+							<td>{{ aspirante.actualizado|date("d/m/Y") }}</td>
+							<td>
+								{#<div class="btn-group">#}
+									<a class="btn btn-success" href="{{ urlFor('procesar-aspirante',{'id': aspirante.id,'action':'aceptar'}) }}">
+										<i class="icon-ok-sign"> </i> Aceptar
+									</a>
+									<a class="btn btn-danger" href="{{ urlFor('procesar-aspirante',{'id': aspirante.id,'action': 'noaceptar'}) }}">
+										<i class="icon-remove-sign"> </i> No aceptar
+									</a>
+								{#</div>#}
+							</td>
+						</tr>
+						{% endfor %}
+					{% else %}
+							<tr>
+								<td> </td>
+								<td>No existen aspirantes</td>
+								<td> </td>
+								<td> </td>
+								<td> </td>
+							</tr>
+					{% endif %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{#<div class="modal hide fade" id="newUser">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Nuevo Usuario</h3>
+	</div>
+	<form id="newUserForm" name="newUserForm" action="{{ urlFor('nuevo-usuario-post') }}" method="post" class="form-horizontal">
+ 	<div class="modal-body">
+    	<div class="control-group">
+      		<label class="control-label" for="usuario">Usuario</label>
+      		<div class="controls">
+        		<input type="text" class="input-xlarge" id="usuario" name="usuario" value="" placeholder="Usuario">
+      		</div>
+    	</div>
+    	<div class="control-group">
+      		<label class="control-label" for="email">Email</label>
+      		<div class="controls">
+        		<input type="email" class="input-xlarge" id="email" name="email" value="" placeholder="usuario@dominio.com">
+      		</div>
+    	</div>
+    	<div class="control-group">
+      		<label class="control-label" for="rol">Rol</label>
+      		<div class="controls">
+      			<select id="rol" name="rol" class="input-xlarge">
+      				<option value="0">Selecciona una opci&oacute;n</option>
+      				{% for rol in roles %}
+      				<option value="{{ rol.id }}">{{ rol.nombre }}</option>
+      				{% endfor %}
+              	</select>
+      		</div>
+    	</div>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal"><i class="icon-remove-sign"> </i> Cancelar</a>
+		<button type="submit" class="btn btn-primary"><i class="icon-plus-sign"> </i> Crear</button>
+	</div>
+	</form>
+</div>#}
+
+<script>
+head.ready(function(){
+	$(function(){
+		//$('#waiting').addClass('hide').fadeOut(2500);
+		$('#results').removeClass('hide').fadeIn(1500);
+		var usersTable = $('#aspirantes-table').dataTable({
+			"oLanguage": {
+			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			},
+			"fnDrawCallback": function () {
+			},
+			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+			"sPaginationType": "bootstrap"
+		});
+		
+{#		$('#newUserForm').isHappy({
+			fields: {
+				'#usuario':{
+					required: true,
+					message: 'Alias de acceso necesario'
+				},
+				'#email':{
+					required: true,
+					message: 'Email válido necesario',
+					test: happy.email
+				},
+				'#rol':{
+					required: true,
+					message: 'Especifica un rol',
+					arg: 0,
+					test: happy.nequal
+				}
+			}
+		});
+#}		
+	});
+});
+</script>
+{% endblock %}

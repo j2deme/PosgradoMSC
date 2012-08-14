@@ -1,0 +1,102 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	<div class="span12">
+		<div class="row">
+			<div class="span3">
+				<h2>Secciones</h2>
+			</div>
+			{#<div class="span2">
+				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
+					<i class="icon-user icon-white"></i> Nuevo Usuario
+				</a>
+			</div>#}
+		</div>
+		<div class="row">
+			<div class="span11">
+				<div id="results" class="hide">
+				<table id="secciones-table" name="secciones-table" class="table table-bordered table-condensed table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nombre</th>
+							<th class="hidden-phone">Contenido</th>
+							<th class="hidden-tablet hidden-phone">Sección</th>
+							<th class="hidden-phone">Actualizado</th>
+							<th>Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% if secciones is defined %}
+						{% for seccion in secciones %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ seccion.nombre }}</td>
+							<td class="hidden-phone">
+								{{ seccion.contenido|slice(0,80)|trim|raw|striptags }}{% if seccion.contenido|length > 80 %}&hellip;{% endif %}
+							</td>
+							<td class="hidden-tablet hidden-phone">
+								{% set contenedor = ['General','Aspirantes','Alumnos','Posgrado'] %}
+								{{ contenedor[seccion.contenedor] }}
+							</td>
+							<td class="hidden-phone">{{ seccion.actualizado|date("d/m/Y H:i") }}</td>
+							<td>
+								<div class="btn-group">
+									<a class="btn btn-primary" href="{{ urlFor('editor-seccion',{'slug': seccion.slug}) }}" rel="tooltip" data-original-title="Editar">
+										<i class="icon-edit"> </i>
+									</a>
+									<a class="btn" href="#" rel="tooltip" data-original-title="Visualizar" data-toggle="modal" data-target="#{{ seccion.slug }}-modal">
+										<i class="icon-eye-open"> </i>
+									</a>
+								</div>
+								
+							</td>
+						</tr>
+<div class="modal hide fade" id="{{ seccion.slug }}-modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>{{ seccion.nombre }}</h3>
+	</div>
+ 	<div class="modal-body">
+ 		{{ sections[seccion.id]|raw }}
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal"><i class="icon-remove-sign"> </i> Cerrar</a>
+	</div>
+</div>
+						{% endfor %}
+					{% else %}
+							<tr>
+								<td> </td>
+								<td>No se han dado de alta las secciones</td>
+								<td> </td>
+								<td> </td>
+								<td> </td>
+								<td> </td>
+							</tr>
+					{% endif %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+head.ready(function(){
+	$(function(){
+		$('#results').removeClass('hide').fadeIn(1500);
+/*		var seccionesTable = $('#secciones-table').dataTable({
+			"oLanguage": {
+			    "sUrl": "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			},
+			"fnDrawCallback": function () {
+			},
+			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+			"sPaginationType": "bootstrap"
+		});*/		
+	});
+});
+</script>
+{% endblock %}

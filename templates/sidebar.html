@@ -1,0 +1,98 @@
+<div class="accordion sidebar-nav" id="sidebar">
+{% set divs = ['general','candidates','students','research'] %}
+{% set headers = ['General','Aspirantes','Alumnos','Posgrado'] %}
+{% set class = ['in','collapse','collapse','collapse'] %}
+{% set height = ['auto','0px','0px','0px'] %}
+{#	{% for i in 0..3 %}
+	<div class="accordion-group">
+		<div class="accordion-heading">
+			<a class="accordion-toggle" data-toggle="collapse" data-parent="#sidebar" data-target="#{{ cycle(divs,loop.index0) }}">
+				{{ cycle(headers,loop.index0) }}
+			</a>
+		</div>
+		<div id="{{ cycle(divs,loop.index0) }}" class="accordion-body {{ cycle(class,loop.index0) }}" style="height:{{ cycle(height,loop.index0) }}; ">
+			<ul class="nav nav-list">
+				<li><a></a></li>
+			</ul>
+		</div>
+	</div>
+	{% endfor %}#}
+	<div class="accordion-group">
+		<div class="accordion-heading">
+	        <a class="accordion-toggle" data-toggle="collapse" data-parent="#sidebar" data-target="#general">
+	          General
+	        </a>
+      	</div>
+      	<div id="general" class="accordion-body in" style="height: auto; ">
+	        <div class="accordion-inner">
+	          <ul class="nav nav-list">
+	          	<li><a href="#">Antecedentes</a></li><!--class="active"-->
+	          	<li><a href="#">Misi&oacute;n y Visi&oacute;n</a></li>
+	          	<li><a href="#">Objetivos</a></li>
+	          	<li><a href="#">Logros y Reconocimientos</a></li>
+	          	<li><a href="#">L&iacute;neas de Generaci&oacute;n y Aplicaci&oacute;n de Conocimiento</a></li>
+	          	<li><a href="#">Vinculaci&oacute;n</a></li>
+	          	<li><a href="#">Calendario</a></li>
+	          </ul>
+	        </div>
+      	</div>
+    </div>
+    <div class="accordion-group">
+		<div class="accordion-heading">
+	        <a class="accordion-toggle" data-toggle="collapse" data-parent="#sidebar" data-target="#candidates">
+	          Aspirantes
+	        </a>
+      	</div>
+      	<div id="candidates" class="accordion-body collapse" style="height: 0px; ">
+        	<div class="accordion-inner">
+        	  <ul class="nav nav-list">
+	          	<li><a href="#">Proceso de Admisi&oacute;n</a></li>
+	          	<li><a href="#">Perfil de Ingreso</a></li>
+	          	<li><a href="#">Perfil de Egreso</a></li>
+	          	<li><a href="#">Curso Proped&eacute;utico</a></li>
+	          	<li><a href="#">Material de Apoyo</a></li>
+	          	<li><a href="#">Relaci&oacute;n de Aceptados</a></li>
+	          </ul>
+        	</div>
+      	</div>
+	</div>
+    <div class="accordion-group">
+		<div class="accordion-heading">
+	        <a class="accordion-toggle" data-toggle="collapse" data-parent="#sidebar" data-target="#students">
+	          Alumnos
+	        </a>
+      	</div>
+      	<div id="students" class="accordion-body collapse" style="height: 0px; ">
+        	<div class="accordion-inner">
+        	  <ul class="nav nav-list">
+	          	<li><a href="#">Estructura del Plan de Estudios</a></li>
+				{#<li><a href="#">Horarios</a></li>#}
+	          	<li><a href="#">Requisitos para obtenci&oacute;n de grado</a></li>
+	          </ul>
+        	</div>
+      	</div>
+    </div>
+    <div class="accordion-group">
+		<div class="accordion-heading">
+	        <a class="accordion-toggle" data-toggle="collapse" data-parent="#sidebar" data-target="#research">
+	          Posgrado
+	        </a>
+      	</div>
+      	<div id="research" class="accordion-body collapse" style="height: 0px; ">
+	        <div class="accordion-inner">
+	          <ul class="nav nav-list">
+	          	<li><a href="#">L&iacute;neas de Investigaci&oacute;n</a></li>
+	          	<li><a href="#">Publicaciones</a></li>
+	          	<li><a href="#">Egresados</a></li>
+	          	<li><a href="#">Estad&iacute;sticas</a>
+	          		<ul class="nav nav-list">
+	          			<li><a href="#">Matriculaci&oacute;n</a></li>
+	          			<li><a href="#">Productividad Acad&eacute;mica</a></li>
+	          			<li><a href="#">N&uacute;cleo B&aacute;sico Acad&eacute;mico</a></li>
+	          		</ul>
+	          	</li>
+	          </ul>
+        	</div>
+      	</div>
+    </div>
+</div>

@@ -41,6 +41,9 @@ var happy = {
   equal: function (val1, val2) {
     return (val1 == val2);
   },
+  nequal: function(val1, val2) {
+	  return (val1 != val2);
+  },
   emptyOrDate: function (val) {
     return (val === '' || happy.date(val));
   },

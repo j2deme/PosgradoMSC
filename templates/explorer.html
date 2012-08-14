@@ -1,0 +1,68 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	<div class="span12">
+		<div class="row">
+			<div class="span4">
+				<h2>Explorador de Archivos</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div id="treea" class="span11">
+				<div class="breadcrumb-wrapper">
+			        <ul class="breadcrumb">
+						<li>
+							<a href="{{ urlFor('explorador-archivos') }}">Inicio</a>
+						</li>
+			            <li class="floatRight" style="display: hidden;">
+			                <a href="#" id="pageTopLink">Subir</a>
+			            </li>
+			        </ul>
+			    </div>		    
+				<div id="directoryListing" class="well">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+head.ready(function() {
+	$(function() {
+		var originalTop = $('.breadcrumb-wrapper').offset().top;
+	    checkSubnav(originalTop);
+	    $(window).scroll(function() {
+	        checkSubnav(originalTop);
+	    });
+	    $('#pageTopLink').click(function() {
+	        $('html, body').animate({ scrollTop: 0 }, 'fast'); 
+	        return false;
+	    });
+	    
+	    $('#directoryListing').fileTree({
+	    	root: '/Drive/verificacion/',
+	    	script: '{{ urlFor("dirlist") }}',
+	    	multiFolder: false
+	    }, function(file) {
+	        openFile(file);
+	    });
+	});
+	
+	function checkSubnav(elTop) {
+		if($(window).scrollTop() >= elTop) {
+			$('body').addClass('breadcrumb-fixed');
+			$('#pageTopLink').show();
+		} else {
+			$('body').removeClass('breadcrumb-fixed');
+			$('#pageTopLink').hide();
+		}
+	}
+	
+	function openFile(file){
+		//alert(file);
+		var url = file;
+		$(location).attr('href',url);
+	}
+});
+</script>
+{% endblock %}

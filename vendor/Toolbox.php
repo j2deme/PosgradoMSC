@@ -428,6 +428,93 @@ class Toolbox {
 	}
 
 	/**
+	 * Modifies a string to remove all non ASCII characters and spaces.
+	 *
+	 * @param string $str String to slugified.
+	 * @param array $replace Set of characters to replace with space.
+	 * @param string $delimiter Character to separate words.
+	 */
+	function slugify($text, $separator = 'dash', $lowercase = TRUE) {
+		if(!$this->isUTF8($text)){
+			$text = utf8_encode($text);
+		}
+		$text = strip_tags($text);
+		$text = preg_replace("`\[.*\]`U", "", $text);
+		$text = preg_replace('`&(amp;)?#?[a-z0-9]+;`i', '-', $text);
+		$text = htmlentities($text, ENT_COMPAT, 'utf-8');
+		$text = preg_replace("`&([a-z])(acute|uml|circ|grave|ring|cedil|slash|tilde|caron|lig|quot|rsquo);`i", "\\1", $text);
+		$text = preg_replace(array("`[^a-z0-9]`i", "`[-]+`"), "-", $text);
+
+		if ($lowercase === TRUE) {
+			$text = strtolower($text);
+		}
+
+		if ($separator != 'dash') {
+			$text = str_replace('-', '_', $text);
+			$separator = '_';
+		} else {
+			$separator = '-';
+		}
+
+		return trim($text, $separator);
+
+	}
+
+	function slug($name, $utf8 = true) {
+		if(!$this->isUTF8($name)){
+			$name = utf8_encode($name);
+		}
+		$sname = trim($name);
+		$sname = strtolower(preg_replace('/\s+/', '-', $sname));
+
+		$table = array('Š' => 'S', 'š' => 's', 'Ž' => 'Z', 'ž' => 'z', 'C' => 'C', 'c' => 'c', 'C' => 'C', 'c' => 'c', 'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'A', 'Ç' => 'C', 'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ý' => 'Y', 'Þ' => 'B', 'ß' => 'S', 'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'a', 'ç' => 'c', 'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i', 'ð' => 'o', 'ñ' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ý' => 'y', 'ý' => 'y', 'þ' => 'b', 'ÿ' => 'y', 'R' => 'R', 'r' => 'r', ',' => '');
+		$sname = strtr($sname, $table);
+		if ($utf8) {
+			$sname = utf8_decode($sname);
+		}
+		$sname = preg_replace('/[^A-Za-z0-9-]+/', "", $sname);
+
+		return $sname;
+	}
+
+	function stripAccents($text) {
+		return strtr($text, 'àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ', 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY');
+	}
+
+	function isUTF8($string) {
+		for ($idx = 0, $strlen = strlen($string); $idx < $strlen; $idx++) {
+			$byte = ord($string[$idx]);
+
+			if ($byte & 0x80) {
+				if (($byte & 0xE0) == 0xC0) {
+					// 2 byte char
+					$bytes_remaining = 1;
+				} else if (($byte & 0xF0) == 0xE0) {
+					// 3 byte char
+					$bytes_remaining = 2;
+				} else if (($byte & 0xF8) == 0xF0) {
+					// 4 byte char
+					$bytes_remaining = 3;
+				} else {
+					return FALSE;
+				}
+
+				if ($idx + $bytes_remaining >= $strlen) {
+					return FALSE;
+				}
+
+				while ($bytes_remaining--) {
+					if ((ord($string[++$idx]) & 0xC0) != 0x80) {
+						return FALSE;
+					}
+				}
+			}
+		}
+
+		return TRUE;
+	}
+
+	/**
 	 * Generates variable length and strength passwords.
 	 *
 	 * @param int $length Length of generated password. (Default: 9)
@@ -560,11 +647,11 @@ class Toolbox {
 	/**
 	 * Bytes to human readable format.
 	 *
-	 * @param int $bytes File size in bytes
+	 * @param int $fileSize File size in bytes
 	 * @param int $digits Digits to display (default: 2)
 	 * @return string Size (KB, MB, GB, TB)
 	 */
-	function bytes2human($bytes, $digits = 2) {
+	function bytes2human($fileSize, $digits = 2) {
 			$sizes = array("TB", "GB", "MB", "KB", "B");
 			$total = count($sizes);
 			while ($total-- && $fileSize > 1024) {
