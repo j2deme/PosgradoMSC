@@ -660,20 +660,21 @@ $app->get('/estructura-plan-estudios/', function() use($app){
 	$app->render('reticula02.html',$data);
 })->name('plan-estudios');
 
-$app->get('/nucleo-academico/', function() use($app) {
+$app->get('/estadisticas/nucleo-academico/', function() use($app) {
     $data['rol'] = Rol::find_by_nombre('Docente');
     $rolus = UsuariosRoles::find_by_rol_id($data['rol']->id);
     $data['usuarios'] = Usuario::find_all_by_id($rolus->usuario_id,array('include'=> array('personal','docente')));
     $app->render('nucleoacademico.html',$data);
 })->name('nucleo-academico');
 
-$app->get('/productividad-academica/', function() use($app) {
-    $data['rol'] = Rol::find_by_nombre('Docente');
-    $rolus = UsuariosRoles::find_all_by_rol_id($data['rol']->id);
+$app->get('/estadisticas/productividad-academica/', function() use($app) {
+    $rol = Rol::find_by_nombre('Docente');
+    $rolus = UsuariosRoles::find_all_by_rol_id($rol->id);
     $idusuarios = array();
     foreach ($rolus as $u) {
         $idusuarios[] = $u->id;
     }
+	//FIXME Error encontrado al tratar de cargar publicaciones, revisar
     $usuarios = $data['usuarios'] = Usuario::find($idusuarios,array('include'=> array('personal','publicaciones')));
     $publicaciones = array();
     foreach ($usuarios as $usuario) {     
@@ -684,7 +685,7 @@ $app->get('/productividad-academica/', function() use($app) {
     }
     $data['pub'] = $publicaciones;
     ladybug_dump($data);
-    #$app->render('productividadacademica.html',$data);
+    //$app->render('productividadacademica.html',$data);
 })->name('productividad-academica');
 
 $app->get('/calendario/', function() use($app){
@@ -693,11 +694,8 @@ $app->get('/calendario/', function() use($app){
 
 $app->get('/relacion-aceptados/', function() use($app){
 	//TODO Relacion Aceptados
+	$app->render('relacion-aceptados.html');
 })->name('relacion-aceptados');
-
-$app->get('/horarios/', function() use($app){
-	//XXX Not implemented
-})->name('horarios');
 
 $app->get('/publicaciones/', function() use($app){
 	$user['usuarios'] = Usuario::find_by_id('1');
@@ -709,7 +707,7 @@ $app->get('/egresados/', function() use($app){
 	//TODO Egresados
 })->name('egresados');
 
-$app->get('/matriculacion/', function() use($app){
+$app->get('/estadisticas/matriculacion/', function() use($app){
 	$app->render('EstadisticaMatriculacion.html');
 })->name('matriculacion');
 
