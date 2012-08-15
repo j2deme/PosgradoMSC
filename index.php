@@ -61,8 +61,19 @@ $app->post('/login/', function() use ($app) {
 		$user = Usuario::find_by_usuario($_POST['usuario']);
 		if(is_object($user)){
 			if($user->password === $_POST['password']){
-				$expiration = (isset($_POST['cookie']) ? '1 month' : '2 hours');
-				$app -> setCookie('userId', $user -> id, $expiration);
+				if($user->activo == 1){
+					$expiration = (isset($_POST['cookie']) ? '1 month' : '2 hours');
+					$app -> setCookie('userId', $user -> id, $expiration);	
+				} else {
+					$flash = array(
+						"title" => "ERROR",
+						"msg" => "Su cuenta ha sido suspendida. Pongase en contacto con el administrador.",
+						"type" => "error",
+						"fade" => 0
+					);
+					$app -> flash("flash", $flash);
+					$app -> flashKeep();
+				}
 				$app -> redirect($app->urlFor('home'));
 			} else {
 				$flash = array(

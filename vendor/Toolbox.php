@@ -676,6 +676,14 @@ class Toolbox {
 		$zip -> close();
 		return TRUE;
 	}
-
+	
+	/**
+	 * Humanize String
+	 * 
+	 * @param string $string String to me humanized.
+	 */
+	function humanize_string($string){
+		return utf8_encode(ucwords(strtolower(utf8_decode($string))));
+	}
 }
 ?>

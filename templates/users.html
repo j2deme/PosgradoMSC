@@ -7,7 +7,7 @@
 				<h2>Usuarios</h2>
 			</div>
 			<div class="span2">
-				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
+				<a id="nuevoUsuario" name="nuevoUsuario" href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
 					<i class="icon-user icon-white"></i> Nuevo Usuario
 				</a>
 			</div>
@@ -165,7 +165,7 @@
 head.ready(function(){
 	$(function(){
 		//$('#waiting').addClass('hide').fadeOut(2500);
-		$('#results').removeClass('hide').fadeIn(1500);
+		$('#results').fadeIn(1500);
 		var usersTable = $('#users-table').dataTable({
 			"oLanguage": {
 			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
@@ -176,7 +176,7 @@ head.ready(function(){
 			"sPaginationType": "bootstrap"
 		});
 		
-		$('#newUserForm').isHappy({
+		$('form#newUserForm').isHappy({
 			fields: {
 				'#usuario':{
 					required: true,
@@ -197,7 +197,7 @@ head.ready(function(){
 		});
 		
 		/*NO COPIAR == EN PRUEBAS*/
-		$('#newUserForma').handleForm({
+/*		$('#newUserForma').handleForm({
 			closeModal: true,
 			onSuccess: function(){
 				usersTable.fnAddData([
@@ -207,7 +207,7 @@ head.ready(function(){
 					""
 				]);
 			}
-		});
+		});*/
 		/*NO COPIAR == EN PRUEBAS*/
 	});
 });

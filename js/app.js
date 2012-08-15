@@ -20,6 +20,12 @@ $(function(){
             });
         }
     });*/
+    
+    $.fn.resetForm = function () {
+    	$(this).each(function(el) {
+    		this.reset();
+    	});
+    }
 	
 	var fullDate = new Date();
 	//convert month to 2 digits
