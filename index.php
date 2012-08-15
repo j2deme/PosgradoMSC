@@ -387,7 +387,7 @@ $app->get('/procesar-aspirante/:action/:id/', function($action,$id) use($app){
 	$rolAlumno = Rol::find_by_nombre("Alumno");
 	$rolNoAceptado = Rol::find_by_nombre("No aceptado");
 	$ur = UsuariosRoles::find_by_usuario_id($id);
-	
+//TODO Agregar interaccion para modificar estadistica de matriculacion y genero
 	if($action == "aceptar"){
 		$ur->rol_id = $rolAlumno->id;
 		$verb = "aceptado";
@@ -539,6 +539,10 @@ $app->post('/uploader/',function() use($app){
 	        header('HTTP/1.1 405 Method Not Allowed');
 	}
 })->name('uploader');
+
+$app->get('/admin/estadisticas/', function() use($app){
+	
+})->name('admin-estadisticas');
 
 $app->get('/admin/secciones/', function() use($app){
 	$data['breadcrumb'] = array(
