@@ -688,12 +688,15 @@ $app->get('/productividad-academica/', function() use($app) {
 })->name('productividad-academica');
 
 $app->get('/calendario/', function() use($app){
+	//TODO Calendario
 })->name('calendario');
 
 $app->get('/relacion-aceptados/', function() use($app){
+	//TODO Relacion Aceptados
 })->name('relacion-aceptados');
 
 $app->get('/horarios/', function() use($app){
+	//XXX Not implemented
 })->name('horarios');
 
 $app->get('/publicaciones/', function() use($app){
@@ -703,11 +706,16 @@ $app->get('/publicaciones/', function() use($app){
 })->name('publicaciones');
 
 $app->get('/egresados/', function() use($app){
+	//TODO Egresados
 })->name('egresados');
 
 $app->get('/matriculacion/', function() use($app){
 	$app->render('EstadisticaMatriculacion.html');
 })->name('matriculacion');
+
+$app->get('/registro-aspirante/', function() use($app){
+	//TODO Registro Aspirante
+})->name('registro-aspirante');
 
 /* =======================
  * ======= DOCENTE =======

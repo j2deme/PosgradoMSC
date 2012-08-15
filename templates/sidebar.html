@@ -26,13 +26,13 @@
       	<div id="general" class="accordion-body in" style="height: auto; ">
 	        <div class="accordion-inner">
 	          <ul class="nav nav-list">
-	          	<li><a href="#">Antecedentes</a></li><!--class="active"-->
-	          	<li><a href="#">Misi&oacute;n y Visi&oacute;n</a></li>
-	          	<li><a href="#">Objetivos</a></li>
-	          	<li><a href="#">Logros y Reconocimientos</a></li>
-	          	<li><a href="#">L&iacute;neas de Generaci&oacute;n y Aplicaci&oacute;n de Conocimiento</a></li>
-	          	<li><a href="#">Vinculaci&oacute;n</a></li>
-	          	<li><a href="#">Calendario</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'antecedentes'}) }}" class="ajaxify">Antecedentes</a></li><!--class="active"-->
+	          	<li><a href="{{ urlFor('home',{'slug':'mision-y-vision'}) }}" class="ajaxify">Misi&oacute;n y Visi&oacute;n</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'objetivos'}) }}">Objetivos</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'logros-y-reconocimientos'}) }}">Logros y Reconocimientos</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'lineas-de-generacion-y-aplicacion-de-conocimiento'}) }}">L&iacute;neas de Generaci&oacute;n y Aplicaci&oacute;n de Conocimiento</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'vinculacion'}) }}">Vinculaci&oacute;n</a></li>
+	          	<li><a href="{{ urlFor('calendario') }}">Calendario</a></li>
 	          </ul>
 	        </div>
       	</div>
@@ -46,12 +46,12 @@
       	<div id="candidates" class="accordion-body collapse" style="height: 0px; ">
         	<div class="accordion-inner">
         	  <ul class="nav nav-list">
-	          	<li><a href="#">Proceso de Admisi&oacute;n</a></li>
-	          	<li><a href="#">Perfil de Ingreso</a></li>
-	          	<li><a href="#">Perfil de Egreso</a></li>
-	          	<li><a href="#">Curso Proped&eacute;utico</a></li>
-	          	<li><a href="#">Material de Apoyo</a></li>
-	          	<li><a href="#">Relaci&oacute;n de Aceptados</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'proceso-de-admision'}) }}">Proceso de Admisi&oacute;n</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'perfil-de-ingreso'}) }}">Perfil de Ingreso</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'perfil-de-egreso'}) }}">Perfil de Egreso</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'curso-propedeutico'}) }}">Curso Proped&eacute;utico</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'material-de-apoyo'}) }}">Material de Apoyo</a></li>
+	          	<li><a href="{{ urlFor('relacion-aceptados') }}">Relaci&oacute;n de Aceptados</a></li>
 	          </ul>
         	</div>
       	</div>
@@ -65,9 +65,9 @@
       	<div id="students" class="accordion-body collapse" style="height: 0px; ">
         	<div class="accordion-inner">
         	  <ul class="nav nav-list">
-	          	<li><a href="#">Estructura del Plan de Estudios</a></li>
+	          	<li><a href="{{ urlFor('plan-estudios') }}">Estructura del Plan de Estudios</a></li>
 				{#<li><a href="#">Horarios</a></li>#}
-	          	<li><a href="#">Requisitos para obtenci&oacute;n de grado</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug': 'requisitos-para-obtencion-de-grado'}) }}">Requisitos para obtenci&oacute;n de grado</a></li>
 	          </ul>
         	</div>
       	</div>
@@ -81,14 +81,14 @@
       	<div id="research" class="accordion-body collapse" style="height: 0px; ">
 	        <div class="accordion-inner">
 	          <ul class="nav nav-list">
-	          	<li><a href="#">L&iacute;neas de Investigaci&oacute;n</a></li>
-	          	<li><a href="#">Publicaciones</a></li>
-	          	<li><a href="#">Egresados</a></li>
-	          	<li><a href="#">Estad&iacute;sticas</a>
+	          	<li><a href="{{ urlFor('home',{'slug': 'lineas-de-investigacion'}) }}">L&iacute;neas de Investigaci&oacute;n</a></li>
+	          	<li><a href="{{ urlFor('publicaciones') }}">Publicaciones</a></li>
+	          	<li><a href="{{ urlFor('egresados') }}">Egresados</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug': 'estadisticas'}) }}">Estad&iacute;sticas</a>
 	          		<ul class="nav nav-list">
-	          			<li><a href="#">Matriculaci&oacute;n</a></li>
-	          			<li><a href="#">Productividad Acad&eacute;mica</a></li>
-	          			<li><a href="#">N&uacute;cleo B&aacute;sico Acad&eacute;mico</a></li>
+	          			<li><a href="{{ urlFor('matriculacion') }}">Matriculaci&oacute;n</a></li>
+	          			<li><a href="{{ urlFor('productividad-academica') }}">Productividad Acad&eacute;mica</a></li>
+	          			<li><a href="{{ urlFor('nucleo-academico') }}">N&uacute;cleo B&aacute;sico Acad&eacute;mico</a></li>
 	          		</ul>
 	          	</li>
 	          </ul>

@@ -21,12 +21,6 @@ $(function(){
         }
     });*/
     
-    $.fn.resetForm = function () {
-    	$(this).each(function(el) {
-    		this.reset();
-    	});
-    }
-	
 	var fullDate = new Date();
 	//convert month to 2 digits
 	var twoDigitMonth = ((fullDate.getMonth().length+1) === 1)? (fullDate.getMonth()+1) : '0' + (fullDate.getMonth()+1);
