@@ -541,7 +541,8 @@ $app->post('/uploader/',function() use($app){
 })->name('uploader');
 
 $app->get('/admin/estadisticas/', function() use($app){
-	
+	$data['user'] = isAllowed("Administrador", false);
+	$app->render('statistics.html',$data);
 })->name('admin-estadisticas');
 
 $app->get('/admin/secciones/', function() use($app){
