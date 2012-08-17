@@ -30,11 +30,11 @@
 							<td>{{ loop.index }}</td>
 							<td>{{ lenguaje.nombre}}</td>
 							<td>
-								<a href="#" data-toggle="modal" data-target="#editar-lenguaje{{ lenguaje.nombre }}-modal">Editar</a>
+								<a href="#" data-toggle="modal" data-target="#editar-lenguaje{{ lenguaje.id }}-modal">Editar</a>
 								<a href="{{ urlFor('borrar-lenguaje',{'id': lenguaje.id}) }}">Borrar</a>
 							</td>
 						</tr>
-<div class="modal hide fade" id="editar-lenguaje{{ lenguaje.nombre }}-modal">
+<div class="modal hide fade" id="editar-lenguaje{{ lenguaje.id }}-modal">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">&times;</button>
 		<h3>Editar Lenguaje</h3>

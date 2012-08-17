@@ -5,18 +5,18 @@
 	<div class="span12">
 		<div class="row">
 			<div class="span2">
-				<h2>Idiomas</h2>
+				<h2>Herramientas</h2>
 			</div>
 			<div class="span2">
 				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
-					<i class="icon-user icon-white"></i> Nuevo Idioma
+					<i class="icon-user icon-white"></i> Nueva Herramienta
 				</a>
 			</div>
 		</div>
 		<div class="row">
 			<div class="span11">
 				<div id="results" class="hide">
-				<table id="idioma-table" name="idioma-table" class="table table-bordered table-condensed table-striped">
+				<table id="herramienta-table" name="herramienta-table" class="table table-bordered table-condensed table-striped">
 					<thead>
 						<tr>
 							<th>#</th>
@@ -24,28 +24,28 @@
 						</tr>
 					</thead>
 					<tbody>
-					{% if idiomas is defined %}
-						{% for idioma in idiomas %}
+					{% if herramientas is defined %}
+						{% for herramienta in herramientas %}
 						<tr>
 							<td>{{ loop.index }}</td>
-							<td>{{ idioma.nombre}}</td>
+							<td>{{ herramienta.nombre}}</td>
 							<td>
-								<a href="#" data-toggle="modal" data-target="#editar-idioma{{ idioma.id }}-modal">Editar</a>
-								<a href="{{ urlFor('borrar-idioma',{'id': idioma.id}) }}">Borrar</a>
+								<a href="#" data-toggle="modal" data-target="#editar-herramienta{{ herramienta.id }}-modal">Editar</a>
+								<a href="{{ urlFor('borrar-herramienta',{'id': herramienta.id}) }}">Borrar</a>
 							</td>
 						</tr>
-						<div class="modal hide fade" id="editar-idioma{{ idioma.id }}-modal">
+						<div class="modal hide fade" id="editar-herramienta{{ herramienta.id }}-modal">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								<h3>Editar Idioma</h3>
+								<h3>Editar Herramienta</h3>
 							</div>
 							<div class="modal-body">
-								<form id="editIdiomaForm" name="editIdiomaForm" class="form-horizontal" action="{{ urlFor('actualiza-idioma-post',{'id' : idioma.id }) }}" method="post">
+								<form id="editherramientaForm" name="editherramientaForm" class="form-horizontal" action="{{ urlFor('actualiza-herramienta-post',{'id' : herramienta.id }) }}" method="post">
 
 									<div class="control-group">
 										<label class="control-label" for="nombre">Nombre</label>
 										<div class="controls">
-											<input type="nombre" class="input-xlarge" id="nombre-edit" name="nombre-edit" value="{{ idioma.nombre }}">
+											<input type="nombre" class="input-xlarge" id="nombre-edit" name="nombre-edit" value="{{ herramienta.nombre }}">
 										</div>
 									</div>
 
@@ -76,9 +76,9 @@
 <div class="modal hide fade" id="newUser">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">&times;</button>
-		<h3>Nuevo Idioma</h3>
+		<h3>Nueva Herramienta</h3>
 	</div>
-	<form id="newIdiomaForm" name="newIdiomaForm" action="{{ urlFor('nuevo-idioma-post') }}" method="post" class="form-horizontal">
+	<form id="newherramientaForm" name="newherramientaForm" action="{{ urlFor('nueva-herramienta-post') }}" method="post" class="form-horizontal">
 		<div class="modal-body">
 
 			<div class="control-group">
@@ -100,7 +100,7 @@ head.ready(function(){
 	$(function(){
 		//$('#waiting').addClass('hide').fadeOut(2500);
 		$('#results').removeClass('hide').fadeIn(1500);
-		var areaiTable = $('#areasinteres-table').dataTable({
+		var areaiTable = $('#herramienta-table').dataTable({
 			"oLanguage": {
 			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
 			},
@@ -110,7 +110,7 @@ head.ready(function(){
 			"sPaginationType": "bootstrap"
 		});
 		
-		$('#newAIForm').isHappy({
+		$('#newherramientaForm').isHappy({
 			fields: {
 				'#nombre':{
 					required: true,

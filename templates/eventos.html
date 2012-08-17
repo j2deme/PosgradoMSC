@@ -1,0 +1,365 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<script type="text/javascript" src="datepicker.js"></script>
+<script type="text/javascript" src="timepicker.js"></script>
+<div class="row">
+	
+	<div class="span12">
+		<div class="row">
+			<div class="span2">
+				<h2>Eventos</h2>
+			</div>
+			<div class="span2">
+				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
+					<i class="icon-user icon-white"></i> Nuevo Evento
+				</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span11">
+				<div id="results" class="hide">
+				<table id="evento-table" name="evento-table" class="table table-bordered table-condensed table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nombre</th>
+							<th>Autor</th>
+							<th>Descripción</th>
+							<th>Fecha de Inicio</th>
+							<th>Fecha Final</th>
+							<th>Prioridad</th>
+							<th>Fecha de Creación</th>
+							<th>Hora de Inicio</th>
+							<th>Hora Final</th>
+							<th>Validado</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% if eventos is defined %}
+						{% for evento in eventos %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ evento.nombre}}</td>
+							<td>{{ evento.autor}}</td>
+							<td>{{ evento.descripcion}}</td>
+							<td>{{ evento.fecha_inicio}}</td>
+							<td>{{ evento.fecha_fin}}</td>
+							<td>{{ evento.prioridad}}</td>
+							<td>{{ evento.fecha_creado}}</td>
+							<td>{{ evento.hora_inicio}}</td>
+							<td>{{ evento.hora_fin}}</td>
+							<td>{{ evento.validado}}</td>
+							<td>
+								<a href="#" data-toggle="modal" data-target="#editar-evento{{ evento.id }}-modal">Editar</a>
+								<a href="{{ urlFor('borrar-evento',{'id': evento.id}) }}">Borrar</a>
+							</td>
+						</tr>
+						<div class="modal hide fade" id="editar-evento{{ evento.id }}-modal">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h3>Editar Evento</h3>
+							</div>
+							<div class="modal-body">
+								<form id="editeventoForm" name="editeventoForm" class="form-horizontal" action="{{ urlFor('actualiza-evento-post',{'id' : evento.id }) }}" method="post">
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Nombre</label>
+										<div class="controls">
+											<input type="nombre" class="input-xlarge" id="nombre-edit" name="nombre-edit" value="{{ evento.nombre }}">
+										</div>
+									</div>
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Autor</label>
+										<div class="controls">
+											<input type="autor" class="input-xlarge" id="autor-edit" name="autor-edit" value="{{ evento.autor }}">
+										</div>
+									</div>
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Descripción</label>
+										<div class="controls">
+											<input type="descripcion" class="input-xlarge" id="descripcion-edit" name="descripcion-edit" value="{{ evento.descripcion }}">
+										</div>
+									</div>
+<!--
+									<div class="control-group">
+										<label class="control-label" for="nombre">Fecha de Inicio</label>
+										<div class="controls">
+											<input type="fecha_inicio" class="input-xlarge" id="fecha_inicio-edit" name="fecha_inicio-edit" value="{{ evento.fecha_inicio }}">
+										</div>
+									</div>
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Fecha Final</label>
+										<div class="controls">
+											<input type="fecha_fin" class="input-xlarge" id="fecha_fin-edit" name="fecha_fin-edit" value="{{ evento.fecha_fin }}">
+										</div>
+									</div>									
+-->
+									<div class="control-group">
+									<!-- <div class="span4"> -->
+										<label class="control-label" for="fecha_inicio">Fecha de Inicio</label>
+										<div class="controls">
+										  <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy"> 
+											<input id="fecha_inicio-edit" name="fecha_inicio-edit" class="span2 datepicker" size="16" type="text" value="{{ evento.fecha_inicio }}">
+											<span class="add-on"><i class="icon-calendar"></i></span>
+										  </div> 
+										</div> 
+									<!--  </div> -->
+									</div>									
+									
+									<div class="control-group">
+										<label class="control-label" for="fecha_fin">Fecha Final</label>
+										<div class="controls">
+										  <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+											<input id="fecha_fin-edit" name="fecha_fin-edit" class="span2 datepicker" size="16" type="text" value="{{ evento.fecha_fin }}">
+											<span class="add-on"><i class="icon-calendar"></i></span>
+										  </div>
+										</div> 
+									</div>
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Prioridad</label>
+										<div class="controls">
+											<input type="prioridad" class="input-xlarge" id="prioridad-edit" name="prioridad-edit" value="{{ evento.prioridad }}">
+										</div>
+									</div>
+<!--
+									<div class="control-group">
+										<label class="control-label" for="nombre">Fecha de Creación</label>
+										<div class="controls">
+											<input type="fecha_creado" class="input-xlarge" id="fecha_creado-edit" name="fecha_creado-edit" value="{{ evento.fecha_creado }}">
+										</div>
+									</div>
+-->
+									<div class="control-group">
+										<label class="control-label" for="fecha_creado">Fecha de Creación</label>
+										<div class="controls">
+										  <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+											<input id="fecha_creado-edit" name="fecha_creado-edit" class="span2 datepicker" size="16" type="text" value="{{ evento.fecha_creado }}">
+											<span class="add-on"><i class="icon-calendar"></i></span>
+										  </div>
+										</div> 
+									</div>	
+									
+									<div class="control-group">
+										<label class="control-label" for="nombre">Hora de Inicio</label>
+										<div class="controls">
+											<input type="hora_inicio" class="input-xlarge" id="hora_inicio-edit" name="hora_inicio-edit" value="{{ evento.hora_inicio }}">
+										</div>
+									</div>
+									
+									<div class="control-group">
+										<label class="control-label" for="nombre">Hora Final</label>
+										<div class="controls">
+											<input type="hora_fin" class="input-xlarge" id="hora_fin-edit" name="hora_fin-edit" value="{{ evento.hora_fin }}">
+										</div>
+									</div>
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">validado</label>
+										<div class="controls">
+											<input type="validado" class="input-xlarge" id="validado-edit" name="validado-edit" value="{{ evento.validado }}">
+										</div>
+									</div>
+
+									</div>
+									<div class="modal-footer">
+										<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+										<button type="submit" class="btn btn-primary">Guardar Datos</button>
+									</div>
+								</form>
+							</div>
+					{% endfor %}
+					{% else %}
+							<tr>
+								<td> </td>
+								<td>No se encontraron resultados</td>
+								<td> </td>
+								<td> </td>
+							</tr>
+					{% endif %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal hide fade" id="newUser">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Nuevo Evento</h3>
+	</div>
+	<form id="neweventoForm" name="neweventoForm" action="{{ urlFor('nuevo-evento-post') }}" method="post" class="form-horizontal">
+		<div class="modal-body">
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Nombre</label>
+				<div class="controls">
+					<input type="nombre" class="input-xlarge" id="nombre" name="nombre" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Autor</label>
+				<div class="controls">
+					<input type="autor" class="input-xlarge" id="autor" name="autor" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Descripción</label>
+				<div class="controls">
+					<input type="descripcion" class="input-xlarge" id="descripcion" name="descripcion" value="">
+				</div>
+			</div>
+<!--
+			<div class="control-group">
+				<label class="control-label" for="nombre">Fecha de Inicio</label>
+				<div class="controls">
+					<input type="fecha_inicio" class="input-xlarge" id="fecha_inicio" name="fecha_inicio" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Fecha Final</label>
+				<div class="controls">
+					<input type="fecha_fin" class="input-xlarge" id="fecha_fin" name="fecha_fin" value="">
+				</div>
+			</div>			
+-->
+			<div class="control-group">
+			<!-- <div class="span4"> -->
+				<label class="control-label" for="fecha_inicio">Fecha de Inicio</label>
+				<div class="controls">
+				  <div class="input-append date" id="dp3" data-date="19-07-2012" data-date-format="dd-mm-yyyy"> 
+					<input class="span2 datepicker" size="16" id="fecha_inicio" name="fecha_inicio"  type="text" value="{{ 'now'|date('d/m/Y') }}">
+					<span class="add-on"><i class="icon-calendar"></i></span>
+				  </div> 
+				</div> 
+			<!--  </div> -->
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="fecha_fin">Fecha Final</label>
+				<div class="controls">
+					<div class="input-append date" id="dp3" data-date="19-07-2012" data-date-format="dd-mm-yyyy">
+						<input id="fecha_fin" name="fecha_fin" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
+						<span class="add-on"><i class="icon-calendar"></i></span>
+					</div> 
+				</div> 
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="nombre">Prioridad</label>
+				<div class="controls">
+					<input type="prioridad" class="input-xlarge" id="prioridad" name="prioridad" value="">
+				</div>
+			</div>
+<!--
+			<div class="control-group">
+				<label class="control-label" for="nombre">Fecha de Creación</label>
+				<div class="controls">
+					<input type="fecha_creado" class="input-xlarge" id="fecha_creado" name="fecha_creado" value="">
+				</div>
+			</div>
+-->
+			<div class="control-group">
+				<label class="control-label" for="fecha_creado">Fecha de Creación</label>
+				<div class="controls">
+				  <div class="input-append date" id="dp3" data-date="19-07-2012" data-date-format="dd-mm-yyyy">
+					<input id="fecha_creado" name="fecha_creado" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
+					<span class="add-on"><i class="icon-calendar"></i></span>
+				  </div>
+				</div> 
+			</div>			
+<!--			
+			<div class="control-group">
+				<label class="control-label" for="nombre">Hora de Inicio</label>
+				<div class="controls">
+					<input type="hora_inicio" class="input-xlarge" id="hora_inicio" name="hora_inicio" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Hora Final</label>
+				<div class="controls">
+					<input type="hora_fin" class="input-xlarge" id="hora_fin" name="hora_fin" value="">
+				</div>
+			</div>			
+-->
+<!--
+			<div class="control-group">
+				<label class="control-label" for="hora_inicio">Hora de Inicio</label>
+				<div class="controls">
+					<input type="text" data-provide="timepicker" minuteStep="05" showMeridian="false" id="hora_inicio" name="hora_inicio" value="">
+					<span class="add-on"><i class="icon-clock"></i></span>
+				</div> 
+			</div>	
+-->
+			<div class="control-group">
+				<label class="control-label" for="hora_inicio">Hora de Inicio</label>
+				<div class="controls">
+				  <!-- <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy"> -->
+					<input id="hora_inicio" name="hora_inicio" class="span2 timepicker" size="16" type="text" value="{{ 'time' }}">
+					<span class="add-on"><i class="icon-calendar"></i></span>
+				  <!-- </div> -->
+				</div> 
+			</div>			
+
+			
+			<div class="control-group">
+				<label class="control-label" for="hora_fin">Hora Final</label>
+				<div class="controls">
+				  <!-- <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy"> -->
+					<input type="text" id="hora_fin" name="hora_fin" class="span2 timepicker" value="{{ 'time'}}">
+					<span class="add-on"><i class="icon-calendar"></i></span>
+				   <!-- </div> -->
+				</div> 
+			</div>	
+			
+			<div class="control-group">
+				<label class="control-label" for="nombre">Validado</label>
+				<div class="controls">
+					<input type="validado" class="input-xlarge" id="validado" name="validado" value="">
+				</div>
+			</div>
+
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+			<button type="submit" class="btn btn-primary">Guardar Datos</button>
+		</div>
+	</form>
+</div>
+
+<script>
+head.ready(function(){
+	$(function(){
+		//$('#waiting').addClass('hide').fadeOut(2500);
+		$('#results').removeClass('hide').fadeIn(1500);
+		var areaiTable = $('#areasinteres-table').dataTable({
+			"oLanguage": {
+			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			},
+			"fnDrawCallback": function () {
+			},
+			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+			"sPaginationType": "bootstrap"
+		});
+		
+		$('#newAIForm').isHappy({
+			fields: {
+				'#nombre':{
+					required: true,
+					message: 'nombre válido necesario',
+					test: happy.nombre
+				},
+			}
+		});
+	});
+});
+</script>
+{% endblock %}
