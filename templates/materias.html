@@ -9,7 +9,7 @@
 			</div>
 			<div class="span2">
 				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
-					<i class="icon-user icon-white"></i> Nueva Materia
+					<i class="icon-sitemap"></i> Nueva Materia
 				</a>
 			</div>
 		</div>
@@ -23,13 +23,14 @@
 							<th>Nombre</th>
 							<th>Semestre</th>
 							<th>Línea de Investigación</th>
-							<th>DOC</th>
+{#							<th>DOC</th>
 							<th>TIS</th>
 							<th>TPS</th>
 							<th>Horas</th>
 							<th>Créditos</th>
-							<th>PDF</th>
+							<th>PDF</th>#}
 							<th>Tipo</th>
+							<th>Opciones</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -48,12 +49,12 @@
 								{% endfor %}
 							{% endif %}
 							</td>
-							<td>{{ materia.doc}}</td>
+{#							<td>{{ materia.doc}}</td>
 							<td>{{ materia.tis}}</td>
 							<td>{{ materia.tps}}</td>
 							<td>{{ materia.horas_totales}}</td>
 							<td>{{ materia.creditos}}</td>
-							<td>{{ materia.link_pdf}}</td>
+							<td>{{ materia.link_pdf}}</td>#}
 							<td>{{ materia.tipo}}</td>
 							<td>
 								<a href="#" data-toggle="modal" data-target="#editar-materia{{ materia.id }}-modal">Editar</a>
@@ -270,16 +271,17 @@
 <script>
 head.ready(function(){
 	$(function(){
-		//$('#waiting').addClass('hide').fadeOut(2500);
-		$('#results').removeClass('hide').fadeIn(1500);
-		var areaiTable = $('#areasinteres-table').dataTable({
+		var areaiTable = $('#materia-table').dataTable({
 			"oLanguage": {
 			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
 			},
 			"fnDrawCallback": function () {
 			},
 			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
-			"sPaginationType": "bootstrap"
+			"sPaginationType": "bootstrap",
+			"fnInitComplete": function(oSettings, json) {
+      			$('#results').fadeIn(500);
+    		}
 		});
 		
 		$('#newAIForm').isHappy({

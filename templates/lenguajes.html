@@ -9,7 +9,7 @@
 			</div>
 			<div class="span2">
 				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
-					<i class="icon-user icon-white"></i> Nuevo Lenguaje
+					<i class="icon-web-intents"></i> Nuevo Lenguaje
 				</a>
 			</div>
 		</div>
@@ -21,6 +21,7 @@
 						<tr>
 							<th>#</th>
 							<th>Nombre</th>
+							<th>Opciones</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -62,7 +63,6 @@
 								<td> </td>
 								<td>No se encontraron resultados</td>
 								<td> </td>
-								<td> </td>
 							</tr>
 					{% endif %}
 					</tbody>
@@ -98,16 +98,17 @@
 <script>
 head.ready(function(){
 	$(function(){
-		//$('#waiting').addClass('hide').fadeOut(2500);
-		$('#results').removeClass('hide').fadeIn(1500);
-		var areaiTable = $('#areasinteres-table').dataTable({
+		var areaiTable = $('#lenguaje-table').dataTable({
 			"oLanguage": {
 			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
 			},
 			"fnDrawCallback": function () {
 			},
 			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
-			"sPaginationType": "bootstrap"
+			"sPaginationType": "bootstrap",
+			"fnInitComplete": function(oSettings, json) {
+      			$('#results').fadeIn(500);
+    		}
 		});
 		
 		$('#newAIForm').isHappy({

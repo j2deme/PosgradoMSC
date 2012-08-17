@@ -16,7 +16,7 @@
 		<div class="row">
 			<div class="span11">
 				<div id="results" class="hide">
-				<table id="formaent-table" name="formaent-table" class="table table-bordered table-condensed table-striped">
+				<table id="formasent-table" name="formasent-table" class="table table-bordered table-condensed table-striped">
 					<thead>
 						<tr>
 							<th>#</th>
@@ -98,16 +98,17 @@
 <script>
 head.ready(function(){
 	$(function(){
-		//$('#waiting').addClass('hide').fadeOut(2500);
-		$('#results').removeClass('hide').fadeIn(1500);
-		var areaiTable = $('#formaent-table').dataTable({
+		var areaiTable = $('#formasent-table').dataTable({
 			"oLanguage": {
 			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
 			},
 			"fnDrawCallback": function () {
 			},
 			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
-			"sPaginationType": "bootstrap"
+			"sPaginationType": "bootstrap",
+			"fnInitComplete": function(oSettings, json) {
+      			$('#results').fadeIn(500);
+    		}
 		});
 		
 		$('#newFormaentForm').isHappy({

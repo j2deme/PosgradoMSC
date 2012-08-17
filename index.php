@@ -1002,7 +1002,7 @@ $app->post('/nuevo-datos-docente/',function() use($app){
 /* =======================
  * ====== CATALOGOS ======
  * =======================*/ 
-$app->get('/catalogos/areas-interes/', function () use($app) {
+$app->get('/admin/catalogos/areas-interes/', function () use($app) {
 	$data['breadcrumb'] = array(
 		array("name" => "Panel de Control","alias" => "admin"),
 		array("name" => "Catálogos", "alias" => "admin-catalogos"),
@@ -1118,7 +1118,7 @@ $app->get('/borrar-area-interes/:id/', function($id) use($app){
 	}
 })->name('borrar-ainteres');
 
-$app->get('/catalogos/idiomas/', function () use($app) {
+$app->get('/admin/catalogos/idiomas/', function () use($app) {
 	$data['breadcrumb'] = array(
 		array("name" => "Panel de Control","alias" => "admin"),
 		array("name" => "Catálogos", "alias" => "admin-catalogos"),
@@ -1232,7 +1232,7 @@ $app->get('/borrar-idioma/:id/', function($id) use($app){
 	}
 })->name('borrar-idioma');
 
-$app->get('/catalogos/lenguajes/', function () use($app) {
+$app->get('/admin/catalogos/lenguajes/', function () use($app) {
 	$data['breadcrumb'] = array(
 		array("name" => "Panel de Control","alias" => "admin"),
 		array("name" => "Catálogos", "alias" => "admin-catalogos"),
@@ -1346,7 +1346,7 @@ $app->get('/borrar-lenguaje/:id/', function($id) use($app){
 	}
 })->name('borrar-lenguaje');
 
-$app->get('/catalogos/plataformas/', function () use($app) {
+$app->get('/admin/catalogos/plataformas/', function () use($app) {
 	$data['breadcrumb'] = array(
 		array("name" => "Panel de Control","alias" => "admin"),
 		array("name" => "Catálogos", "alias" => "admin-catalogos"),
@@ -1463,7 +1463,12 @@ $app->get('/borrar-plataforma/:id/', function($id) use($app){
 //*******
 // Formas enterado
 //******
-$app->get('/catalogos/formasenterado/', function () use($app) {
+$app->get('/admin/catalogos/formas-enterado/', function () use($app) {
+	$data['breadcrumb'] = array(
+		array("name" => "Panel de Control","alias" => "admin"),
+		array("name" => "Catálogos", "alias" => "admin-catalogos"),
+		array("name" => "Formas de Enterado", "alias" => "CatFormasEnterado")
+	);
 	$data['forma_enterado'] = FormaEnterado::all();
     $app->render('formas_enterado.html', $data);
 })->name('CatFormasEnterado');
@@ -1545,7 +1550,6 @@ $app->post('/actualiza-formasent/:id/', function($id) use($app){
 })->name('actualiza-formaent-post');
 
 $app->get('/borrar-formaent/:id/', function($id) use($app){
-
 		$formaent = FormaEnterado::find($id);		
 		$formaent->delete();
 		$flash = array(
@@ -1557,15 +1561,18 @@ $app->get('/borrar-formaent/:id/', function($id) use($app){
 		$app -> flash("flash", $flash);
 		$app->flashKeep();
 		$app->redirect($app->urlFor('CatFormasEnterado'));
-
-
 })->name('borrar-formaent');
 
 
 //*******
 // Herramientas
 //******
-$app->get('/catalogos/herramientas/', function () use($app) {
+$app->get('/admin/catalogos/herramientas/', function () use($app) {
+	$data['breadcrumb'] = array(
+		array("name" => "Panel de Control","alias" => "admin"),
+		array("name" => "Catálogos", "alias" => "admin-catalogos"),
+		array("name" => "Herramientas", "alias" => "CatHerramienta")
+	);
 	$data['herramientas'] = Herramienta::all();
     $app->render('herramientas.html', $data);
 })->name('CatHerramienta');
@@ -1679,7 +1686,12 @@ $app->get('/borrar-herramienta/:id/', function($id) use($app){
 //**** LINEAS DE INVESTIGACION
 //*************************
 
-$app->get('/catalogos/lineasinvestigacion/', function () use($app) {
+$app->get('/admin/catalogos/lineas-investigacion/', function () use($app) {
+	$data['breadcrumb'] = array(
+		array("name" => "Panel de Control","alias" => "admin"),
+		array("name" => "Catálogos", "alias" => "admin-catalogos"),
+		array("name" => "Líneas de Investigación", "alias" => "CatLineaInv")
+	);
 	$data['lineas_investigacion'] = LineaInvestigacion::all();
     $app->render('lineas_investigacion.html', $data);
 })->name('CatLineaInv');
@@ -1701,7 +1713,7 @@ $app->post('/nueva-lineainv/', function() use($app){
 		$lineainv->save();
 		$flash = array(
 			"title" => "OK",
-			"msg" => "Línea de Investigación se agregó satisfactoriamente .",
+			"msg" => "La línea de investigación se agregó satisfactoriamente.",
 			"type" => "success",
 			"fade" => 1
 		);
@@ -1739,7 +1751,7 @@ $app->post('/actualiza-lineainv/:id/', function($id) use($app){
 		$lineainv -> save();
 		$flash = array(
 			"title" => "OK",
-			"msg" => "Datos de la Línea de Investigación han sido actualizados correctamente.",
+			"msg" => "Los datos de la línea de investigación han sido actualizados correctamente.",
 			"type" => "info",
 			"fade" => 1
 		);
@@ -1768,7 +1780,7 @@ $app->get('/borrar-lineainv/:id/', function($id) use($app){
 		$lineainv->delete();
 		$flash = array(
 			"title" => "OK",
-			"msg" => "La Línea de Investigación ha sido borrada correctamente.",
+			"msg" => "La línea de investigación ha sido borrada correctamente.",
 			"type" => "info",
 			"fade" => 1
 		);
@@ -1779,7 +1791,7 @@ $app->get('/borrar-lineainv/:id/', function($id) use($app){
 	else {
 		$flash = array(
 			"title" => "OK",
-			"msg" => "La Línea de Investigación esta relacionada, no se permite la eliminación.",
+			"msg" => "La línea de investigación esta relacionada, no se permite la eliminación.",
 			"type" => "info",
 			"fade" => 1
 		);
@@ -1793,7 +1805,12 @@ $app->get('/borrar-lineainv/:id/', function($id) use($app){
 //*******
 // Instituciones
 //******
-$app->get('/catalogos/instituciones/', function () use($app) {
+$app->get('/admin/catalogos/instituciones/', function () use($app) {
+	$data['breadcrumb'] = array(
+		array("name" => "Panel de Control","alias" => "admin"),
+		array("name" => "Catálogos", "alias" => "admin-catalogos"),
+		array("name" => "Instituciones", "alias" => "CatInstitucion")
+	);
 	$data['instituciones'] = Institucion::all();
     $app->render('instituciones.html', $data);
 })->name('CatInstitucion');
@@ -1816,7 +1833,7 @@ $app->post('/nueva-institucion/', function() use($app){
 		$institucion->save();
 		$flash = array(
 			"title" => "OK",
-			"msg" => "La Institución se agregó satisfactoriamente .",
+			"msg" => "La institución se agregó satisfactoriamente .",
 			"type" => "success",
 			"fade" => 1
 		);
@@ -1855,7 +1872,7 @@ $app->post('/actualiza-institucion/:id/', function($id) use($app){
 		$institucion -> save();
 		$flash = array(
 			"title" => "OK",
-			"msg" => "Datos de la Institución han sido actualizados correctamente.",
+			"msg" => "Los datos de la institución han sido actualizados correctamente.",
 			"type" => "info",
 			"fade" => 1
 		);
@@ -1884,7 +1901,7 @@ $app->get('/borrar-institucion/:id/', function($id) use($app){
 		$herramienta->delete();
 		$flash = array(
 			"title" => "OK",
-			"msg" => "La Institución ha sido borrada correctamente.",
+			"msg" => "La institución ha sido borrada correctamente.",
 			"type" => "info",
 			"fade" => 1
 		);
@@ -1895,7 +1912,7 @@ $app->get('/borrar-institucion/:id/', function($id) use($app){
 	else {
 		$flash = array(
 			"title" => "OK",
-			"msg" => "La Institución esta relacionado, no se permite la eliminación.",
+			"msg" => "La institución esta relacionada, no se permite la eliminación.",
 			"type" => "info",
 			"fade" => 1
 		);
@@ -1908,7 +1925,7 @@ $app->get('/borrar-institucion/:id/', function($id) use($app){
 //*******
 // Roles
 //******
-$app->get('/catalogos/roles/', function () use($app) {
+$app->get('/admin/roles/', function () use($app) {
 	$data['roles'] = Rol::all();
     $app->render('roles.html', $data);
 })->name('CatRol');
@@ -2178,7 +2195,12 @@ $app->get('/borrar-evento/:id/', function($id) use($app){
 //*******
 // MATERIAS
 //******
-$app->get('/catalogos/materias/', function () use($app) {
+$app->get('/admin/catalogos/materias/', function () use($app) {
+	$data['breadcrumb'] = array(
+		array("name" => "Panel de Control","alias" => "admin"),
+		array("name" => "Catálogos", "alias" => "admin-catalogos"),
+		array("name" => "Areas de Interes", "alias" => "CatMateria")
+	);
 	$data['materias'] = Materia::all();
 	$data['lineas_investigacion'] = LineaInvestigacion::find('all', array('order' => 'nombre asc'));
     $app->render('materias.html', $data);
@@ -2328,6 +2350,236 @@ $app->get('/borrar-materia/:id/', function($id) use($app){
 	}
  */
 })->name('borrar-materia');
+
+//*******
+// Carreras
+//******
+$app->get('/catalogos/carreras/', function () use($app) {
+	$data['carreras'] = Carrera::all();
+    $app->render('carreras.html', $data);
+})->name('CatCarrera');
+
+
+$app->post('/nueva-carrera/', function() use($app){
+	$validator = new GUMP();
+	$_POST = $validator->sanitize($_POST);
+	$rules = array(
+		'nombre'    => 'required|max_len,50|min_len,1',
+	);
+	$filters = array(
+		'nombre' 	  => 'trim|sanitize_string',
+	);
+	$post = $_POST = $validator->filter($_POST, $filters);
+	$validated = $validator->validate($_POST, $rules);
+	if($validated === TRUE) {
+		$carrera = new Carrera();
+		$carrera->nombre = $_POST['nombre'];
+		$carrera->save();
+		$flash = array(
+			"title" => "OK",
+			"msg" => "La Carrera se agregó satisfactoriamente .",
+			"type" => "success",
+			"fade" => 1
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatCarrera'));
+	} else {
+		$msgs = humanize_gump($validated);
+		$flash = array(
+			"title" => "ERROR",
+			"msg" => $msgs,
+			"type" => "error",
+			"fade" => 0
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatCarrera'));
+	}
+})->name('nueva-carrera-post');
+
+$app->post('/actualiza-carrera/:id/', function($id) use($app){
+	$validator = new GUMP();
+	$_POST = $validator->sanitize($_POST);
+	$rules = array(
+		'nombre-edit'    => 'required|max_len,50|min_len,1',
+	);
+	$filters = array(
+		'nombre-edit' 	  => 'trim|sanitize_string',
+	);
+	$post = $_POST = $validator->filter($_POST, $filters);
+	$validated = $validator->validate($_POST, $rules);
+	if($validated === TRUE) {
+		$carrera = Carrera::find($id);
+		$carrera -> nombre = $_POST['nombre-edit'];
+		$carrera -> save();
+		$flash = array(
+			"title" => "OK",
+			"msg" => "Datos de la Carrera han sido actualizados correctamente.",
+			"type" => "info",
+			"fade" => 1
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatCarrera'));		
+	} else {
+		$msgs = humanize_gump($validated);
+		$flash = array(
+			"title" => "ERROR",
+			"msg" => $msgs,
+			"type" => "error",
+			"fade" => 0
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatCarrera'));
+	}
+})->name('actualiza-carrera-post');
+
+//
+$app->get('/borrar-carrera/:id/', function($id) use($app){
+//	$relaciones = UsuariosHerramientas::find_all_by_herramienta_id($id); 
+//	$cant_relaciones = count($relaciones);
+//	if ($cant_relaciones == 0){		
+		$carrera = Carrera::find($id);
+		$carrera->delete();
+		$flash = array(
+			"title" => "OK",
+			"msg" => "La Carrera ha sido borrada correctamente.",
+			"type" => "info",
+			"fade" => 1
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatCarrera'));
+//	}
+//	else {
+//		$flash = array(
+//			"title" => "OK",
+//			"msg" => "La Carrera esta relacionado, no se permite la eliminación.",
+//			"type" => "info",
+//			"fade" => 1
+//		);
+//		$app -> flash("flash", $flash);
+//		$app->flashKeep();
+//		$app->redirect($app->urlFor('CatHerramienta'));
+//	}
+})->name('borrar-carrera');
+
+
+//*******
+// Formas de Titulacion
+//******
+$app->get('/catalogos/formastitulacion/', function () use($app) {
+	$data['formas_titulacion'] = Formas_titulacion::all();
+    $app->render('formas_titulacion.html', $data);
+})->name('CatFormaTitulacion');
+
+$app->post('/nueva-titulacion/', function() use($app){
+	$validator = new GUMP();
+	$_POST = $validator->sanitize($_POST);
+	$rules = array(
+		'nombre'    => 'required|max_len,50|min_len,1',
+	);
+	$filters = array(
+		'nombre' 	  => 'trim|sanitize_string',
+	);
+	$post = $_POST = $validator->filter($_POST, $filters);
+	$validated = $validator->validate($_POST, $rules);
+	if($validated === TRUE) {
+		$titulacion = new Formas_titulacion();
+		$titulacion->nombre = $_POST['nombre'];
+		$titulacion->save();
+		$flash = array(
+			"title" => "OK",
+			"msg" => "La Forma de Titulación se agregó satisfactoriamente .",
+			"type" => "success",
+			"fade" => 1
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatFormaTitulacion'));
+	} else {
+		$msgs = humanize_gump($validated);
+		$flash = array(
+			"title" => "ERROR",
+			"msg" => $msgs,
+			"type" => "error",
+			"fade" => 0
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatFormaTitulacion'));
+	}
+})->name('nueva-titulacion-post');
+
+$app->post('/actualiza-titulacion/:id/', function($id) use($app){
+	$validator = new GUMP();
+	$_POST = $validator->sanitize($_POST);
+	$rules = array(
+		'nombre-edit'    => 'required|max_len,50|min_len,1',
+	);
+	$filters = array(
+		'nombre-edit' 	  => 'trim|sanitize_string',
+	);
+	$post = $_POST = $validator->filter($_POST, $filters);
+	$validated = $validator->validate($_POST, $rules);
+	if($validated === TRUE) {
+		$titulacion = Formas_titulacion::find($id);
+		$titulacion -> nombre = $_POST['nombre-edit'];
+		$titulacion -> save();
+		$flash = array(
+			"title" => "OK",
+			"msg" => "Datos de la Forma de Titulación han sido actualizados correctamente.",
+			"type" => "info",
+			"fade" => 1
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatFormaTitulacion'));		
+	} else {
+		$msgs = humanize_gump($validated);
+		$flash = array(
+			"title" => "ERROR",
+			"msg" => $msgs,
+			"type" => "error",
+			"fade" => 0
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatFormaTitulacion'));
+	}
+})->name('actualiza-titulacion-post');
+
+//
+$app->get('/borrar-titulacion/:id/', function($id) use($app){
+//	$relaciones = UsuariosHerramientas::find_all_by_herramienta_id($id); 
+//	$cant_relaciones = count($relaciones);
+//	if ($cant_relaciones == 0){		
+		$carrera = Formas_titulacion::find($id);
+		$carrera->delete();
+		$flash = array(
+			"title" => "OK",
+			"msg" => "La Forma de Titulación ha sido borrada correctamente.",
+			"type" => "info",
+			"fade" => 1
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatCarrera'));
+//	}
+//	else {
+//		$flash = array(
+//			"title" => "OK",
+//			"msg" => "La Carrera esta relacionado, no se permite la eliminación.",
+//			"type" => "info",
+//			"fade" => 1
+//		);
+//		$app -> flash("flash", $flash);
+//		$app->flashKeep();
+//		$app->redirect($app->urlFor('CatHerramienta'));
+//	}
+})->name('borrar-titulacion');
 
 /* =======================
  * ====== PRINCIPAL ======

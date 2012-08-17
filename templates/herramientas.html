@@ -98,8 +98,6 @@
 <script>
 head.ready(function(){
 	$(function(){
-		//$('#waiting').addClass('hide').fadeOut(2500);
-		$('#results').removeClass('hide').fadeIn(1500);
 		var areaiTable = $('#herramienta-table').dataTable({
 			"oLanguage": {
 			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
@@ -107,7 +105,10 @@ head.ready(function(){
 			"fnDrawCallback": function () {
 			},
 			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
-			"sPaginationType": "bootstrap"
+			"sPaginationType": "bootstrap",
+			"fnInitComplete": function(oSettings, json) {
+      			$('#results').fadeIn(500);
+    		}
 		});
 		
 		$('#newherramientaForm').isHappy({

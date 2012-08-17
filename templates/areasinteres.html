@@ -4,19 +4,19 @@
 	
 	<div class="span12">
 		<div class="row">
-			<div class="span2">
+			<div class="span3">
 				<h2>Areas de Inter&eacutes</h2>
 			</div>
-			<div class="span2">
+			<div class="span3">
 				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
-					<i class="icon-user icon-white"></i> Nueva Area de Inter&eacutes
+					<i class="icon-plus-sign"> </i> Agregar Area de Inter&eacute;s
 				</a>
 			</div>
 		</div>
 		<div class="row">
 			<div class="span11">
 				<div id="results" class="hide">
-				<table id="users-table" name="user-table" class="table table-bordered table-condensed table-striped">
+				<table id="areas-table" name="areas-table" class="table table-bordered table-condensed table-striped">
 					<thead>
 						<tr>
 							<th>#</th>
@@ -98,16 +98,17 @@
 <script>
 head.ready(function(){
 	$(function(){
-		//$('#waiting').addClass('hide').fadeOut(2500);
-		$('#results').removeClass('hide').fadeIn(1500);
-		var areaiTable = $('#areasinteres-table').dataTable({
+		var areaiTable = $('#areas-table').dataTable({
 			"oLanguage": {
 			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
 			},
 			"fnDrawCallback": function () {
 			},
 			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
-			"sPaginationType": "bootstrap"
+			"sPaginationType": "bootstrap",
+			"fnInitComplete": function(oSettings, json) {
+      			$('#results').fadeIn(500);
+    		}
 		});
 		
 		$('#newAIForm').isHappy({
