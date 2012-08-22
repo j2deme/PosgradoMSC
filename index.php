@@ -12,6 +12,9 @@ require __DIR__.'/vendor/elFinder/connector.php';
 require __DIR__.'/vendor/Toolbox.php';
 require __DIR__.'/vendor/DirectoryLister.php';
 require __DIR__.'/vendor/upload.class.php';
+require __DIR__."/vendor/pChart/class/pData.class.php";
+require __DIR__."/vendor/pChart/class/pDraw.class.php";
+require __DIR__."/vendor/pChart/class/pImage.class.php";
 
 Ladybug\Autoloader::register();
 
@@ -540,10 +543,16 @@ $app->post('/uploader/',function() use($app){
 	}
 })->name('uploader');
 
-$app->get('/admin/estadisticas/', function() use($app){
+#XXX Graficas
+require 'graphs.php';
+/*$app->get('/admin/estadisticas/', function() use($app){
+	$data['breadcrumb'] = array(
+		array("name" => "Panel de Control","alias" => "admin"),
+		array("name" => "Estadísticas", "alias" => "admin-estadisticas")
+	);
 	$data['user'] = isAllowed("Administrador", false);
 	$app->render('statistics.html',$data);
-})->name('admin-estadisticas');
+})->name('admin-estadisticas');*/
 
 $app->get('/admin/secciones/', function() use($app){
 	$data['breadcrumb'] = array(

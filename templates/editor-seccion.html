@@ -93,11 +93,9 @@ head.ready("app", function(){
 		"{{ urlFor('home') }}js/jquery-file-upload/load-image.min.js",
 		"{{ urlFor('home') }}js/jquery-file-upload/canvas-to-blob.min.js",
 		"{{ urlFor('home') }}js/jquery-file-upload/jquery.iframe-transport.js",
-		"{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload.js"
+		"{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload.js",
 		{underscore: "{{ urlFor('home') }}js/underscore-min.js"},
-{#		{elastic: "{{ urlFor('home') }}js/jquery.elastic.js"},
-		{mentions: "{{ urlFor('home') }}js/jquery.mentionsInput.js"}
-#}
+		{zoomooz: "{{ urlFor('home') }}js/jquery.zoomooz.min.js"}
 	);
 	$(function(){
 		$('.wysihtml5').wysihtml5();

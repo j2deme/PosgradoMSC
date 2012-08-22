@@ -9,16 +9,28 @@
 		</div>
 		<div class="row">
 			<div class="span11">
-				<div id="results" class="hide"> </div>
+				<div id="results" class="hide">
+					<div class="zoom">
+						<div class="small">
+							<img src="{{ urlFor('grafica-matriculacion') }}" alt=""/>
+  						</div>
+  						<div class="large">
+{#							<img src="{{ urlFor('grafica-matriculacion',{'x': '2'}) }}" alt=""/>#}
+  						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
 <script>
-head.ready(function(){
+head.ready("app", function(){
+	head.js(
+//		{anythingzoomer: "{{ urlFor('home') }}js/jquery.anythingzoomer.min.js"}
+	);
 	$(function(){
-		$('#results').fadeIn(1500);	
+		$('#results').fadeIn(1500);
 	});
 });
 </script>
