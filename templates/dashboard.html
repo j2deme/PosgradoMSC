@@ -1,17 +1,18 @@
 {% extends 'admin-base.html' %}
 {% block content %}
+{% set fontSize = 40 %}
 <div class="row">
 	<div class="offset3 span2">
 		<a href="{{ urlFor('admin-usuarios') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-group" style="font-size: 50px;"> </i>
+			<i class="icon-group" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Gestor de Usuarios</strong>
 		</a>
 	</div>
 	<div class="span2">
 		<a href="{{ urlFor('admin-roles') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-check" style="font-size: 50px;"> </i>
+			<i class="icon-check" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Gestor de Roles</strong>
 		</a>
 		
@@ -19,7 +20,7 @@
 	<div class="span2">
 		<a href="{{ urlFor('admin-aspirantes') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-cc-by" style="font-size: 50px;"> </i>
+			<i class="icon-cc-by" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Gestor de Aspirantes</strong>
 		</a>
 	</div>
@@ -29,21 +30,21 @@
 	<div class="offset3 span2">
 		<a href="#" class="btn btn-primary square">
 			<br />
-			<i class="icon-plus-sign" style="font-size: 50px;"> </i>
+			<i class="icon-plus-sign" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Nuevo Evento</strong>
 		</a>
 	</div>
 	<div class="span2">
 		<a href="#" class="btn btn-primary square">
 			<br />
-			<i class="icon-calendar" style="font-size: 50px;"> </i>
+			<i class="icon-calendar" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Gestor de Eventos</strong>
 		</a>
 	</div>
 	<div class="span2">
 		<a href="{{ urlFor('admin-catalogos') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-list-alt" style="font-size: 50px;"> </i>
+			<i class="icon-list-alt" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Gestor de Catálogos</strong>
 		</a>
 	</div>
@@ -53,21 +54,21 @@
 	<div class="offset3 span2">
 		<a href="{{ urlFor('admin-secciones') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-sitemap" style="font-size: 50px;"> </i>
+			<i class="icon-sitemap" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Gestor de Secciones</strong>
 		</a>
 	</div>
 	<div class="span2">
 		<a href="{{ urlFor('admin-noticias') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-comments-alt" style="font-size: 50px;"> </i>
+			<i class="icon-comments-alt" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Gestor de Noticias</strong>
 		</a>
 	</div>
 	<div class="span2">
 		<a href="{{ urlFor('admin-archivos') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-hdd" style="font-size: 50px;"> </i>
+			<i class="icon-hdd" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Gestor de Archivos</strong>
 		</a>
 	</div>
@@ -77,21 +78,21 @@
 	<div class="offset3 span2">
 		<a href="{{ urlFor('home') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-sign-blank" style="font-size: 50px;"> </i>
+			<i class="icon-sign-blank" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Vacío</strong>
 		</a>
 	</div>
 	<div class="span2">
 		<a href="{{ urlFor('admin-estadisticas') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-bar-chart" style="font-size: 50px;"> </i>
+			<i class="icon-bar-chart" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Estadísticas</strong>
 		</a>
 	</div>
 	<div class="span2">
 		<a href="{{ urlFor('home') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-sign-blank" style="font-size: 50px;"> </i>
+			<i class="icon-sign-blank" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Vacío</strong>
 		</a>
 	</div>
