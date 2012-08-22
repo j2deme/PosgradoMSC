@@ -15,9 +15,9 @@ class Posgrado extends ActiveRecord\Model {
 		'asignacion' => 'fecha_asignacion',
 		'fin' => 'fecha_fin_curso',
 		'titulacion' => 'fecha_titulacion',
-#		'linea' => 'linea_investigacion',
-#		'tesis' => 'link_tesis',
-#		'expo' => 'link_exposicion'
+		'linea' => 'linea_investigacion',
+		'tesis' => 'link_tesis',
+		'expo' => 'link_exposicion'
 	);
 }
 ?>
