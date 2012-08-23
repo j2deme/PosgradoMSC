@@ -49,10 +49,11 @@ $app = new Slim(array(
 
 $app->post('/login/', function() use ($app) {
 	$validator = new GUMP();
+	ladybug_dump($_POST);
 	$_POST = $validator->sanitize($_POST);
 	$rules = array(
-		'usuario'    => 'required|alpha_numeric|max_len,100|min_len,5',
-		'password'    => 'required|max_len,100|min_len,6',
+		'usuario'    => 'required|alpha_dash|max_len,100',
+		'password'    => 'required|max_len,100',
 	);
 
 	$filters = array(
@@ -61,6 +62,7 @@ $app->post('/login/', function() use ($app) {
 	);
 	$_POST = $validator->filter($_POST, $filters);
 	$validated = $validator->validate($_POST, $rules);
+	ladybug_dump($validated);
 	if($validated === true) {
 		$user = Usuario::find_by_usuario($_POST['usuario']);
 		if(is_object($user)){
@@ -149,7 +151,7 @@ $app->post('/nuevo-usuario/', function() use($app){
 	$validator = new GUMP();
 	$_POST = $validator->sanitize($_POST);
 	$rules = array(
-		'usuario'    => 'required|alpha_dash|max_len,100|min_len,4',
+		'usuario'    => 'required|alpha_dash|max_len,100',
 		'email'    => 'required|valid_email',
 	);
 
@@ -260,7 +262,7 @@ $app->post('/actualiza-usuario/:id/', function($id) use($app){
 	$_POST = $validator->sanitize($_POST);
 	$password = $_POST['password'];
 	$rules = array(
-		'usuario-edit'    => 'required|alpha_dash|max_len,100|min_len,4',
+		'usuario-edit'    => 'required|alpha_dash|max_len,100',
 		'email-edit'    => 'required|valid_email',
 	);
 
