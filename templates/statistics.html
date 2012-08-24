@@ -10,8 +10,8 @@
 		<div class="row">
 			<div class="span11">
 				<div id="results" class="hide">
-					<img src="{{ urlFor('grafica-matriculacion') }}" alt=""/>
-					<img src="{{ urlFor('grafica-genero') }}" alt=""/>
+					<img src="{{ urlFor('g-matriculacion') }}" alt="" class=""/>
+					<img src="{{ urlFor('g-genero-rol-anual',{'year':'2011'}) }}" alt=""/>
 				</div>
 			</div>
 		</div>
@@ -21,10 +21,14 @@
 <script>
 head.ready("app", function(){
 	head.js(
-//		{anythingzoomer: "{{ urlFor('home') }}js/jquery.anythingzoomer.min.js"}
+//		{zoomy: "{{ urlFor('home') }}js/zoomy.min.js"}
 	);
 	$(function(){
 		$('#results').fadeIn(1500);
+/*		$('.zoom').zoomy({
+			glare: true,
+			border: "2px solid #000"
+		});*/
 	});
 });
 </script>

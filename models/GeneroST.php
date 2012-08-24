@@ -14,8 +14,8 @@ class GeneroST extends ActiveRecord\Model {
 		'aceptadas' => 'aceptados_mujeres',
 		'alumnos' => 'alumnos_hombres',
 		'alumnas' => 'alumnos_mujeres',
-		'exalumnos' => 'exalumnos_hombres',
-		'exalumnas' => 'exalumnos_mujeres',
+		'egresados' => 'exalumnos_hombres',
+		'egresadas' => 'exalumnos_mujeres',
 		'desertores' => 'desercion_hombres',
 		'desertoras' => 'desercion_mujeres'
 	);
