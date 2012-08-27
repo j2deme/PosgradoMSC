@@ -14,6 +14,7 @@ require __DIR__.'/vendor/DirectoryLister.php';
 require __DIR__.'/vendor/upload.class.php';
 require __DIR__."/vendor/pChart/class/pData.class.php";
 require __DIR__."/vendor/pChart/class/pDraw.class.php";
+require __DIR__."/vendor/pChart/class/pPie.class.php";
 require __DIR__."/vendor/pChart/class/pImage.class.php";
 require __DIR__.'/vendor/Faker/autoload.php';
 
