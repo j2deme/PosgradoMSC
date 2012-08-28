@@ -1,0 +1,76 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+{% set fontSize = 40 %}
+<div class="row">
+	<div class="offset3 span2">
+		<a href="{{ urlFor('CatAreaInteres') }}" class="btn btn-primary square">
+			<br />
+			<i class="icon-comments-alt" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Areas de Interes</strong>
+		</a>
+	</div>
+	<div class="span2">
+		<a href="{{ urlFor('CatIdiomas') }}" class="btn btn-primary square">
+			<br />
+			<i class="icon-globe" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Idiomas</strong>
+		</a>
+		
+	</div>
+	<div class="span2">
+		<a href="{{ urlFor('CatLenguajes') }}" class="btn btn-primary square">
+			<br />
+			<i class="icon-web-intents" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Lenguajes</strong>
+		</a>
+	</div>
+</div>
+<br />
+<div class="row">
+	<div class="offset3 span2">
+		<a href="{{ urlFor('CatPlataformas') }}" class="btn btn-primary square">
+			<br />
+			<i class="icon-tasks" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Plataformas</strong>
+		</a>
+	</div>
+	<div class="span2">
+		<a href="{{ urlFor('CatHerramienta') }}" class="btn btn-primary square">
+			<br />
+			<i class="icon-wrench" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Herramientas</strong>
+		</a>
+	</div>
+	<div class="span2">
+		<a href="{{ urlFor('CatFormasEnterado') }}" class="btn btn-primary square">
+			<br />
+			<i class="icon-bullhorn" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Forma de Enterado</strong>
+		</a>
+	</div>
+</div>
+<br />
+<div class="row">
+	<div class="offset3 span2">
+		<a href="{{ urlFor('CatMateria') }}" class="btn btn-primary square">
+			<br />
+			<i class="icon-sitemap" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Materias</strong>
+		</a>
+	</div>
+	<div class="span2">
+		<a href="{{ urlFor('CatInstitucion') }}" class="btn btn-primary square">
+			<br />
+			<i class="icon-book" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Instituciones</strong>
+		</a>
+	</div>
+	<div class="span2">
+		<a href="{{ urlFor('CatLineaInv') }}" class="btn btn-primary square">
+			<br />
+			<i class="icon-beaker" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Líneas de Investigación</strong>
+		</a>
+	</div>
+</div>
+{% endblock %}

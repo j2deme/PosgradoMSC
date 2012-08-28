@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'head.html' %}
+	<body>
+		<div class="container">
+			<div class='notifications top-right'> </div>
+			<div class="hero-unit">
+				<h1>MSC</h1>
+				<h4 class="pull-right">
+					<a href="https://www.facebook.com/PosgradoMsc" rel="tooltip" title="Posgrado MSC" class="mute">
+						<i class="icon-facebook-sign" style="font-size: 24px;color:#3B5998;"> </i>
+					</a>
+					<a href="https://twitter.com/#!/PosgradoMSC" rel="tooltip" title="@PosgradoMSC" class="mute">
+						<i class="icon-twitter-sign" style="font-size: 24px;color:#2DADDC;"> </i>
+					</a>
+				</h4>
+			</div>
+			{% include 'navbar.html' %}
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="span3">
+					{% include 'sidebar.html' %}
+				</div>
+				<div class="span9">
+					<div id="main" class="content">
+					{% block content %} {% endblock %}
+					</div>
+				</div>
+			</div>	
+			<hr>
+			<footer>
+	        	<div class="pull-left">
+	        		<i class="icon-cc icon-large"> </i>Maestría Sistemas Computacionales ITCV {{ "now"|date("Y") }}
+	        	</div>
+	        	<div class="pull-right">
+					
+				</div>
+		    </footer>
+		</div>
+	    <!-- container -->
+		{% include 'js.twig' %}
+	</body>
+</html>

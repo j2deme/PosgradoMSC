@@ -1,0 +1,28 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	<div class="span12">
+		<div class="row">
+			<div class="span2">
+				<h2>Archivos</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div id="elfinder" class="span12">
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	head.ready(function() {
+		$(function() {
+			var elf = $('#elfinder').elfinder({
+				url : '{{ urlFor("elFinder") }}',
+				lang: 'es',
+				width: '940px'
+			}).elfinder('instance');
+		});
+	}); 
+</script>
+{% endblock %}

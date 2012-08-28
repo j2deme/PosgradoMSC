@@ -1,0 +1,299 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	
+	<div class="span12">
+		<div class="row">
+			<div class="span2">
+				<h2>Materias</h2>
+			</div>
+			<div class="span2">
+				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
+					<i class="icon-sitemap"></i> Nueva Materia
+				</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span11">
+				<div id="results" class="hide">
+				<table id="materia-table" name="materia-table" class="table table-bordered table-condensed table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nombre</th>
+							<th>Semestre</th>
+							<th>Línea de Investigación</th>
+{#							<th>DOC</th>
+							<th>TIS</th>
+							<th>TPS</th>
+							<th>Horas</th>
+							<th>Créditos</th>
+							<th>PDF</th>#}
+							<th>Tipo</th>
+							<th>Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% if materias is defined %}
+						{% for materia in materias %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ materia.nombre}}</td>
+							<td>{{ materia.semestre}}</td>
+							<td>
+							{% if lineas_investigacion is defined %}
+								{% for lineainv in lineas_investigacion %}
+									{% if materia.linea_investigacion == lineainv.id %}
+										{{lineainv.nombre}}
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+							</td>
+{#							<td>{{ materia.doc}}</td>
+							<td>{{ materia.tis}}</td>
+							<td>{{ materia.tps}}</td>
+							<td>{{ materia.horas_totales}}</td>
+							<td>{{ materia.creditos}}</td>
+							<td>{{ materia.link_pdf}}</td>#}
+							<td>{{ materia.tipo}}</td>
+							<td>
+								<a href="#" data-toggle="modal" data-target="#editar-materia{{ materia.id }}-modal">Editar</a>
+								<a href="{{ urlFor('borrar-materia',{'id': materia.id}) }}">Borrar</a>
+							</td>
+						</tr>
+						<div class="modal hide fade" id="editar-materia{{ materia.id }}-modal">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h3>Editar Materia</h3>
+							</div>
+							<div class="modal-body">
+								<form id="editmateriaForm" name="editmateriaForm" class="form-horizontal" action="{{ urlFor('actualiza-materia-post',{'id' : materia.id }) }}" method="post">
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Nombre</label>
+										<div class="controls">
+											<input type="nombre" class="input-xlarge" id="nombre-edit" name="nombre-edit" value="{{ materia.nombre }}">
+										</div>
+									</div>
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Semestre</label>
+										<div class="controls">
+											<input type="semestre" class="input-xlarge" id="semestre-edit" name="semestre-edit" value="{{ materia.semestre }}">
+										</div>
+									</div>
+
+									<div class="control-group">
+										<label class="control-label" for="linea_investigacion">Línea de Investigación</label>
+										<div class="controls">
+											<select id="linea_investigacion-edit" name="linea_investigacion-edit" class="input-xlarge">
+												<!--<option value="0">Selecciona una opci&oacute;n</option> -->
+												{% for lineainv in lineas_investigacion %}
+													{% if materia.linea_investigacion == lineainv.id %}
+														<!--{{lineainv.nombre}}-->
+														<option value="{{ lineainv.id }}">{{ lineainv.nombre }}</option> 
+													{% endif %}
+												{% endfor %}
+												{% for lineainv in lineas_investigacion %}
+													{%  if materia.linea_investigacion == lineainv.id %}
+													{% else %}
+														<option value="{{ lineainv.id }}">{{ lineainv.nombre }}</option>
+													{% endif %}
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+									
+									<div class="control-group">
+										<label class="control-label" for="nombre">DOC</label>
+										<div class="controls">
+											<input type="doc-edit" class="input-xlarge" id="doc-edit" name="doc-edit" value="{{ materia.doc }}">
+										</div>
+									</div>
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">TIS</label>
+										<div class="controls">
+											<input type="tis-edit" class="input-xlarge" id="tis-edit" name="tis-edit" value="{{ materia.tis }}">
+										</div>
+									</div>
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">TPS</label>
+										<div class="controls">
+											<input type="tps-edit" class="input-xlarge" id="tps-edit" name="tps-edit" value="{{ materia.tps }}">
+										</div>
+									</div>
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Horas Totales</label>
+										<div class="controls">
+											<input type="horas_totales-edit" class="input-xlarge" id="horas_totales-edit" name="horas_totales-edit" value="{{ materia.horas_totales }}">
+										</div>
+									</div>
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Creditos</label>
+										<div class="controls">
+											<input type="creditos-edit" class="input-xlarge" id="creditos-edit" name="creditos-edit" value="{{ materia.creditos }}">
+										</div>
+									</div>
+									
+									<div class="control-group">
+										<label class="control-label" for="nombre">Link PDF</label>
+										<div class="controls">
+											<input type="link_pdf-edit" class="input-xlarge" id="link_pdf-edit" name="link_pdf-edit" value="{{ materia.link_pdf }}">
+										</div>
+									</div>
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Tipo</label>
+										<div class="controls">
+											<input type="tipo-edit" class="input-xlarge" id="tipo-edit" name="tipo-edit" value="{{ materia.tipo }}">
+										</div>
+									</div>
+
+									</div>
+									<div class="modal-footer">
+										<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+										<button type="submit" class="btn btn-primary">Guardar Datos</button>
+									</div>
+								</form>
+							</div>
+					{% endfor %}
+					{% else %}
+							<tr>
+								<td> </td>
+								<td>No se encontraron resultados</td>
+								<td> </td>
+								<td> </td>
+							</tr>
+					{% endif %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal hide fade" id="newUser">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Nueva Materia</h3>
+	</div>
+	<form id="newmateriaForm" name="newmateriaForm" action="{{ urlFor('nueva-materia-post') }}" method="post" class="form-horizontal">
+		<div class="modal-body">
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Nombre</label>
+				<div class="controls">
+					<input type="nombre" class="input-xlarge" id="nombre" name="nombre" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Semestre</label>
+				<div class="controls">
+					<input type="semestre" class="input-xlarge" id="semestre" name="semestre" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="linea_investigacion">Línea de Investigación</label>
+				<div class="controls">
+					<select id="linea_investigacion" name="linea_investigacion" class="input-xlarge">
+						<option value="0">Selecciona una opci&oacute;n</option>
+						{% for lineainv in lineas_investigacion %}
+							<option value="{{ lineainv.id }}">{{ lineainv.nombre }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+
+		
+			<div class="control-group">
+				<label class="control-label" for="nombre">DOC</label>
+				<div class="controls">
+					<input type="doc" class="input-xlarge" id="doc" name="doc" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">TIS</label>
+				<div class="controls">
+					<input type="tis" class="input-xlarge" id="tis" name="tis" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">TPS</label>
+				<div class="controls">
+					<input type="tps" class="input-xlarge" id="tps" name="tps" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Horas Totales</label>
+				<div class="controls">
+					<input type="horas_totales" class="input-xlarge" id="horas_totales" name="horas_totales" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Creditos</label>
+				<div class="controls">
+					<input type="creditos" class="input-xlarge" id="creditos" name="creditos" value="">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="nombre">Link PDF</label>
+				<div class="controls">
+					<input type="link_pdf" class="input-xlarge" id="link_pdf" name="link_pdf" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Tipo</label>
+				<div class="controls">
+					<input type="tipo" class="input-xlarge" id="tipo" name="tipo" value="">
+				</div>
+			</div>
+			
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+			<button type="submit" class="btn btn-primary">Guardar Datos</button>
+		</div>
+	</form>
+</div>
+
+<script>
+head.ready(function(){
+	$(function(){
+		var areaiTable = $('#materia-table').dataTable({
+			"oLanguage": {
+			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			},
+			"fnDrawCallback": function () {
+			},
+			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+			"sPaginationType": "bootstrap",
+			"fnInitComplete": function(oSettings, json) {
+      			$('#results').fadeIn(500);
+    		}
+		});
+		
+		$('#newAIForm').isHappy({
+			fields: {
+				'#nombre':{
+					required: true,
+					message: 'nombre válido necesario',
+					test: happy.nombre
+				},
+			}
+		});
+	});
+});
+</script>
+{% endblock %}

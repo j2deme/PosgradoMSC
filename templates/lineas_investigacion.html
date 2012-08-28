@@ -1,0 +1,127 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	
+	<div class="span12">
+		<div class="row">
+			<div class="span4">
+				<h2>Líneas de Investigación</h2>
+				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
+					<i class="icon-beaker"></i> Nueva Línea de Investigación
+				</a>
+			</div>
+			<div class="span2">
+				
+			</div>
+		</div>
+		<div class="row">
+			<div class="span11">
+				<div id="results" class="hide">
+				<table id="lineainv-table" name="lineainv-table" class="table table-bordered table-condensed table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nombre</th>
+							<th>Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% if lineas_investigacion is defined %}
+						{% for lineainv in lineas_investigacion %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ lineainv.nombre}}</td>
+							<td>
+								<a href="#" data-toggle="modal" data-target="#editar-lineainv{{ lineainv.id }}-modal">Editar</a>
+								<a href="{{ urlFor('borrar-lineainv',{'id': lineainv.id}) }}">Borrar</a>
+							</td>
+						</tr>
+						<div class="modal hide fade" id="editar-lineainv{{ lineainv.id }}-modal">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h3>Editar Línea de Investigación</h3>
+							</div>
+							<div class="modal-body">
+								<form id="editLineaInvForm" name="editLineaInvForm" class="form-horizontal" action="{{ urlFor('actualiza-lineainv-post',{'id' : lineainv.id }) }}" method="post">
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Nombre</label>
+										<div class="controls">
+											<input type="nombre" class="input-xlarge" id="nombre-edit" name="nombre-edit" value="{{ lineainv.nombre }}">
+										</div>
+									</div>
+
+									</div>
+									<div class="modal-footer">
+										<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+										<button type="submit" class="btn btn-primary">Guardar Datos</button>
+									</div>
+								</form>
+							</div>
+					{% endfor %}
+					{% else %}
+							<tr>
+								<td> </td>
+								<td>No se encontraron resultados</td>
+								<td> </td>
+							</tr>
+					{% endif %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal hide fade" id="newUser">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Nueva Línea de Investigación</h3>
+	</div>
+	<form id="newlineainvForm" name="newlineainvForm" action="{{ urlFor('nueva-lineainv-post') }}" method="post" class="form-horizontal">
+		<div class="modal-body">
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Nombre</label>
+				<div class="controls">
+					<input type="nombre" class="input-xlarge" id="nombre" name="nombre" value="">
+				</div>
+			</div>
+
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+			<button type="submit" class="btn btn-primary">Guardar Datos</button>
+		</div>
+	</form>
+</div>
+
+<script>
+head.ready(function(){
+	$(function(){
+		var areaiTable = $('#lineainv-table').dataTable({
+			"oLanguage": {
+			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			},
+			"fnDrawCallback": function () {
+			},
+			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+			"sPaginationType": "bootstrap",
+			"fnInitComplete": function(oSettings, json) {
+      			$('#results').fadeIn(500);
+    		}
+		});
+		
+		$('#newlineainvForm').isHappy({
+			fields: {
+				'#nombre':{
+					required: true,
+					message: 'nombre válido necesario',
+					test: happy.nombre
+				},
+			}
+		});
+	});
+});
+</script>
+{% endblock %}

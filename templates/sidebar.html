@@ -1,0 +1,98 @@
+<div class="accordion sidebar-nav" id="sidebar">
+{% set divs = ['general','candidates','students','research'] %}
+{% set headers = ['General','Aspirantes','Alumnos','Posgrado'] %}
+{% set class = ['in','collapse','collapse','collapse'] %}
+{% set height = ['auto','0px','0px','0px'] %}
+{#	{% for i in 0..3 %}
+	<div class="accordion-group">
+		<div class="accordion-heading">
+			<a class="accordion-toggle" data-toggle="collapse" data-parent="#sidebar" data-target="#{{ cycle(divs,loop.index0) }}">
+				{{ cycle(headers,loop.index0) }}
+			</a>
+		</div>
+		<div id="{{ cycle(divs,loop.index0) }}" class="accordion-body {{ cycle(class,loop.index0) }}" style="height:{{ cycle(height,loop.index0) }}; ">
+			<ul class="nav nav-list">
+				<li><a></a></li>
+			</ul>
+		</div>
+	</div>
+	{% endfor %}#}
+	<div class="accordion-group">
+		<div class="accordion-heading">
+	        <a class="accordion-toggle" data-toggle="collapse" data-parent="#sidebar" data-target="#general">
+	          General
+	        </a>
+      	</div>
+      	<div id="general" class="accordion-body in" style="height: auto; ">
+	        <div class="accordion-inner">
+	          <ul class="nav nav-list">
+	          	<li><a href="{{ urlFor('home',{'slug':'antecedentes'}) }}" class="ajaxify">Antecedentes</a></li><!--class="active"-->
+	          	<li><a href="{{ urlFor('home',{'slug':'mision-y-vision'}) }}" class="ajaxify">Misi&oacute;n y Visi&oacute;n</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'objetivos'}) }}">Objetivos</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'logros-y-reconocimientos'}) }}">Logros y Reconocimientos</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'lineas-de-generacion-y-aplicacion-de-conocimiento'}) }}">L&iacute;neas de Generaci&oacute;n y Aplicaci&oacute;n de Conocimiento</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'vinculacion'}) }}">Vinculaci&oacute;n</a></li>
+	          	<li><a href="{{ urlFor('calendario') }}">Calendario</a></li>
+	          </ul>
+	        </div>
+      	</div>
+    </div>
+    <div class="accordion-group">
+		<div class="accordion-heading">
+	        <a class="accordion-toggle" data-toggle="collapse" data-parent="#sidebar" data-target="#candidates">
+	          Aspirantes
+	        </a>
+      	</div>
+      	<div id="candidates" class="accordion-body collapse" style="height: 0px; ">
+        	<div class="accordion-inner">
+        	  <ul class="nav nav-list">
+	          	<li><a href="{{ urlFor('home',{'slug':'proceso-de-admision'}) }}">Proceso de Admisi&oacute;n</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'perfil-de-ingreso'}) }}">Perfil de Ingreso</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'perfil-de-egreso'}) }}">Perfil de Egreso</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'curso-propedeutico'}) }}">Curso Proped&eacute;utico</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug':'material-de-apoyo'}) }}">Material de Apoyo</a></li>
+	          	<li><a href="{{ urlFor('relacion-aceptados') }}">Relaci&oacute;n de Aceptados</a></li>
+	          </ul>
+        	</div>
+      	</div>
+	</div>
+    <div class="accordion-group">
+		<div class="accordion-heading">
+	        <a class="accordion-toggle" data-toggle="collapse" data-parent="#sidebar" data-target="#students">
+	          Alumnos
+	        </a>
+      	</div>
+      	<div id="students" class="accordion-body collapse" style="height: 0px; ">
+        	<div class="accordion-inner">
+        	  <ul class="nav nav-list">
+	          	<li><a href="{{ urlFor('plan-estudios') }}">Estructura del Plan de Estudios</a></li>
+				{#<li><a href="#">Horarios</a></li>#}
+	          	<li><a href="{{ urlFor('home',{'slug': 'requisitos-para-obtencion-de-grado'}) }}">Requisitos para obtenci&oacute;n de grado</a></li>
+	          </ul>
+        	</div>
+      	</div>
+    </div>
+    <div class="accordion-group">
+		<div class="accordion-heading">
+	        <a class="accordion-toggle" data-toggle="collapse" data-parent="#sidebar" data-target="#research">
+	          Posgrado
+	        </a>
+      	</div>
+      	<div id="research" class="accordion-body collapse" style="height: 0px; ">
+	        <div class="accordion-inner">
+	          <ul class="nav nav-list">
+	          	<li><a href="{{ urlFor('home',{'slug': 'lineas-de-investigacion'}) }}">L&iacute;neas de Investigaci&oacute;n</a></li>
+	          	<li><a href="{{ urlFor('publicaciones') }}">Publicaciones</a></li>
+	          	<li><a href="{{ urlFor('egresados') }}">Egresados</a></li>
+	          	<li><a href="{{ urlFor('home',{'slug': 'estadisticas'}) }}">Estad&iacute;sticas</a>
+	          		<ul class="nav nav-list">
+	          			<li><a href="{{ urlFor('matriculacion') }}">Matriculaci&oacute;n</a></li>
+	          			<li><a href="{{ urlFor('productividad-academica') }}">Productividad Acad&eacute;mica</a></li>
+	          			<li><a href="{{ urlFor('nucleo-academico') }}">N&uacute;cleo B&aacute;sico Acad&eacute;mico</a></li>
+	          		</ul>
+	          	</li>
+	          </ul>
+        	</div>
+      	</div>
+    </div>
+</div>

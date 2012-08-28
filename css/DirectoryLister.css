@@ -1,0 +1,247 @@
+/* -------------------------------------------------------------------------- */
+/* -----| GENERAL |---------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
+body {
+    padding: 15px 0;
+}
+
+body.breadcrumb-fixed {
+    padding-top: 64px;
+}
+
+#pageTopLink {
+    background: transparent url("../img/arrow_up.png") no-repeat left center;
+    display: inline-block;
+    padding-left: 16px;
+    margin: 0;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* -----| BREADCRUMBS |------------------------------------------------------ */
+/* -------------------------------------------------------------------------- */
+
+.breadcrumb {
+    margin-bottom: 15px;
+}
+
+.breadcrumb-fixed .breadcrumb-wrapper {
+    background-color:#fbfbfb;
+    background-image:-moz-linear-gradient(top, #ffffff, #f5f5f5);
+    background-image:-ms-linear-gradient(top, #ffffff, #f5f5f5);
+    background-image:-webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f5f5f5));
+    background-image:-webkit-linear-gradient(top, #ffffff, #f5f5f5);
+    background-image:-o-linear-gradient(top, #ffffff, #f5f5f5);
+    background-image:linear-gradient(top, #ffffff, #f5f5f5);
+    background-repeat:repeat-x;
+    border-bottom: 1px solid #DDDDDD;
+    box-shadow: 0 1px 0 #FFFFFF inset, 0 1px 5px rgba(0, 0, 0, 0.1);
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f5f5f5', GradientType=0);
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1000;
+}
+
+.breadcrumb-fixed .breadcrumb {
+    background: transparent;
+    border: none;
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
+    margin: 0 auto;
+    width: 912px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* -----| DIRECTORY LISTER |------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
+/* ----- HEADER ----- */
+
+#header {
+    color: #333;
+    font-weight: bold;
+}
+
+#header .fileName {
+    display: inline-block;
+    float: left;
+    margin: 8px;
+    overflow: hidden;
+    width: 645px;
+}
+
+#header .fileSize {
+    display: inline-block;
+    float: left;
+    margin: 8px;
+    text-align: right;
+    width: 100px;
+}
+
+#header .fileModTime {
+    display: inline-block;
+    float: right;
+    margin: 8px;
+    text-align: right;
+}
+
+/* ----- FILE LIST ----- */
+
+#directoryListing {
+    margin: 0;
+}
+
+#directoryListing li {
+    /*background-color: #FFF;*/
+    display: block;
+    list-style: none;
+    margin-top: -1px;
+}
+
+#directoryListing li.even a {
+    background-color: #FFF;
+    position: relative;
+    z-index: 0;
+}
+
+#directoryListing li.odd a {
+    background-color: #F9F9F9;
+}
+
+#directoryListing li a {
+    border-top: 1px solid #DDD;
+    border-bottom: 1px solid #DDD;
+    color: #333;
+    display: block;
+    text-decoration: none;
+}
+
+#directoryListing li a:focus {
+    background-color: #DEDEDE;
+    outline: none;
+}
+
+#directoryListing li a:hover {
+    border-color: #D3D3EE;
+    background-color: white;
+    outline: none;
+    position: relative;
+    z-index: 10;
+}
+
+#directoryListing .fileIcon {
+    display: inline-block;
+    margin: 8px;
+    margin-right: -24px;
+    width: 16px;
+}
+
+#directoryListing .fileName {
+    display: inline-block;
+    float: left;
+    margin: 8px;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 625px;
+}
+
+#directoryListing .fileSize {
+    display: inline-block;
+    float: left;
+    margin: 8px;
+    overflow: hidden;
+    text-align: right;
+    white-space: nowrap;
+    width: 100px;
+}
+
+#directoryListing .fileModTime {
+    display: inline-block;
+    float: right;
+    margin: 8px;
+    overflow: hidden;
+    text-align: right;
+    white-space: nowrap;
+    width: 125px;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* -----| FOOTER |----------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
+.footer p {
+    margin: 10px 0;
+    text-align: center;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* -----| ICONS |------------------------------------------------------------ */
+/* -------------------------------------------------------------------------- */
+
+/*i.dl {
+    background: transparent url("../img/sprite.png") no-repeat 0 0;
+    display: inline-block;
+    float: left;
+    font-size: 1px;
+    height: 16px;
+    margin-right: 8px;
+    position: relative;
+    top: 1px;
+    width: 16px;
+}*/
+/*
+i.dl.icon-app        { background-position: -135px -109px; }
+i.dl.icon-terminal   { background-position: -135px -82px; }
+i.dl.icon-up-dir     { background-position: -135px -54px; }
+i.dl.icon-box        { background-position: -135px -27px; }
+i.dl.icon-cd         { background-position: -81px -108px; }
+i.dl.icon-archive    { background-position: -108px 0px; }
+i.dl.icon-controller { background-position: -135px 0px; }
+i.dl.icon-database   { background-position: -108px -108px; }
+i.dl.icon-disk       { background-position: -54px -108px; }
+i.dl.icon-drive      { background-position: -81px -27px; }
+i.dl.icon-email      { background-position: -27px -0px; }
+i.dl.icon-film       { background-position: -54px -27px; }
+i.dl.icon-folder     { background-position: 0px -27px; }
+i.dl.icon-font       { background-position: -27px -108px; }
+i.dl.icon-image      { background-position: -81px 0px; }
+i.dl.icon-music      { background-position: 0px 0px; }
+i.dl.icon-blank      { background-position: -27px -54px; }
+i.dl.icon-pdf        { background-position: -81px -54px; }
+i.dl.icon-c          { background-position: -27px -108px; }
+i.dl.icon-code       { background-position: -54px -81px; }
+i.dl.icon-code-red   { background-position: -54px -81px; }
+i.dl.icon-cplusplus  { background-position: -81px -81px; }
+i.dl.icon-excel      { background-position: 0px -81px; }
+i.dl.icon-flash      { background-position: -108px -54px; }
+i.dl.icon-php        { background-position: -54px -54px; }
+i.dl.icon-ruby       { background-position: -108px -81px; }
+i.dl.icon-text       { background-position: 0px -54px; }
+i.dl.icon-word       { background-position: -108px -27px; }
+i.dl.icon-picture    { background-position: -54px 0px; }
+i.dl.icon-arrow-up   { background-position: -135px -54px; }
+*/
+
+/* -------------------------------------------------------------------------- */
+/* -----| MISCELLANEOUS |---------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+
+.hidden {
+    display: none !important;
+}
+
+.floatLeft {
+    float: left;
+    width: auto;
+}
+
+.floatRight {
+    float: right;
+    width: auto;
+}

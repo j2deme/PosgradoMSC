@@ -1,0 +1,59 @@
+<script>
+head.js(
+	{jquery: "{{ urlFor('home') }}js/jquery-1.7.2.min.js"},
+	{jqueryui: "{{ urlFor('home') }}js/jquery-ui.min.js"},
+{#	{jqueryuiw: "{{ urlFor('home') }}js/jquery.ui.widget.js"},
+	"{{ urlFor('home') }}js/tmpl.min.js",
+	"{{ urlFor('home') }}js/load-image.min.js",
+	"{{ urlFor('home') }}js/canvas-to-blob.min.js",
+#}
+{#	{wysihtml5: "{{ urlFor('home') }}js/wysihtml5-0.3.0.js"},#}
+{#	{bwysihtml5: "{{ urlFor('home') }}js/bootstrap-wysihtml5.js"},#}
+	{bootstrap: "{{ urlFor('home') }}js/bootstrap.min.js"},
+{#	{bootstrap_gallery: "{{ urlFor('home') }}js/bootstrap-image-gallery.min.js"},
+	"{{ urlFor('home') }}js/jquery.iframe-transport.js",
+	"{{ urlFor('home') }}js/jquery.fileupload.js",
+	"{{ urlFor('home') }}js/jquery.fileupload-fp.js",
+	"{{ urlFor('home') }}js/jquery.fileupload-ui.js",
+	"{{ urlFor('home') }}js/locale.js",
+#}
+	{notify: "{{ urlFor('home')}}js/bootstrap-notify.js"},
+	{datepicker: "{{ urlFor('home') }}js/bootstrap-datepicker.js"},
+	{timepicker: "{{ urlFor('home') }}js/bootstrap-timepicker.js"},
+	"{{ urlFor('home') }}js/bootstrap-datepicker.es.js",
+	{happy: "{{ urlFor('home') }}js/happy.js"},
+	{happy_methods: "{{ urlFor('home') }}js/happy.methods.js"},
+	{chosen: "{{ urlFor('home') }}js/chosen.jquery.min.js"},
+	{datatables: "{{ urlFor('home') }}js/jquery.dataTables.min.js"},
+	"{{ urlFor('home') }}js/dataTables.fnoStdClasses.js",
+	"{{ urlFor('home') }}js/dataTables.fnPagingInfo.js",
+	"{{ urlFor('home') }}js/dataTables.fnTwitterBootstrap.js",
+	{elFinder: "{{ urlFor('home') }}js/elfinder.min.js"},
+	"{{ urlFor('home') }}js/elfinder.es.js",
+	{#{handleform: "{{ urlFor('home') }}js/jquery.handleform.js"},#}
+	{chosen: "{{ urlFor('home') }}js/chosen.jquery.min.js"},
+	{chained: "{{ urlFor('home') }}js/jquery.chained.js"},
+{#
+	{d3: "{{ urlFor('home') }}js/d3.v2.min.js"},
+	{nvd3: "{{ urlFor('home') }}js/nv.d3.min.js"},
+#}
+	"{{ urlFor('home') }}js/jqueryFileTree.js",
+	{app: "{{ urlFor('home') }}js/app.js"}
+);
+
+head.ready(function() {
+	$(function(){
+		{% if flash.flash is defined %}
+		$('.top-right').notify({
+    		message: { text: "<h4>{{ flash.flash.title }}</h4>{{ flash.flash.msg|raw }}"},
+    		type: '{{ flash.flash.type }}',
+    		{% if flash.flash.fade == 0 %}
+    		fadeOut: { enabled: false }
+    		{% else %}
+    		fadeOut: { enabled: true, delay: 4000 }
+    		{% endif %}
+  		}).show();
+  		{% endif %}
+	})
+});
+</script>

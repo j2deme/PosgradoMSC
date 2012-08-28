@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3 align="center">Reticula Maestria Profecionalizante en Sistemas Computacionales</h3>
+
+<table>
+    <thead>
+       <tr>
+       <th align="center">Semestre I</th>
+       <th align="center">Semestre II</th>
+       <th align="center">Semestre III</th>
+       <th align="center">Semestre IV</th>
+       </tr>
+    </thead>
+    <tbody>
+    	
+       <tr>
+       	<td >
+       		<table height="110" width="150" bordercolor="8080ff">
+       			<tr>
+       				<td align="center">
+       					<button class="btn btn-info cuadro" 
+       					data-toggle="modal" href="#modOptativa"> 
+       						Optativa   I   <br><br> 6 Creditos
+       					</button>
+       				</td>
+       			</tr>
+       		</table>
+      	</td>
+      		
+      		
+       	<td >
+       		<table height="110" width="150">
+       			<tr>
+       				<td align="center">
+       					<button class="btn btn-info cuadro" 
+       					data-toggle="modal" href="#modOptativa"> 
+       						Optativa   II   <br><br> 6 Creditos
+       					</button>
+       				</td>
+       			</tr>
+       		</table>
+       	</td>
+       	
+       	
+       	<td >
+       		<table height="110" width="150">
+       			<tr>
+       				<td align="center">
+       					<button class="btn btn-info cuadro" 
+       					data-toggle="modal" href="#modOptativa"> 
+       						Optativa  III <br><br> 6 Creditos
+       					</button>
+       				</td>
+       			</tr>
+       		</table>
+       	</td>
+       	
+       	
+       	<td >
+       		<table height="110" width="150">
+       			<tr>
+       				<td align="center">
+       					<button class="btn btn-info cuadro" 
+       					data-toggle="modal" href="#modOptativa"> 
+       						Optativa  IV <br><br> 6 Creditos
+       					</button>
+       				</td>
+       			</tr>
+       		</table>
+       	</td>
+       </tr>
+      
+       
+       <tr>
+       	<td>
+       		<table height="110" width="150">
+       			<tr>
+       				<td align="center">
+       					<button class="btn btn-info cuadro" 
+       					data-toggle="modal" href="#modTeoComp"> 
+       						Teoria de la <br>computacion <br>6 Creditos
+       					</button>
+       				</td>
+       			</tr>
+       		</table>
+       	</td>
+       </tr>
+<!-- modal teoria de la computacion -->
+<div class="modal hide fade" id="modTeoComp">
+    <div class="modal-header">
+    	<h3>{% if teoria.nombre is defined %}} teoria.nombre {% endif %}</h3>
+    </div>
+    <div class="modal-body">
+    	<dl class="dl-horizontal">
+    	<dt>Semestre:</dt>
+    	<dd>{% if teoria.semestre is defined %}} teoria.semestre {% endif %}</dd>
+    	<dt>Linea:</dt>
+    	<dd>{% if teoria.linea is defined %}} teoria.linea {% endif %}</dd>
+    	<dt title="Docente" rel="tooltip">DOC:</dt>
+    	<dd>{% if teoria.doc is defined %}} teoria.doc {% endif %}</dd>
+    	<dt title="Trabajo Independiente Significativo" rel="tooltip">TIS:</dt>
+    	<dd>{% if teoria.tis is defined %}} teoria.tis {% endif %}</dd>
+    	<dt title="Trabajo Profesional Supervisado" rel="tooltip">TPS:</dt>
+    	<dd>{% if teoria.tps is defined %}} teoria.tps {% endif %}</dd>
+    	<dt>Horas Totales:</dt>
+    	<dd>{% if teoria.horas is defined %}} teoria.horas {% endif %}</dd>
+    	<dt>Creditos:</dt>
+    	<dd>{% if teoria.creditos is defined %}} teoria.creditos {% endif %}</dd>
+    	</dl>
+    </div>
+    
+    <div class="modal-footer">
+    	<a href="{% if teoria.pdf is defined %}} teoria.pdf {% endif %}" class="btn btn-primary">Ver mas</a>
+    	<a href="#" class="btn" data-dismiss="modal">Cerrar</a>
+    </div>
+</div>
+<!-- fin modal -->       
+        <tr>
+       	<td>
+       		<table height="110" width="150">
+       			<tr>
+       				<td align="center">
+       					<button class="btn btn-info cuadro" 
+       					data-toggle="modal" href="#modIngSw"> 
+       						Ingenieria de <br>software <br>6 Creditos
+       					</button>
+       				</td>
+       			</tr>
+       		</table>
+       	</td>
+<!-- modal ingenieria de software -->
+<div class="modal hide fade" id="modIngSw">
+    <div class="modal-header">
+    	<h3>{% if is.nombre is defined %}} is.nombre {% endif %}</h3>
+    </div>
+    <div class="modal-body">
+    	<dl class="dl-horizontal">
+    	<dt>Semestre:</dt>
+    	<dd>{% if is.semestre is defined %}} is.semestre {% endif %}</dd>
+    	<dt>Linea:</dt>
+    	<dd>{% if is.linea is defined %}} is.linea {% endif %}</dd>
+    	<dt title="Docente" rel="tooltip">DOC:</dt>
+    	<dd>{% if is.doc is defined %}} is.doc {% endif %}</dd>
+    	<dt title="Trabajo Independiente Significativo" rel="tooltip">TIS:</dt>
+    	<dd>{% if is.tis is defined %}} is.tis {% endif %}</dd>
+    	<dt title="Trabajo Profesional Supervisado" rel="tooltip">TPS:</dt>
+    	<dd>{% if is.tps is defined %}} is.tps {% endif %}</dd>
+    	<dt>Horas Totales:</dt>
+    	<dd>{% if is.horas is defined %}} is.horas {% endif %}</dd>
+    	<dt>Creditos:</dt>
+    	<dd>{% if is.creditos is defined %}} is.creditos {% endif %}</dd>
+    	</dl>
+    	  </div>
+    
+    <div class="modal-footer">
+    	<a href="{% if teoria.pdf is defined %}} teoria.pdf {% endif %}" class="btn btn-primary">Ver mas</a>
+    	<a href="#" class="btn" data-dismiss="modal">Cerrar</a>
+    </div>
+</div>
+<!-- fin modal -->         	
+       	<td>
+       		<table   height="110" width="150">
+       			<tr>
+       				<td align="center">
+       					<button class="btn btn-info cuadro"  
+       					data-toggle="modal" href="#modModWeb"> 
+       						Modelado conceptual de <br>aplicaciones web<br> 6 creditos
+       					</button>
+       				</td>
+       			</tr>
+       		</table>
+       	</td>
+       </tr>
+<!-- modal Modelado conceptual de aplicaciones web -->
+<div class="modal hide fade" id="modModWeb">
+    <div class="modal-header">
+    	<h3>{% if modelado.nombre is defined %}} modelado.nombre {% endif %}</h3>
+    </div>
+    <div class="modal-body">
+    	<dl class="dl-horizontal">
+    	<dt>Semestre:</dt>
+    	<dd>{% if modelado.semestre is defined %}} modelado.semestre {% endif %}</dd>
+    	<dt>Linea:</dt>
+    	<dd>{% if modelado.linea is defined %}} modelado.linea {% endif %}</dd>
+    	<dt title="Docente" rel="tooltip">DOC:</dt>
+    	<dd>{% if modelado.doc is defined %}} modelado.doc {% endif %}</dd>
+    	<dt title="Trabajo Independiente Significativo" rel="tooltip">TIS:</dt>
+    	<dd>{% if modelado.tis is defined %}} modelado.tis {% endif %}</dd>
+    	<dt title="Trabajo Profesional Supervisado" rel="tooltip">TPS:</dt>
+    	<dd>{% if modelado.tps is defined %}} modelado.tps {% endif %}</dd>
+    	<dt>Horas Totales:</dt>
+    	<dd>{% if modelado.horas is defined %}} modelado.horas {% endif %}</dd>
+    	<dt>Creditos:</dt>
+    	<dd>{% if modelado.creditos is defined %}} modelado.creditos {% endif %}</dd>
+    	</dl>
+    	
+     </div>
+    
+    <div class="modal-footer">
+    	<a href="{% if teoria.pdf is defined %}} teoria.pdf {% endif %}" class="btn btn-primary">Ver mas</a>
+    	<a href="#" class="btn" data-dismiss="modal">Cerrar</a>
+    </div>
+</div>
+<!-- fin modal -->        
+        <tr>
+       	<td>
+       		<table height="110" width="150">
+       			<tr>
+       				<td align="center">
+       					<button class="btn btn-info cuadro" 
+       					data-toggle="modal" href="#modBD"> 
+       						Base de datos <br> <br>6 Creditos
+       					</button>
+       				</td>
+       			</tr>
+       		</table>
+       	</td>
+<!-- modal Base de datos -->
+<div class="modal hide fade" id="modBD">
+    <div class="modal-header">
+    	<h3>{% if bd.nombre is defined %}} bd.nombre {% endif %}</h3>
+    </div>
+    <div class="modal-body">
+    	<dl class="dl-horizontal">
+    	<dt>Semestre:</dt>
+    	<dd>{% if bd.semestre is defined %}} bd.semestre {% endif %}</dd>
+    	<dt>Linea:</dt>
+    	<dd>{% if bd.linea is defined %}} bd.linea {% endif %}</dd>
+    	<dt title="Docente" rel="tooltip">DOC:</dt>
+    	<dd>{% if bd.doc is defined %}} bd.doc {% endif %}</dd>
+    	<dt title="Trabajo Independiente Significativo" rel="tooltip">TIS:</dt>
+    	<dd>{% if bd.tis is defined %}} bd.tis {% endif %}</dd>
+    	<dt title="Trabajo Profesional Supervisado" rel="tooltip">TPS:</dt>
+    	<dd>{% if bd.tps is defined %}} bd.tps {% endif %}</dd>
+    	<dt>Horas Totales:</dt>
+    	<dd>{% if bd.horas is defined %}} bd.horas {% endif %}</dd>
+    	<dt>Creditos:</dt>
+    	<dd>{% if bd.creditos is defined %}} bd.creditos {% endif %}</dd>
+    	</dl>
+    	
+     </div>
+    
+    <div class="modal-footer">
+    	<a href="{% if teoria.pdf is defined %}} teoria.pdf {% endif %}" class="btn btn-primary">Ver mas</a>
+    	<a href="#" class="btn" data-dismiss="modal">Cerrar</a>
+    </div>
+</div>
+<!-- fin modal -->        	
+       	<td>
+       		<table height="110" width="150">
+       			<tr>
+       				<td align="center">
+       					<button class="btn btn-info cuadro"
+       					data-toggle="modal" href="#modSem3"> 
+       					Seminario I <br><br>4 creditos
+       					</button>
+       				</td>
+       			</tr>
+       		</table>
+       	</td>
+       	
+       	<td>
+       		<table height="110" width="150">
+       			<tr>
+       				<td align="center">
+       					<button class="btn btn-info cuadro" 
+       					data-toggle="modal" href="#modSem3"> 
+       						Seminario II <br><br>4 creditos
+       					</button>
+       				</td>
+       			</tr>
+       		</table>
+       	</td>
+       	
+       	<td>
+       		<table height="110" width="150">
+       			<tr>
+       				<td align="center"> 
+       					<button class="btn btn-info cuadro" 
+       					data-toggle="modal" href="#modSem3"> 
+       						Seminario III <br><br>4 creditos
+       					</button>
+       				</td>
+       			</tr>
+       		</table>
+       	</td>
+       </tr>
+       
+     </tbody>
+     
+     <table  height="110" width="615">
+     		<tr>
+     			<td align="center">
+     				<button class="btn btn-info cuadroT"  
+     				data-toggle="modal" href="#modTesis">
+     					Tesis 40 creditos 				
+     				</button>
+     			</td>
+     		</tr>
+     </table>
+</table>
+
+<!-- Modales -->
+<!-- modal Tesis -->
+<div class="modal hide fade" id="modTesis">
+    <div class="modal-header">
+    	<h3>{% if tesis.nombre is defined %}} tesis.nombre {% endif %}</h3>
+    </div>
+    <div class="modal-body">
+    	<dl class="dl-horizontal">
+    	<dt>Semestre:</dt>
+    	<dd>{% if tesis.semestre is defined %}} tesis.semestre {% endif %}</dd>
+    	<dt>Linea:</dt>
+    	<dd>{% if tesis.linea is defined %}} tesis.linea {% endif %}</dd>
+    	<dt title="Docente" rel="tooltip">DOC:</dt>
+    	<dd>{% if tesis.doc is defined %}} tesis.doc {% endif %}</dd>
+    	<dt title="Trabajo Independiente Significativo" rel="tooltip">TIS:</dt>
+    	<dd>{% if tesis.tis is defined %}} tesis.tis {% endif %}</dd>
+    	<dt title="Trabajo Profesional Supervisado" rel="tooltip">TPS:</dt>
+    	<dd>{% if tesis.tps is defined %}} tesis.tps {% endif %}</dd>
+    	<dt>Horas Totales:</dt>
+    	<dd>{% if tesis.horas is defined %}} tesis.horas {% endif %}</dd>
+    	<dt>Creditos:</dt>
+    	<dd>{% if tesis.creditos is defined %}} tesis.creditos {% endif %}</dd>
+    	</dl>
+    	
+     </div>
+    
+    <div class="modal-footer">
+    	<a href="{% if teoria.pdf is defined %}} teoria.pdf {% endif %}" class="btn btn-primary">Ver mas</a>
+    	<a href="#" class="btn" data-dismiss="modal">Cerrar</a>
+    </div>
+</div>
+
+<!-- modal seminario -->
+<div class="modal hide fade" id="modSem3">
+   <div class="modal-header">
+    	<h3>{% if seminario.nombre is defined %}} seminario.nombre {% endif %}</h3>
+    </div>
+    <div class="modal-body">
+    	<dl class="dl-horizontal">
+    	<dt>Semestre:</dt>
+    	<dd>{% if seminario.semestre is defined %}} seminario.semestre {% endif %}</dd>
+    	<dt>Linea:</dt>
+    	<dd>{% if seminario.linea is defined %}} seminario.linea {% endif %}</dd>
+    	<dt title="Docente" rel="tooltip">DOC:</dt>
+    	<dd>{% if seminario.doc is defined %}} seminario.doc {% endif %}</dd>
+    	<dt title="Trabajo Independiente Significativo" rel="tooltip">TIS:</dt>
+    	<dd>{% if seminario.tis is defined %}} seminario.tis {% endif %}</dd>
+    	<dt title="Trabajo Profesional Supervisado" rel="tooltip">TPS:</dt>
+    	<dd>{% if seminario.tps is defined %}} seminario.tps {% endif %}</dd>
+    	<dt>Horas Totales:</dt>
+    	<dd>{% if seminario.horas is defined %}} seminario.horas {% endif %}</dd>
+    	<dt>Creditos:</dt>
+    	<label>{% if seminario.creditos is defined %}} seminario.creditos {% endif %}</dd>
+    	</dl>
+    	  </div>
+    
+    <div class="modal-footer">
+    	<a href="{% if teoria.pdf is defined %}} teoria.pdf {% endif %}" class="btn btn-primary">Ver mas</a>
+    	<a href="#" class="btn" data-dismiss="modal">Cerrar</a>
+    </div>
+</div>
+<!--optativa-->
+<div class="modal hide fade" id="modOptativa">
+    <div class="modal-header">
+    	<h3>Materias Optativas</h3>
+    </div>
+    <div class="modal-body">
+    	<p>
+    		<table class="table-striped">
+    			<thead>
+    				<tr>
+    					<th style="width: 200px">Numero</th>
+    					<th style="width: 200px">Materia</th>
+    					<th style="width: 200px">Mas informacion</th>
+    				</tr>
+    			</thead>
+    			<tbody>
+    				<tr>
+    					{% for optativa in optativas %}
+    					<td align="center">{{ optativa.id }}</td>
+    					<td align="center">optativa.nombre</td>
+    					<td align="center">
+    						<a class="btn btn-info" href="optativa.pdf" >Ver</a>
+    					</td>
+    					{% endfor %}
+    				</tr>
+    			</tbody>
+    		</table>  		
+    	</p>
+  
+    </div>
+    <div class="modal-footer">
+    	<a href="#" class="btn" data-dismiss="modal">Cerrar</a>
+    </div>
+</div>
+
+<!--
+	
+<script>function overTD(td,color){td.bgColor=color;}
+		function outTD(td,color){td.bgColor=color;}
+</script>
+
+-->
+{% endblock %}

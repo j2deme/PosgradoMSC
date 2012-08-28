@@ -1,0 +1,36 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	<div class="span12">
+		<div class="row">
+			<div class="span2">
+				<h2>Estadísticas</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span11">
+				<div id="results" class="hide">
+					<img src="{{ urlFor('g-matriculacion') }}" alt="" class=""/>
+					<img src="{{ urlFor('g-genero-rol-anual',{'year':'2011'}) }}" alt=""/>
+					<img src="{{ urlFor('g-procedencia',{'slug':'2011'}) }}" alt=""/>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+head.ready("app", function(){
+	head.js(
+//		{zoomy: "{{ urlFor('home') }}js/zoomy.min.js"}
+	);
+	$(function(){
+		$('#results').fadeIn(1500);
+/*		$('.zoom').zoomy({
+			glare: true,
+			border: "2px solid #000"
+		});*/
+	});
+});
+</script>
+{% endblock %}

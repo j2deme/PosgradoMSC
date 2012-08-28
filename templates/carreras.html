@@ -1,0 +1,125 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	
+	<div class="span12">
+		<div class="row">
+			<div class="span2">
+				<h2>Carreras</h2>
+			</div>
+			<div class="span2">
+				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
+					<i class="icon-user icon-white"></i> Nueva Carrera
+				</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span11">
+				<div id="results" class="hide">
+				<table id="carrera-table" name="carrera-table" class="table table-bordered table-condensed table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nombre</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% if carreras is defined %}
+						{% for carrera in carreras %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ carrera.nombre}}</td>
+							<td>
+								<a href="#" data-toggle="modal" data-target="#editar-carrera{{ carrera.id }}-modal">Editar</a>
+								<a href="{{ urlFor('borrar-carrera',{'id': carrera.id}) }}">Borrar</a>
+							</td>
+						</tr>
+						<div class="modal hide fade" id="editar-carrera{{ carrera.id }}-modal">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h3>Editar Carrera</h3>
+							</div>
+							<div class="modal-body">
+								<form id="editcarreraForm" name="editcarreraForm" class="form-horizontal" action="{{ urlFor('actualiza-carrera-post',{'id' : carrera.id }) }}" method="post">
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Nombre</label>
+										<div class="controls">
+											<input type="nombre" class="input-xlarge" id="nombre-edit" name="nombre-edit" value="{{ carrera.nombre }}">
+										</div>
+									</div>
+
+									</div>
+									<div class="modal-footer">
+										<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+										<button type="submit" class="btn btn-primary">Guardar Datos</button>
+									</div>
+								</form>
+							</div>
+					{% endfor %}
+					{% else %}
+							<tr>
+								<td> </td>
+								<td>No se encontraron resultados</td>
+								<td> </td>
+								<td> </td>
+							</tr>
+					{% endif %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal hide fade" id="newUser">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Nueva Carrera</h3>
+	</div>
+	<form id="newcarreraForm" name="newcarreraForm" action="{{ urlFor('nueva-carrera-post') }}" method="post" class="form-horizontal">
+		<div class="modal-body">
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Nombre</label>
+				<div class="controls">
+					<input type="nombre" class="input-xlarge" id="nombre" name="nombre" value="">
+				</div>
+			</div>
+
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+			<button type="submit" class="btn btn-primary">Guardar Datos</button>
+		</div>
+	</form>
+</div>
+
+<script>
+head.ready(function(){
+	$(function(){
+		//$('#waiting').addClass('hide').fadeOut(2500);
+		$('#results').removeClass('hide').fadeIn(1500);
+		var areaiTable = $('#herramienta-table').dataTable({
+			"oLanguage": {
+			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			},
+			"fnDrawCallback": function () {
+			},
+			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+			"sPaginationType": "bootstrap"
+		});
+		
+		$('#newherramientaForm').isHappy({
+			fields: {
+				'#nombre':{
+					required: true,
+					message: 'nombre válido necesario',
+					test: happy.nombre
+				},
+			}
+		});
+	});
+});
+</script>
+{% endblock %}

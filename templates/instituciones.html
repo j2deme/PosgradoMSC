@@ -1,0 +1,142 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	
+	<div class="span12">
+		<div class="row">
+			<div class="span2">
+				<h2>Instituciones</h2>
+			</div>
+			<div class="span2">
+				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
+					<i class="icon-book"></i> Nueva Institución
+				</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span11">
+				<div id="results" class="hide">
+				<table id="institucion-table" name="institucion-table" class="table table-bordered table-condensed table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nombre</th>
+							<th>Abreviatura</th>
+							<th>Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% if instituciones is defined %}
+						{% for institucion in instituciones %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ institucion.nombre}}</td>
+							<td>{{ institucion.abreviatura}}</td>
+							<td>
+								<a href="#" data-toggle="modal" data-target="#editar-institucion{{ institucion.id }}-modal">Editar</a>
+								<a href="{{ urlFor('borrar-institucion',{'id': institucion.id}) }}">Borrar</a>
+							</td>
+						</tr>
+						<div class="modal hide fade" id="editar-institucion{{ institucion.id }}-modal">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<h3>Editar Institución</h3>
+							</div>
+							<div class="modal-body">
+								<form id="editInstitucionForm" name="editInstitucionForm" class="form-horizontal" action="{{ urlFor('actualiza-institucion-post',{'id' : institucion.id, 'abrev' : institucion.abreviatura }) }}" method="post">
+
+									<div class="control-group">
+										<label class="control-label" for="nombre">Nombre</label>
+										<div class="controls">
+											<input type="nombre" class="input-xlarge" id="nombre-edit" name="nombre-edit" value="{{ institucion.nombre }}">
+										</div>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="abrev">Abreviatura</label>
+										<div class="controls">
+											<input type="abrev" class="input-xlarge" id="abrev-edit" name="abrev-edit" value="{{ institucion.abreviatura }}">
+										</div>
+									</div>
+									
+									</div>
+									<div class="modal-footer">
+										<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+										<button type="submit" class="btn btn-primary">Guardar Datos</button>
+									</div>
+								</form>
+							</div>
+					{% endfor %}
+					{% else %}
+							<tr>
+								<td> </td>
+								<td>No se encontraron resultados</td>
+								<td> </td>
+								<td> </td>
+							</tr>
+					{% endif %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal hide fade" id="newUser">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Nueva Institución</h3>
+	</div>
+	<form id="newInstitucionForm" name="newInstitucionForm" action="{{ urlFor('nueva-institucion-post') }}" method="post" class="form-horizontal">
+		<div class="modal-body">
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Nombre</label>
+				<div class="controls">
+					<input type="nombre" class="input-xlarge" id="nombre" name="nombre" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Abreviatura</label>
+				<div class="controls">
+					<input type="abrev" class="input-xlarge" id="abrev" name="abrev" value="">
+				</div>
+			</div>			
+			
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+			<button type="submit" class="btn btn-primary">Guardar Datos</button>
+		</div>
+	</form>
+</div>
+
+<script>
+head.ready(function(){
+	$(function(){
+		var areaiTable = $('#institucion-table').dataTable({
+			"oLanguage": {
+			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			},
+			"fnDrawCallback": function () {
+			},
+			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+			"sPaginationType": "bootstrap",
+			"fnInitComplete": function(oSettings, json) {
+      			$('#results').fadeIn(500);
+    		}
+		});
+		
+		$('#newherramientaForm').isHappy({
+			fields: {
+				'#nombre':{
+					required: true,
+					message: 'nombre válido necesario',
+					test: happy.nombre
+				},
+			}
+		});
+	});
+});
+</script>
+{% endblock %}

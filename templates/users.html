@@ -1,0 +1,215 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	<div class="span12">
+		<div class="row">
+			<div class="span2">
+				<h2>Usuarios</h2>
+			</div>
+			<div class="span2">
+				<a id="nuevoUsuario" name="nuevoUsuario" href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
+					<i class="icon-user icon-white"></i> Nuevo Usuario
+				</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span11">
+				<div id="results" class="hide">
+				<table id="users-table" name="users-table" class="table table-bordered table-condensed table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nombre</th>
+							<th>Rol</th>
+							<th>Estatus</th>
+							<th>Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% if usuarios is defined %}
+						{% for usuario in usuarios %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ usuario.personal.nombre~" "~usuario.personal.paterno~" "~usuario.personal.materno}}</td>
+							<td>{{ usuario.ur[0].rol.nombre }}</td>
+							<td>
+								{% if usuario.activo == 1%}
+								Activo
+								{% else %}
+								Inactivo
+								{% endif %}
+							</td>
+							<td>
+								<div class="btn-group">
+									<a class="btn btn-primary" href="#" data-toggle="modal" data-target="#editar-usuario{{ usuario.id }}-modal" rel="tooltip" title="Editar">
+										<i class="icon-edit"> </i>
+									</a>
+									{% if usuario.activo == 1%}
+									<a class="btn btn-danger" href="{{ urlFor('cambiar-status-usuario',{'id': usuario.id}) }}" rel="tooltip" title="Desactivar usuario">
+										<i class="icon-remove-sign"> </i>
+									</a>
+									{% else %}
+									<a class="btn btn-success" href="{{ urlFor('cambiar-status-usuario',{'id': usuario.id}) }}" rel="tooltip" title="Activar usuario">
+										<i class="icon-ok-sign"> </i>
+									</a>
+									{% endif %}
+								</div>
+							</td>
+						</tr>
+<div class="modal hide fade" id="editar-usuario{{ usuario.id }}-modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Editar Usuario</h3>
+	</div>
+<form id="editUserForm" name="editUserForm" class="form-horizontal" action="{{ urlFor('actualiza-usuario-post',{'id':usuario.id}) }}" method="post">
+ 	<div class="modal-body">
+ 		<input type="hidden" value="{{ usuario.id }}" id="id" name="id">
+    	<div class="control-group">
+      		<label class="control-label" for="usuario">Usuario</label>
+      		<div class="controls">
+        		<input type="text" class="input-xlarge" id="usuario-edit" name="usuario-edit" value="{{ usuario.usuario }}">
+      		</div>
+    	</div>
+    	<div class="control-group">
+      		<label class="control-label" for="email">Email</label>
+      		<div class="controls">
+        		<input type="email" class="input-xlarge" id="email-edit" name="email-edit" value="{{ usuario.contacto.email }}">
+      		</div>
+    	</div>
+    	<div class="control-group">
+      		<label class="control-label" for="password">
+      			Contraseña 
+      			<a data-content="Si se especifica un nuevo password sobreescribira al anterior" rel="popover" data-original-title="Atención" class="mute">
+      				<i class="icon-info-sign"> </i>
+      			</a>
+      		</label>
+      		<div class="controls">
+        		<input type="password" class="input-xlarge" id="password" name="password" value="">
+      		</div>
+    	</div>
+    	<div class="control-group">
+      		<label class="control-label" for="rol">Rol</label>
+      		<div class="controls">
+      			<select id="rol-edit" name="rol-edit" class="input-xlarge">
+      				<option value="0">Selecciona una opción</option>
+      				{% for rol in roles %}
+      				<option value="{{ rol.id }}" {% if rol.id == usuario.ur[0].rol.id %} selected {% endif %}>{{ rol.nombre }}</option>
+      				{% endfor %}
+              	</select>
+      		</div>
+    	</div>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal"><i class="icon-remove-sign"> </i> Cancelar</a>
+		<button type="submit" class="btn btn-primary"><i class="icon-refresh"> </i> Actualizar</button>
+	</div>
+</form>
+</div>
+						{% endfor %}
+					{% else %}
+							<tr>
+								<td> </td>
+								<td>No se encontraron resultados</td>
+								<td> </td>
+								<td> </td>
+								<td> </td>
+							</tr>
+					{% endif %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal hide fade" id="newUser">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Nuevo Usuario</h3>
+	</div>
+	<form id="newUserForm" name="newUserForm" action="{{ urlFor('nuevo-usuario-post') }}" method="post" class="form-horizontal">
+ 	<div class="modal-body">
+    	<div class="control-group">
+      		<label class="control-label" for="usuario">Usuario</label>
+      		<div class="controls">
+        		<input type="text" class="input-xlarge" id="usuario" name="usuario" value="" placeholder="Usuario">
+      		</div>
+    	</div>
+    	<div class="control-group">
+      		<label class="control-label" for="email">Email</label>
+      		<div class="controls">
+        		<input type="email" class="input-xlarge" id="email" name="email" value="" placeholder="usuario@dominio.com">
+      		</div>
+    	</div>
+    	<div class="control-group">
+      		<label class="control-label" for="rol">Rol</label>
+      		<div class="controls">
+      			<select id="rol" name="rol" class="input-xlarge">
+      				<option value="0">Selecciona una opci&oacute;n</option>
+      				{% for rol in roles %}
+      				<option value="{{ rol.id }}">{{ rol.nombre }}</option>
+      				{% endfor %}
+              	</select>
+      		</div>
+    	</div>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal"><i class="icon-remove-sign"> </i> Cancelar</a>
+		<button type="submit" class="btn btn-primary"><i class="icon-plus-sign"> </i> Crear</button>
+	</div>
+	</form>
+</div>
+
+<script>
+head.ready(function(){
+	$(function(){
+		//$('#waiting').addClass('hide').fadeOut(2500);
+		$('#results').fadeIn(1500);
+		var usersTable = $('#users-table').dataTable({
+			"oLanguage": {
+			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			},
+			"fnDrawCallback": function () {
+			},
+			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+			"sPaginationType": "bootstrap"
+		});
+		
+		$('form#newUserForm').isHappy({
+			fields: {
+				'#usuario':{
+					required: true,
+					message: 'Alias de acceso necesario'
+				},
+				'#email':{
+					required: true,
+					message: 'Email válido necesario',
+					test: happy.email
+				},
+				'#rol':{
+					required: true,
+					message: 'Especifica un rol',
+					arg: 0,
+					test: happy.nequal
+				}
+			}
+		});
+		
+		/*NO COPIAR == EN PRUEBAS*/
+/*		$('#newUserForma').handleForm({
+			closeModal: true,
+			onSuccess: function(){
+				usersTable.fnAddData([
+					usersTable.fnGetData().length + 1,
+					"",
+					$('#rol').find(":selected").text(),
+					""
+				]);
+			}
+		});*/
+		/*NO COPIAR == EN PRUEBAS*/
+	});
+});
+</script>
+{% endblock %}

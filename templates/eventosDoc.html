@@ -1,0 +1,82 @@
+{% extends 'docente-base.html' %}
+{% block content %}
+<h3 align="center">Lista de eventos creados.</h3>
+<br/>
+<br/> 
+
+<table class="table table-bordered table-condensed table-striped" id="listaEventos" >
+	<thead>
+		<tr>
+			<th class="ziseTable">Fecha de creación</th>
+			<th class="ziseTable">Nombre de evento</th>
+			<th class="ziseTable">Descripcion</th>
+			<th class="ziseTable">Hora, de inicio</th>
+			<th class="ziseTable">Hora de terminacion</th>	
+			<th class="ziseTable">Prioridad</th>		
+		</tr>
+	</thead>
+	<tbody>
+	{% if eventos is defined %}
+	{% if eventos |length > 0  %}
+	{% for evento in eventos %}
+		<tr>
+			<td align="center">{{ evento.fecha_creado }}</td>
+			<td align="center">{{ evento.nombre }}</td>
+			<td align="center">{{ evento.descripcion }}</td>
+			<td align="center">{{ evento.hora_inicio }}</td>
+			<td align="center">{{ evento.hora_fin }}</td>
+			<td align="center">{{ evento.prioridad }}</td>
+		</tr>
+	{% endfor %}
+	{% else %}
+			<tr>
+				<td> </td>
+				<td colspan="4" align="center">No se encontraron resultados</td>
+				<td> </td>			
+			</tr>
+	{% endif %}
+	{% endif %}
+	</tbody>
+	{##}
+	
+</table>
+
+<script>
+head.ready(function(){
+	$(function(){
+		//$('#waiting').addClass('hide').fadeOut(2500);
+		$('#results').removeClass('hide').fadeIn(1500);
+		var usersTable = $('#listaEventos').dataTable({
+			"oLanguage": {
+			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			},
+			"fnDrawCallback": function () {
+			},
+			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+			"sPaginationType": "bootstrap"
+		});
+		
+		$('#newUserForm').isHappy({
+			fields: {
+				'#usuario':{
+					required: true,
+					message: 'Alias de acceso necesario'
+				},
+				'#email':{
+					required: true,
+					message: 'Email válido necesario',
+					test: happy.email
+				},
+				'#rol':{
+					required: true,
+					message: 'Especifica un rol',
+					arg: 0,
+					test: happy.nequal
+				}
+			}
+		});
+		
+	});
+});
+</script>
+{% endblock %}

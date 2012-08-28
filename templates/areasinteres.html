@@ -1,0 +1,126 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	
+	<div class="span12">
+		<div class="row">
+			<div class="span3">
+				<h2>Areas de Inter&eacutes</h2>
+			</div>
+			<div class="span3">
+				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
+					<i class="icon-plus-sign"> </i> Agregar Area de Inter&eacute;s
+				</a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span11">
+				<div id="results" class="hide">
+				<table id="areas-table" name="areas-table" class="table table-bordered table-condensed table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nombre</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% if areas_interes is defined %}
+						{% for area in areas_interes %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ area.nombre}}</td>
+							<td>
+								<a href="#" data-toggle="modal" data-target="#editar-ainteres{{ area.id }}-modal">Editar</a>
+								<a href="{{ urlFor('borrar-ainteres',{'id': area.id}) }}">Borrar</a>
+							</td>
+						</tr>
+<div class="modal hide fade" id="editar-ainteres{{ area.id }}-modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Editar Area</h3>
+	</div>
+ 	<div class="modal-body">
+ 	<form id="editAIForm" name="editAIForm" class="form-horizontal" action="{{ urlFor('actualiza-ainteres-post', { 'id':area.id }) }}" method="post">
+
+    	<div class="control-group">
+      		<label class="control-label" for="nombre">Nombre</label>
+      		<div class="controls">
+        		<input type="nombre" class="input-xlarge" id="nombre-edit" name="nombre-edit" value="{{ area.nombre }}">
+      		</div>
+    	</div>
+
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+		<button type="submit" class="btn btn-primary">Guardar Datos</button>
+	</div>
+    </form>
+</div>
+						{% endfor %}
+					{% else %}
+							<tr>
+								<td> </td>
+								<td>No se encontraron resultados</td>
+								<td> </td>
+								<td> </td>
+							</tr>
+					{% endif %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal hide fade" id="newUser">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Nueva Area de Inter&eacutes</h3>
+	</div>
+	<form id="newAIForm" name="newAIForm" action="{{ urlFor('nueva-ainteres-post') }}" method="post" class="form-horizontal">
+		<div class="modal-body">
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Nombre</label>
+				<div class="controls">
+					<input type="nombre" class="input-xlarge" id="nombre" name="nombre" value="">
+				</div>
+			</div>
+
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+			<button type="submit" class="btn btn-primary">Guardar Datos</button>
+		</div>
+	</form>
+</div>
+
+<script>
+head.ready(function(){
+	$(function(){
+		var areaiTable = $('#areas-table').dataTable({
+			"oLanguage": {
+			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			},
+			"fnDrawCallback": function () {
+			},
+			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+			"sPaginationType": "bootstrap",
+			"fnInitComplete": function(oSettings, json) {
+      			$('#results').fadeIn(500);
+    		}
+		});
+		
+		$('#newAIForm').isHappy({
+			fields: {
+				'#nombre':{
+					required: true,
+					message: 'nombre válido necesario',
+					test: happy.nombre
+				},
+			}
+		});
+	});
+});
+</script>
+{% endblock %}

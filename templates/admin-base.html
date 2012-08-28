@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'head.html' %}
+	<body>
+		<div class="container">
+			<div class='notifications top-right'> </div>
+			{% include 'navbar.html' %}
+			{% if (breadcrumb is defined) and (breadcrumb is not null)%}
+			<ul class="breadcrumb">
+				{% for item in breadcrumb %}
+				{% if loop.last %}
+				<li class="active">{{ item.name|raw }}</li>
+				{% else %}
+				<li>
+					<a href="{{ urlFor(item.alias) }}">{{ item.name|raw }}</a> <span class="divider">/</span>
+				</li>
+				{% endif %}
+				{% endfor %}
+			</ul>
+			{% endif %}
+			<div class="row">
+				<div class="span12">
+					<div id="main" class="content">
+					{% block content %} {% endblock %}
+					</div>
+				</div>
+			</div>
+		</div>
+	    <!-- container -->
+  		{% include 'js.twig' %}
+	</body>
+</html>

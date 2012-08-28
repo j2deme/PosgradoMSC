@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block page_title %}Inicio de Sesión{% endblock %}
+{% block back_link %}{% endblock %}
+
+{% block content%}
+<div class="row">
+	<div class="offset4 span4 content">
+		<form id="login-form" name="login-form" method="post" action="{{ urlFor('login-post')}}" class="form-horizontal">
+			<div class="alert alert-error" id="alert">
+				<strong>Oh snap!</strong>
+			</div>
+			<fieldset>
+			    <legend>Iniciar Sesi&oacute;n</legend>
+			    <div class="control-group">
+					<label class="control-label" for="username">Usuario</label>
+					<div class="controls">
+						<input type="text" class="span2" id="username" name="username" type="text" autofocus>
+						<p class="help-block"></p>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="password">Contrase&ntilde;a</label>
+					<div class="controls">
+						<input class="span2" id="password" name="password" type="password">
+					</div>
+				</div>
+				<div id="actions" class="form-actions">
+					<button type="submit" class="btn btn-success" id="login"><i class="icon-ok-sign icon-white"></i>&nbsp;Entrar</button>
+			    </div>
+			</fieldset>
+		</form>
+		<script>
+		head.ready("happy_methods",function() {
+			$('#login-form').isHappy({
+			    fields: {
+			      '#username': {
+			        required: true,
+			        message: 'Requerido',
+			      },
+			      '#password': {
+			        required: true,
+			        message: 'Requerida',
+			      }
+			    }
+			});
+		});
+		</script>
+	</div>
+</div>
+{% endblock %}

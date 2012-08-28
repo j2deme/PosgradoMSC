@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block page_title %}Posgrado{% endblock %}
+{% block breadcrumb %}{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="span8">
+		{% if seccion is defined %}
+		{{ seccion.contenido|raw }}
+		{% endif %}
+	</div>	
+</div>
+{% endblock %}

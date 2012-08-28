@@ -1,0 +1,81 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	<div class="span12">
+		<div class="row">
+			<div class="span2">
+				<h2>Aspirantes</h2>
+			</div>
+			{#<div class="span2">
+				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
+					<i class="icon-user icon-white"></i> Nuevo Usuario
+				</a>
+			</div>#}
+		</div>
+		<div class="row">
+			<div class="span11">
+				<div id="results" class="hide">
+				<table id="aspirantes-table" name="aspirantes-table" class="table table-bordered table-condensed table-striped">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nombre</th>
+							<th>Creado</th>
+							<th>Actualizado</th>
+							<th>Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% if aspirantes is defined %}
+						{% for aspirante in aspirantes %}
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ aspirante.personal.nombre~" "~aspirante.personal.paterno~" "~aspirante.personal.materno}}</td>
+							<td>{{ aspirante.creado|date("d/m/Y") }}</td>
+							<td>{{ aspirante.actualizado|date("d/m/Y") }}</td>
+							<td>
+								{#<div class="btn-group">#}
+									<a class="btn btn-success" href="{{ urlFor('procesar-aspirante',{'id': aspirante.id,'action':'aceptar'}) }}">
+										<i class="icon-ok-sign"> </i> Aceptar
+									</a>
+									<a class="btn btn-danger" href="{{ urlFor('procesar-aspirante',{'id': aspirante.id,'action': 'noaceptar'}) }}">
+										<i class="icon-remove-sign"> </i> No aceptar
+									</a>
+								{#</div>#}
+							</td>
+						</tr>
+						{% endfor %}
+					{% else %}
+							<tr>
+								<td> </td>
+								<td>No existen aspirantes</td>
+								<td> </td>
+								<td> </td>
+								<td> </td>
+							</tr>
+					{% endif %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+head.ready(function(){
+	$(function(){
+		$('#results').fadeIn(1500);
+		var usersTable = $('#aspirantes-table').dataTable({
+			"oLanguage": {
+			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			},
+			"fnDrawCallback": function () {
+			},
+			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+			"sPaginationType": "bootstrap"
+		});
+	});
+});
+</script>
+{% endblock %}
