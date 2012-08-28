@@ -12,6 +12,11 @@ require __DIR__.'/vendor/elFinder/connector.php';
 require __DIR__.'/vendor/Toolbox.php';
 require __DIR__.'/vendor/DirectoryLister.php';
 require __DIR__.'/vendor/upload.class.php';
+require __DIR__."/vendor/pChart/class/pData.class.php";
+require __DIR__."/vendor/pChart/class/pDraw.class.php";
+require __DIR__."/vendor/pChart/class/pPie.class.php";
+require __DIR__."/vendor/pChart/class/pImage.class.php";
+require __DIR__.'/vendor/Faker/autoload.php';
 
 Ladybug\Autoloader::register();
 
@@ -45,10 +50,11 @@ $app = new Slim(array(
 
 $app->post('/login/', function() use ($app) {
 	$validator = new GUMP();
+	ladybug_dump($_POST);
 	$_POST = $validator->sanitize($_POST);
 	$rules = array(
-		'usuario'    => 'required|alpha_numeric|max_len,100|min_len,5',
-		'password'    => 'required|max_len,100|min_len,6',
+		'usuario'    => 'required|alpha_dash|max_len,100',
+		'password'    => 'required|max_len,100',
 	);
 
 	$filters = array(
@@ -57,13 +63,14 @@ $app->post('/login/', function() use ($app) {
 	);
 	$_POST = $validator->filter($_POST, $filters);
 	$validated = $validator->validate($_POST, $rules);
+	ladybug_dump($validated);
 	if($validated === true) {
 		$user = Usuario::find_by_usuario($_POST['usuario']);
 		if(is_object($user)){
 			if($user->password === $_POST['password']){
 				if($user->activo == 1){
 					$expiration = (isset($_POST['cookie']) ? '1 month' : '2 hours');
-					$app -> setCookie('userId', $user -> id, $expiration);	
+					$app -> setCookie('userId', $user -> id, $expiration);
 				} else {
 					$flash = array(
 						"title" => "ERROR",
@@ -85,7 +92,7 @@ $app->post('/login/', function() use ($app) {
 				$app -> flash("flash", $flash);
 				$app -> flashKeep();
 				$app -> redirect($app->urlFor('home'));
-			}	
+			}
 		} else {
 			$flash = array(
 				"title" => "ERROR",
@@ -145,7 +152,7 @@ $app->post('/nuevo-usuario/', function() use($app){
 	$validator = new GUMP();
 	$_POST = $validator->sanitize($_POST);
 	$rules = array(
-		'usuario'    => 'required|alpha_dash|max_len,100|min_len,4',
+		'usuario'    => 'required|alpha_dash|max_len,100',
 		'email'    => 'required|valid_email',
 	);
 
@@ -162,7 +169,6 @@ $app->post('/nuevo-usuario/', function() use($app){
 			//TODO Verificar que el nombre de usuario no exista antes de guardar
 			$user = Usuario::find_by_login($_POST['usuario']);
 			if(is_object($user)) return false;
-			
 			$usuario = new Usuario();
 			$usuario->usuario = $_POST['usuario'];
 			$usuario->password = md5($password);
@@ -171,28 +177,28 @@ $app->post('/nuevo-usuario/', function() use($app){
 			$usuario->actualizado = time();
 			$usuario->save();
 			if(!$usuario)return false;
-			
+
 			$ur = new UsuariosRoles();
 			$ur->rol_id = $_POST['rol'];
 			$ur->usuario_id = $usuario->id;
 			$ur->save();
 			if(!$ur)return false;
-			
+
 			$personal = new Personal();
 			$personal->usuario_id = $usuario->id;
 			$personal->save();
 			if(!$personal)return false;
-			
+
 			$academico = new Academico();
 			$academico->usuario_id = $usuario->id;
 			$academico->save();
 			if(!$academico)return false;
-			
+
 			$laboral = new Laboral();
 			$academico->usuario_id = $usuario->id;
 			$laboral->save();
 			if(!$laboral)return false;
-			
+
 			$contacto = new Contacto();
 			$contacto->usuario_id = $usuario->id;
 			$contacto->email = $_POST['email'];
@@ -201,7 +207,7 @@ $app->post('/nuevo-usuario/', function() use($app){
 			$contacto->contactar = 0;
 			$contacto->save();
 			if(!$contacto)return false;
-			
+
 			return true;
 		});
 		if($ok){
@@ -225,7 +231,7 @@ $app->post('/nuevo-usuario/', function() use($app){
 				"msg" => $msg,
 				"type" => "success",
 				"fade" => 1
-			);	
+			);
 		} else {
 			$flash = array(
 				"title" => "ERROR",
@@ -256,7 +262,7 @@ $app->post('/actualiza-usuario/:id/', function($id) use($app){
 	$_POST = $validator->sanitize($_POST);
 	$password = $_POST['password'];
 	$rules = array(
-		'usuario-edit'    => 'required|alpha_dash|max_len,100|min_len,4',
+		'usuario-edit'    => 'required|alpha_dash|max_len,100',
 		'email-edit'    => 'required|valid_email',
 	);
 
@@ -267,15 +273,14 @@ $app->post('/actualiza-usuario/:id/', function($id) use($app){
 	);
 	$post = $_POST = $validator->filter($_POST, $filters);
 	$validated = $validator->validate($_POST, $rules);
-	if($validated === TRUE) {
-	    #// TODO USO DE TRANSACCIONES
+	if($validated === true) {
 		$ok = Usuario::transaction(function() use($post,$password,$id){
 			$usuario = Usuario::find($id);
 			if($_POST['usuario-edit'] != ""){
 				$usuario->usuario = $_POST['usuario-edit'];
 			}
 			if($password != ""){
-				$usuario->password = md5($password);	
+				$usuario->password = md5($password);
 			}
 			$usuario->actualizado = time();
 			$usuario->save();
@@ -541,10 +546,16 @@ $app->post('/uploader/',function() use($app){
 	}
 })->name('uploader');
 
-$app->get('/admin/estadisticas/', function() use($app){
+#XXX Graficas
+require 'graphs.php';
+/*$app->get('/admin/estadisticas/', function() use($app){
+	$data['breadcrumb'] = array(
+		array("name" => "Panel de Control","alias" => "admin"),
+		array("name" => "Estadísticas", "alias" => "admin-estadisticas")
+	);
 	$data['user'] = isAllowed("Administrador", false);
 	$app->render('statistics.html',$data);
-})->name('admin-estadisticas');
+})->name('admin-estadisticas');*/
 
 $app->get('/admin/secciones/', function() use($app){
 	$data['breadcrumb'] = array(
@@ -1057,7 +1068,7 @@ $app->post('/nuevo-tesista/',function() use($app){
     );
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
-    if($validated === TRUE) {
+    if($validated === true) {
     	   $posgrado= new Posgrado;
            $posgrado->usuario_id=$_POST['tesista'];
            $posgrado->nombre=$_POST['nombreTesis'];
@@ -1164,7 +1175,7 @@ $app->post('/nuevo-subir-doc/',function() use($app){
  * === ALUMNO/ASPIRANTE ==
  * =======================*/
 $app->get('/editor-perfil/', function() use($app) {
-	$data['user'] = isAllowed(array('Alumno','Aspirante'),FALSE);
+	$data['user'] = isAllowed(array('Alumno','Aspirante'), false);
 	$data['usuario'] = Usuario::find(1, array('include' => array('academico','personal','contacto','pg','laboral','docente')));
 	$data['contacto'] = $data['usuario']->contacto;
 	$data['personal'] = $data['usuario']->personal;
