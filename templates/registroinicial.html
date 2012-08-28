@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+	<div class="span8">
+				<h1 align="">Creacion de Cuenta</h1>
+				<br />
+				<form id="registro" name="registro" method="post" action="{{ urlFor('registro-aspirante-post') }}" class="form-horizontal">
+					<div class="control-group">
+						<label class="control-label" for="nombre">Nombre:</label>
+						<div class="controls">
+							<input id="nombre" name="nombre" class="span3" placeholder="Ingrese su Nombre/s" />
+						</div>
+					</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="ap">Apellido Paterno:</label>
+					<div class="controls">
+						<input id="ap" name="ap" class="span3" placeholder="Ingrese su Apellido Paterno" />
+					</div>
+			</div>
+			
+			
+			
+			<div class="control-group">
+				<label class="control-label" for="am">Apellido Materno:</label>
+					<div class="controls">
+						<input id="am" name="am" class="span3" placeholder="Ingrese su Apellido Materno" />
+					</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="email">Correo Electronico:</label>
+					<div class="controls">
+						<input id="email" name="email" class="span3" placeholder="Ingrese su Correo Electronico" />
+					</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="usuario">Nombre Usuario</label>
+					<div class="controls">
+						<input id="usuario" name="usuario" class="span3" placeholder="Ingrese el nombre del usuario" />
+					</div>
+			</div>
+			
+			
+			
+			<div class="control-group">
+				
+				<label class="control-label" for="pass">Contraseña:</label>
+					<div class="controls">
+						<input id="pass" name="pass" class="span3" placeholder="Ingrese Contraseña" type="password"/>
+					</div>
+			</div>
+		
+			
+			
+			<div class="control-group">
+				<label class="control-label" for="confirmacion">Confirmar Contraseña:</label>
+			
+					<div class="controls">
+						<input id="confirmacion" name="confirmacion" class="span3" placeholder="Confirmar contraseña" type="password"/>
+					</div>
+			</div>
+			<br />
+			
+			<div class="form-actions">
+				<button class=" btn" type="reset">Cancelar</button>
+				<button class=" btn btn-primary" type="submit">Crear</button>
+			</div>
+			
+		</form>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

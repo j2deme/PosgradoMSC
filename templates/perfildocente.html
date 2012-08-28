@@ -9,6 +9,7 @@
    			 <li><a href="#tab3" data-toggle="tab">Información de Contacto</a></li>
    			 <li><a href="#tab4" data-toggle="tab">Experiencia Laboral</a></li>
    			 <li><a href="#tab5" data-toggle="tab">Datos Docente</a></li>
+   			 <li><a href="#tab7" data-toggle="tab">Idiomas</a></li>
   	  	</ul>
     	<div class="tab-content">
     		<!-------------------------------------------------Primera Tab...........------------------------------------------------------>
@@ -34,7 +35,7 @@
     					<div class="span4">
     						<label for="nacimento">Fecha de Nacimiento:</label>
     						<div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-								<input id="nacimiento" name="nacimiento" class="span2 datepicker" size="16" type="text" value="{{ personal.fnd|default('') }}">
+								<input id="nacimiento" name="nacimiento" class="span2 datepicker" size="16" type="text" value="{{ personal.fdn|default('') }}">
 								<span class="add-on"><i class="icon-calendar"></i></span>
 							</div>
     					</div>
@@ -73,7 +74,7 @@
     				<select id="nmunicipio" name="nmunicipio" class="chzn-select" data-placeholder="Selecciona Municipio" >
     					<option> </option>
     					{% for municipio in municipios %}
-    					<option value="{{ municipio.id }}">{{ municipio.nombre }}</option>
+    					<option value="{{ municipio.id }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
     					{% endfor %}
     				</select>
     			</div>
@@ -82,9 +83,25 @@
     				<select id="nlocalidad" name="nlocalidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
     					<option> </option>
     					{% for localidad in localidades %}
-    					<option value="{{ localidad.id }}">{{ localidad.nombre }}</option>
+    					<option value="{{ localidad.id }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
     					{% endfor %}
     				</select>
+    				<script>
+    					head.ready(function(){
+							$(function(){
+    							$("#nmunicipio").chained("#nestado");  
+    							$('#nmunicipio').trigger("liszt:updated");
+    							 $("#nestado").bind("change", function(){
+       							 $("#nmunicipio").trigger("liszt:updated")
+   								 });
+								$("#nlocalidad").chained("#nmunicipio");
+								$('#nlocalidad').trigger("liszt:updated");
+								$("#nmunicipio").bind("change", function(){
+       							 $("#nlocalidad").trigger("liszt:updated")
+   								 });
+							});
+						});
+    				</script>
     			</div>
     		</div>
     					<hr />
@@ -100,7 +117,7 @@
     							<label for="calle">Calle:</label>
     							<input id="calle"name="calle"type="text"placeholder="Calle" value="{{personal.calle|default('')}}"/>
     							<label for="numex">Numero Externo:</label>
-    							<input id="numex" name="numex"type="number"placeholder="Numero Externo" vale="{{ personal.num_ext|default('') }}" />
+    							<input id="numex" name="numex"type="number"placeholder="Numero Externo" value="{{ personal.num_ext|default('') }}" />
     							<label for="numint">Numero Interno:</label>
     							<input id="numint"name="numint"type="number"placeholder="Numero Interno" value="{{ personal.num_int|default('') }}" />
     						</div>
@@ -177,6 +194,7 @@
     		<div class="row">
     			<div class="span4">
     				<label class="checkbox" for="trabajo"><input id="trabajo"name="trabajo"type="checkbox" {% if laboral.trabajado is defined %} {% if laboral.trabajado==1 %} checked {% endif %}{% endif %}/> Ha trabajado</label>
+    				<br />
     			</div>
     		</div>
     		<div class="row">
@@ -192,6 +210,7 @@
     		</div>
     		<div class="row">
     			<div class="span12">
+    				<br />
     				<label for="explab">Esperiencia Laboral:</label>
     				<textarea id="explab"name="explab">{{ laboral.experiencia|default('') }}</textarea>
     			</div>
@@ -291,12 +310,140 @@
    	 					</div>
    	 				</div>
     	</form>
+    	
+    	
     </div>
    </div>
   </div>
 </div>
+
+<!-------------------------------------------------------------Septima Tab ----------------------------------------------------------------->
+
+
+<div class="tab-pane fade" id="tab7">
+	<form id="idiomas" name="idiomas" method="post" action="">
+		
+		<div class="row">
+			<div class="span10 offset1">
+				
+				<br />
+				<button class="btn-primary btn "  data-toggle="modal" href="#modnuevoidioma">
+					Nuevo idioma
+				</button>
+				<br />
+				<br />
+				
+				<table id="tablaidiomas" name="tablaisiomas" class="table table-striped table-bordered">
+					
+					<thead>
+						<tr>
+							<th align="center">#</th>
+							<th align="center">Idioma</th>
+							<th align="center">Lee</th>
+							<th align="center">Escribe</th>
+							<th align="center">Habla</th>
+							<th align="center">Entiende</th>
+							<th align="center">Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if idiomasusuario is defined %}
+							{% for  idiomausuario in idiomasusuario %}
+						<tr>
+							<td>{{ idiomausuario.id }}</td>
+							<td>{{ idiomausuario.idioma.nombre }}</td>
+							<td>{{ idiomausuario.lee }}%</td>
+							<td>{{ idiomausuario.escribe }}%</td>
+							<td>{{ idiomausuario.habla }}%</td>
+							<td>{{ idiomausuario.entiende }}%</td>
+							<td>
+								<a data-toggle="modal" href="#modeditaridioma{{ idiomausuario.id }}">Editar</a>
+								<a href="{{ urlFor('nuevo-tesista-post') }}">Borrar</a>
+							</td>
+						</tr>
+							{% endfor %}
+							{% else %}
+							<td>No se han agregado idiomas en su perfil</td>
+						{% endif %}
+						
+					</tbody>
+					
+				</table>
+								
+			</div>
+			
+		</div>
+		
+	</form>
 </div>
 
-<!-------------------------------------------------------------Modales----------------------------------------------------------------->
+
+
+</div>
+
+<!---------------------------------------------------------------------------Modales------------------------------------------------------------->
     
+   {% for idiomausuario in idiomasusuario %} 
+    <div class="modal hide fade" id="modeditaridioma{{ idiomausuario.id }}">
+    <div class="modal-header">
+    	<h3>Editar Idioma</h3>
+    </div>
+    <div class="modal-body">
+    		<form class="" method="post" action="{{ urlFor('nuevo-idioma-post') }}">
+    		<div class="row">
+    			<div class="span2 offset1">
+    				
+    				<label for="lee">Lee:</label> 
+    				<input id="lee" name="lee" value="{{ idiomausuario.lee }}"/>
+    				<label for="escribe">Escribe:</label> 
+    				<input id="escribe" name="escribe" value="{{ idiomausuario.escribe }}"/>
+    				<label for="habla">Habla:</label> 
+    				<input id="habla" name="habla" value="{{ idiomausuario.habla }}" />
+    				<label for="entiende">Entiende:</label> 
+    				<input id="entiende" name="entiende" value="{{ idiomausuario.entiende }}"/>		
+    			</div>
+    		</div>		
+    		
+            </form>
+    </div>
+    <div class="modal-footer">
+    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
+    	<button class="btn btn-primary" > Guardar</button>
+    </div>
+</div>
+{% endfor %}
+
+
+<div class="modal hide fade" id="modnuevoidioma">
+    <div class="modal-header">
+    	<h3>Nuevo Idioma</h3>
+    </div>
+    <div class="modal-body">
+    		<form class="" method="post" action="{{ urlFor('nuevo-idioma-post') }}">
+    		<div class="row">
+    			<div class="span2 offset1">
+    				<label for="idioma">Idioma:</label>
+    				<select id="idioma" class="chzn-select">
+    					{% for idioma in idiomas %}
+    					<option value="{{ idioma.id }}">{{ idioma.nombre }}</option>
+    					{% endfor %}
+    				</select>
+    				<label for="lee">Lee:</label> 
+    				<input id="lee" name="lee" />
+    				<label for="escribe">Escribe:</label> 
+    				<input id="escribe" name="escribe" />
+    				<label for="habla">Habla:</label> 
+    				<input id="habla" name="habla" />
+    				<label for="entiende">Entiende:</label> 
+    				<input id="entiende" name="entiende" />		
+    			</div>
+    		</div>		
+    		
+            </form>
+    </div>
+    <div class="modal-footer">
+    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
+    	<button class="btn btn-primary" > Guardar</button>
+    </div>
+</div>
 {% endblock %}

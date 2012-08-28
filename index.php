@@ -12,11 +12,6 @@ require __DIR__.'/vendor/elFinder/connector.php';
 require __DIR__.'/vendor/Toolbox.php';
 require __DIR__.'/vendor/DirectoryLister.php';
 require __DIR__.'/vendor/upload.class.php';
-require __DIR__."/vendor/pChart/class/pData.class.php";
-require __DIR__."/vendor/pChart/class/pDraw.class.php";
-require __DIR__."/vendor/pChart/class/pPie.class.php";
-require __DIR__."/vendor/pChart/class/pImage.class.php";
-require __DIR__.'/vendor/Faker/autoload.php';
 
 Ladybug\Autoloader::register();
 
@@ -50,11 +45,10 @@ $app = new Slim(array(
 
 $app->post('/login/', function() use ($app) {
 	$validator = new GUMP();
-	ladybug_dump($_POST);
 	$_POST = $validator->sanitize($_POST);
 	$rules = array(
-		'usuario'    => 'required|alpha_dash|max_len,100',
-		'password'    => 'required|max_len,100',
+		'usuario'    => 'required|alpha_numeric|max_len,100|min_len,5',
+		'password'    => 'required|max_len,100|min_len,6',
 	);
 
 	$filters = array(
@@ -63,7 +57,6 @@ $app->post('/login/', function() use ($app) {
 	);
 	$_POST = $validator->filter($_POST, $filters);
 	$validated = $validator->validate($_POST, $rules);
-	ladybug_dump($validated);
 	if($validated === true) {
 		$user = Usuario::find_by_usuario($_POST['usuario']);
 		if(is_object($user)){
@@ -152,7 +145,7 @@ $app->post('/nuevo-usuario/', function() use($app){
 	$validator = new GUMP();
 	$_POST = $validator->sanitize($_POST);
 	$rules = array(
-		'usuario'    => 'required|alpha_dash|max_len,100',
+		'usuario'    => 'required|alpha_dash|max_len,100|min_len,4',
 		'email'    => 'required|valid_email',
 	);
 
@@ -263,7 +256,7 @@ $app->post('/actualiza-usuario/:id/', function($id) use($app){
 	$_POST = $validator->sanitize($_POST);
 	$password = $_POST['password'];
 	$rules = array(
-		'usuario-edit'    => 'required|alpha_dash|max_len,100',
+		'usuario-edit'    => 'required|alpha_dash|max_len,100|min_len,4',
 		'email-edit'    => 'required|valid_email',
 	);
 
@@ -274,7 +267,8 @@ $app->post('/actualiza-usuario/:id/', function($id) use($app){
 	);
 	$post = $_POST = $validator->filter($_POST, $filters);
 	$validated = $validator->validate($_POST, $rules);
-	if($validated === true) {
+	if($validated === TRUE) {
+	    #// TODO USO DE TRANSACCIONES
 		$ok = Usuario::transaction(function() use($post,$password,$id){
 			$usuario = Usuario::find($id);
 			if($_POST['usuario-edit'] != ""){
@@ -547,16 +541,10 @@ $app->post('/uploader/',function() use($app){
 	}
 })->name('uploader');
 
-#XXX Graficas
-require 'graphs.php';
-/*$app->get('/admin/estadisticas/', function() use($app){
-	$data['breadcrumb'] = array(
-		array("name" => "Panel de Control","alias" => "admin"),
-		array("name" => "Estadísticas", "alias" => "admin-estadisticas")
-	);
+$app->get('/admin/estadisticas/', function() use($app){
 	$data['user'] = isAllowed("Administrador", false);
 	$app->render('statistics.html',$data);
-})->name('admin-estadisticas');*/
+})->name('admin-estadisticas');
 
 $app->get('/admin/secciones/', function() use($app){
 	$data['breadcrumb'] = array(
@@ -710,10 +698,10 @@ $app->get('/relacion-aceptados/', function() use($app){
 	//TODO Relacion Aceptados
 	$app->render('relacion-aceptados.html');
 })->name('relacion-aceptados');
-
+//TODO por ver
 $app->get('/publicaciones/', function() use($app){
 	$user['usuarios'] = Usuario::find_by_id('1');
-	$data['publicaciones']= Publicacion::find_all_by_autor($user['usuarios']->id); 
+	$data['publicaciones']= Publicacion::find_all_by_usuario_id($user['usuarios']->id); 
 	$app->render('publicaciones.html',$data);
 })->name('publicaciones');
 
@@ -737,9 +725,315 @@ $app->get('/docente/', function() use($app){
      $app->render('docente.html');
 })->name('docente');
 
+
+$app->get('/docente/publicaciones/', function() use($app){
+    $user ['usuarios']= Usuario::find_by_id('1');
+    $data['publicaciones']= Publicacion::find_all_by_usuario_id($user['usuarios']->id); 
+    #ladybug_dump($data);  
+     $app->render('publicaciones.html');
+ })->name('docente-publicaciones');
+ 
+ $app->get('/docente/publicaciones-post',function() use($app){
+        $userid=isAllowed('Docente');
+       $validator= new GUMP;
+       $_POST=$validator->sanitize($_POST);
+        if ($_POST['tipo']==1) {
+             $rules=array(
+            'mautor'=>'required|alpha',
+            'mtitulo'=>'required|alpha',
+            'mpublicacion'=>'required|alpha',
+            'mfechapublicacion'=>'required',
+            );
+            $filters=array(
+        
+            );
+            $_POST = $validator->filter($_POST, $filters);
+            $validated = $validator->validate($_POST, $rules);
+            if($validated === TRUE){
+                $pub=new Publicacion;
+                $pub->nombre=$_POST['mtitulo'];
+                $pub->usuario_id=$userid;
+                $pub->coautores=$_POST['mautor'];
+                $pub->evento=$_POST['mpublicacion'];
+                $pub->fecha_publicacion=$_POST['mfechapublicacion'];
+                $pub->tipo_publicacion="Memoria";
+                $pub->save();
+        
+            $flash = array(
+            "title" => "OK",
+            "msg" => "Se ha guardado la memoria.",
+            "type" => "success",
+            "fade" => 1
+             );
+            $app -> flash("flash", $flash);
+            $app->flashKeep();
+            $app->redirect($app->urlFor('docente-publicaciones'));
+          
+        } else {
+           $flash = array(
+            "title" => "OK",
+            "msg" => "ha ocurrido un problema. Vuelva a intenrar.",
+            "type" => "error",
+            "fade" => 1
+        );
+        $app -> flash("flash", $flash);
+         $app->flashKeep();
+        $app->redirect($app->urlFor('docente-publicaciones'));
+        }  
+        } else {
+           if ($_POST['tipo']==2) {
+             $rules=array(
+            'rautor'=>'required|alpha',
+            'rtitulo'=>'required|alpha',
+            'revista'=>'required|alpha',
+            'rtipo'=>'required',
+            'rfechapublicacion'=>'required'
+            );
+            $filters=array(
+        
+            );
+            $_POST = $validator->filter($_POST, $filters);
+            $validated = $validator->validate($_POST, $rules);
+            if($validated === TRUE){
+                $pub=new Publicacion;
+                $pub->nombre=$_POST['rtitulo'];
+                $pub->usuario_id=$userid;
+                $pub->revista=$_POST['revista'];
+                $pub->tipo=$_POST['rtipo'];
+                $pub->fecha_publicacion=$_POST['rfrchapublicacion'];
+                $pub->tipo_publicacion="Revista";
+                $pub->save();
+        
+            $flash = array(
+            "title" => "OK",
+            "msg" => "Se ha guardado la revista.",
+            "type" => "success",
+            "fade" => 1
+             );
+            $app -> flash("flash", $flash);
+            $app->flashKeep();
+            $app->redirect($app->urlFor('docente-publicaciones'));
+          
+        } else {
+           $flash = array(
+            "title" => "OK",
+            "msg" => "ha ocurrido un problema. Vuelva a intenrar.",
+            "type" => "error",
+            "fade" => 1
+        );
+        $app -> flash("flash", $flash);
+         $app->flashKeep();
+        $app->redirect($app->urlFor('docente-publicaciones'));
+        }  
+        } else {
+          if ($_POST['tipo']==3) {
+             $rules=array(
+            'lautor'=>'required|alpha',
+            'ltitulo'=>'required|alpha',
+            'editorial'=>'required|alpha',
+            'isbn'=>'required|numeric',
+            'lfechapublicacion'=>'required',
+            
+            );
+            $filters=array(
+        
+            );
+            $_POST = $validator->filter($_POST, $filters);
+            $validated = $validator->validate($_POST, $rules);
+            if($validated === TRUE){
+                $pub=new Publicacion;
+                $pub->nombre=$_POST['ltitulo'];
+                $pub->usuario_id=$userid;
+                $pub->editorial=$_POST['editorial'];
+                $pub->fecha_publicacion=$_POST['lfechapublicacion'];
+                $pub->tipo_publicacion="Libro";
+                $pub->save();
+        
+            $flash = array(
+            "title" => "OK",
+            "msg" => "Se ha guardado el libro.",
+            "type" => "success",
+            "fade" => 1
+             );
+            $app -> flash("flash", $flash);
+            $app->flashKeep();
+            $app->redirect($app->urlFor('docente-publicaciones'));
+          
+        } else {
+           $flash = array(
+            "title" => "OK",
+            "msg" => "ha ocurrido un problema. Vuelva a intenrar.",
+            "type" => "error",
+            "fade" => 1
+        );
+        $app -> flash("flash", $flash);
+         $app->flashKeep();
+        $app->redirect($app->urlFor('docente-publicaciones'));
+        }  
+        } else {
+           if ($_POST['tipo']==4) {
+             $rules=array(
+            'tautor'=>'required|alpha',
+            'ttitulo'=>'required|alpha',
+            'nacionalidad'=>'required|alpha',
+            'ttipo'=>'required',
+            'tfechapublicacion'=>'required',
+            );
+            $filters=array(
+        
+            );
+            $_POST = $validator->filter($_POST, $filters);
+            $validated = $validator->validate($_POST, $rules);
+            if($validated === TRUE){
+                $pub=new Publicacion;
+                $pub->nombre=$_POST['ttitulo'];
+                $pub->usuario_id=$userid;
+                $pub->nacionalidad=$_POST['nacionalidad'];
+                $pub->tipo=$_POST['ttipo'];
+                $pub->tipo_publicacion="Trabajo";
+                $pub->save();
+        
+            $flash = array(
+            "title" => "OK",
+            "msg" => "Se ha guardado el trabajo.",
+            "type" => "success",
+            "fade" => 1
+             );
+            $app -> flash("flash", $flash);
+            $app->flashKeep();
+            $app->redirect($app->urlFor('docente-publicaciones'));
+          
+        } else {
+           $flash = array(
+            "title" => "OK",
+            "msg" => "ha ocurrido un problema. Vuelva a intenrar.",
+            "type" => "error",
+            "fade" => 1
+        );
+        $app -> flash("flash", $flash);
+         $app->flashKeep();
+        $app->redirect($app->urlFor('docente-publicaciones'));
+        }  
+        }
+       }  
+       } 
+       }
+       
+        
+ })->name('publicaciones-post');
+ 
+ $app->get('/registro-aspirantes/',function() use($app){
+     $app->render('registroinicial.html');
+ })->name('registro-inicio');
+ 
+ #// TODO POS DE REGISTRO INICIAL
+ $app->post('/formulario-registro-post/',function() use($app){
+    $validator = new GUMP();
+    $_POST = $validator->sanitize($_POST);
+    $rules = array(
+        'nombre' => 'required|alpha',
+        'ap'    => 'alpha',
+        'am' => 'alpha',
+        'email'=>'required|valid_email',
+        'usuario' => 'required|alpha',
+        'pass'=>'required|alpha',
+        'confirmacion'=>'required|alpha',
+    );
+    $filters = array(
+        
+    );
+    $_POST = $validator->filter($_POST, $filters);
+    $validated = $validator->validate($_POST, $rules);
+    if($validated === TRUE){
+      if ($_POST['pass']==$_POST['confirmacion']) {
+          $personal= new Personal;
+          $us=new Usuario;
+          $contacto=new Contacto;
+          
+          $usuariosroles=new UsuariosRoles;
+          $us->login=$_POST['usuario'];
+          $us->password=$_POST['pass'];
+          $us->activo=1;
+          $us->save();
+          
+          $personal->nombre=$_POST['nombre'];
+          $personal->paterno=$_POST['ap'];
+          $personal->materno=$_POST['am'];
+          $personal->save();
+          
+          $contacto->email=$_POST['email'];
+          $contacto->save();
+          
+          $flash = array(
+            "title" => "OK",
+            "msg" => "Se ha creado la cuenta exitosamente.",
+            "type" => "success",
+            "fade" => 1
+          );
+          $app -> flash("flash", $flash);
+          $app->flashKeep();
+          $app->redirect($app->urlFor('registro-aspirante'));
+          
+      } else {
+           $flash = array(
+        "title" => "OK",
+        "msg" => "Los Campos de Confimacion y contraseña deben ser identicos.",
+        "type" => "error",
+        "fade" => 1
+      );
+      $app -> flash("flash", $flash);
+     $app->flashKeep();
+     $app->redirect($app->urlFor('registro-aspirante'));
+     }  
+    }
+ })->name('registro-aspirante-post');
+ 
+ 
+ 
 $app->get('/docente/tesistas/', function() use($app){
-	$data['user'] = isAllowed("Docente", false);
-	$app->render('gestTesista02.html');
+   
+	$data['user'] = isAllowed("Docente",FALSE);
+    $rolalumno=Rol::find_by_nombre('Alumno');
+    
+    $idss=UsuariosRoles::find_all_by_rol_id($rolalumno->id);
+        
+    $idalumnos=array();
+    foreach ($idss as $u) {
+        $idalumnos[] = $u->usuario_id;
+    }
+    $alumnos=array();
+    $datosalumnos = Usuario::find_all_by_id($idalumnos,array('include'=> array('personal')));
+    foreach ($datosalumnos as $u) {
+        $dato = new Generic;
+        $dato->nombrecompleto=trim($u->personal->nombre." ".$u->personal->paterno." ".$u->personal->materno);
+        $dato->id=$u->id;
+        $alumnos[]=$dato;
+        unset($dato);
+    }
+    $data['alumnos']=$alumnos;
+    
+    $pos=$data['posgrados']=Posgrado::find_all_by_asesor(2);
+    
+    $idtesistas = array();
+    foreach ($pos as $u) {
+        $idtesistas[] = $u->usuario_id;
+    }
+    $tesistas=array();
+    $datostesista = Usuario::find_all_by_id($idtesistas,array('include'=> array('personal')));
+    foreach ($datostesista as $u) {
+        $dato = new Generic;
+        $dato->nombrecompleto=trim($u->personal->nombre." ".$u->personal->paterno." ".$u->personal->materno);
+        $dato->id=$u->id;
+        $tesistas[]=$dato;
+        unset($dato);
+    }
+    $data['datostesistas']=$tesistas;
+   
+    $data['lineas']= LineaInvestigacion::all();
+    /*ladybug_dump($data);
+    /*ladybug_dump($data['lineas'][0]);
+   /* ladybug_dump($data['datostesistas'][0]);*/
+	$app->render('gestTesista02.html',$data);
 })->name('docente-tesistas');
 
 $app->get('/docente/eventos/', function() use($app){
@@ -749,6 +1043,7 @@ $app->get('/docente/eventos/', function() use($app){
 })->name('eventosDoc');
 
 $app->post('/nuevo-tesista/',function() use($app){
+    $data['user'] = isAllowed("Docente",FALSE);
 	$validator = new GUMP();
 	$_POST = $validator->sanitize($_POST);
 	$rules = array(
@@ -762,16 +1057,72 @@ $app->post('/nuevo-tesista/',function() use($app){
     );
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
-    if($validated === true) {
-    	   
+    if($validated === TRUE) {
+    	   $posgrado= new Posgrado;
+           $posgrado->usuario_id=$_POST['tesista'];
+           $posgrado->nombre=$_POST['nombreTesis'];
+           $posgrado->asesor=$data['user']->id;
+           if (isset($_POST['ingreso'])) {
+               $posgrado->asignacion=$_POST['ingreso'];
+           }
+           if (isset($_POST['finCur'])) {
+               $posgrado->asignacion=$_POST['finCur'];
+           }
+           if (isset($_POST['ftitulacion'])) {
+               $posgrado->asignacion=$_POST['ftitulacion'];
+           }
+           if (isset($_POST['lineaInv'])) {
+               $posgrado->asignacion=$_POST['lineaInv'];
+           }
+           $posgrado->save();
     } else {
 		
     }
 })->name('nuevo-tesista-post');
 
+$app->post('/nuevo-documentotesista/',function() use($app){
+    $data['user'] = isAllowed("Docente",FALSE);
+    $validator = new GUMP();
+    $_POST = $validator->sanitize($_POST);
+    $rules = array(
+    );
+    $filters = array(
+    );
+    $_POST = $validator->filter($_POST, $filters);
+    $validated = $validator->validate($_POST, $rules);
+    if($validated === TRUE) {
+           $posgrado= new Posgrado;
+        
+        $uploaddir = "uploads/";
+        $uploadfilename = strtolower(str_replace(" ", "_",basename($_FILES['archivo']['name'])));
+         $uploadfile = $uploaddir.$uploadfilename;
+         $error = $_FILES['archivo']['error'];
+        $subido = false;
+        if(isset($_POST['boton']) && $error==UPLOAD_ERR_OK) {
+            if($_FILES['archivo']['type']!="image/gif" || $_FILES['archivo']['size'] > 100000) {
+                 $error = "Comprueba que el archivo sea una imagen en formato gif y de tamano inferior a 10Kb.";
+            } elseif(preg_match("/[^0-9a-zA-Z_.-]/",$uploadfilename)) {
+            $error = "El nombre del archivo contiene caracteres no válidos.";
+         } else {
+        $subido = copy($_FILES['archivo']['tmp_name'], $uploadfile); 
+            }
+        } 
+ if($subido) {
+    echo "El archivo subio con exito";
+   } else {
+    echo "Se ha producido un error: ".$error;
+  }
+
+           
+    } else {
+        
+    }
+})->name('nuevo-documentotesis-post');
+
+
 $app->get('/docente/perfil/', function() use($app) {
-	$data['user'] = isAllowed("Docente", false);
-    $data['usuario'] = Usuario::find($userId,array('include' => array('academico','personal','contacto','pg','laboral','docente')));
+	$data['user'] = isAllowed("Docente",FALSE);
+    $data['usuario'] = Usuario::find(2,array('include' => array('academico','personal','contacto','pg','laboral','docente')));
     $data['contacto'] = $data['usuario']->contacto;
     $data['personal'] = $data['usuario']->personal;
     $data['academico'] = $data['usuario']->academico;
@@ -784,6 +1135,9 @@ $app->get('/docente/perfil/', function() use($app) {
     $data['localidades'] = Localidad::all();
     $data['snis'] = SNI::all();
     $data['promeps'] = PROMEP::all();
+    $data['idiomas']=Idioma::all();
+    $data['idiomasusuario']=UsuariosIdiomas::find_all_by_usuario_id(2,array('include' => array('idioma')));
+     /* ladybug_dump($data['idiomasusuario']);  */
     
     $app->render('perfildocente.html',$data);
 })->name('perfil-docente');
@@ -810,8 +1164,8 @@ $app->post('/nuevo-subir-doc/',function() use($app){
  * === ALUMNO/ASPIRANTE ==
  * =======================*/
 $app->get('/editor-perfil/', function() use($app) {
-	$data['user'] = isAllowed(array('Alumno','Aspirante'), false);
-	$data['usuario'] = Usuario::find($userId, array('include' => array('academico','personal','contacto','pg','laboral','docente')));
+	$data['user'] = isAllowed(array('Alumno','Aspirante'),FALSE);
+	$data['usuario'] = Usuario::find(1, array('include' => array('academico','personal','contacto','pg','laboral','docente')));
 	$data['contacto'] = $data['usuario']->contacto;
 	$data['personal'] = $data['usuario']->personal;
 	$data['academico'] = $data['usuario']->academico;
@@ -822,11 +1176,28 @@ $app->get('/editor-perfil/', function() use($app) {
 	$data['estados'] = Estado::all();
 	$data['municipios'] = Municipio::all();
 	$data['localidades'] = Localidad::all();
-	$data['sni'] = SNI::all();
-	$data['promep'] = PROMEP::all();
+	$data['areas'] = AreaInteres::all();
+	$data['herramientas'] = Herramienta::all();
+	$data['idiomas'] = Idioma::all();
+	$data['lenguajes'] = Lenguaje::all();
+	$data['plataformas'] = Plataforma::all();
+    $data['idiomasusuario']=UsuariosIdiomas::find_all_by_usuario_id(1,array('include' => array('idioma')));
+    $data['herramientasusuario']=UsuariosHerramientas::find_all_by_usuario_id(1,array('include'=>array('herramienta')));
+    $data['plataformasusuario']=UsuariosPlataformas::find_all_by_usuario_id(1,array('include'=>array('plataforma')));
+    $data['lenguajesusuario']=UsuariosLenguajes::find_all_by_usuario_id(1,array('include'=>array('lenguaje')));
+    $data['areasusuario']=UsuariosAreas::find_all_by_usuario_id(1);
+    $data['formas']=FormaTitulacion::all();
+    $data['carreras']=Carrera::all();
+    
+    /*ladybug_dump($data);*/
     
 	$app->render('perfilaspirantes.html', $data);
 })->name('perfil');
+
+$app->get('/test/', function() use($app){
+	$data['user'] = isAllowed("Administrador",FALSE);
+	ladybug_dump($data);
+})->name('test');
 
 $app->post('/nuevo-datos-personales/',function() use($app){
     $validator = new GUMP();
@@ -1011,6 +1382,65 @@ $app->post('/nuevo-datos-docente/',function() use($app){
         
     }
 })->name('nuevo-datosdocente-post');
+
+$app->post('/nuevo-conocimiento/',function() use($app){
+    
+    $data['user'] = isAllowed(array("Docente","Alumno"),FALSE);
+    $validator = new GUMP();
+    $_POST = $validator->sanitize($_POST);
+    $rules = array(
+        );
+    $filters = array(
+    );
+    $_POST = $validator->filter($_POST, $filters);
+    $validated = $validator->validate($_POST, $rules);
+    if($validated === TRUE) {
+        
+        if (isset($_POST['area'])) {
+            foreach ($_POST['area'] as $area) {
+                 
+             $areainteres=new UsuariosAreas;
+             $areainteres->usuario_id=1;
+             $areainteres->area_id=$_POST['area'];
+             $areainteres->save();   
+            }
+        }
+        if (isset($_POST['lenguaje'])) {
+            foreach ($_POST['lenguaje'] as $lenguaje) {
+                
+                
+                
+                $lenguajes=new UsuariosLenguajes;
+                $lenguajes->usuario_id=1/*$data['user']->id*/;
+                $lenguajes->lenguaje_id=$lenguaje;
+                $lenguajes->save();
+            }    
+        }
+        if (isset($_POST['herramienta'])) {
+            foreach ($_POST['herramienta'] as $herramienta) {
+                $herramientas=new UsuariosHerramientas;
+                $herramientas->usuario_id=1;
+                $herramientas->herramienta_id=$herramienta;
+                $herramientas->save();
+            }
+        }
+        if (isset($_POST['plataformas'])) {
+            foreach ($_POST['plataformas'] as $plataformas) {
+                $plataforma=new UsuariosPlataformas;
+                $plataforma->usuario_id=1;
+                $plataforma->plataforma_id=$plataformas;
+                $plataforma->save();  
+            }
+        }
+        
+        
+        /*ladybug_dump($_POST);*/
+    } else {
+        
+    }
+})->name('nuevo-conocimiento-post');
+
+
 
 /* =======================
  * ====== CATALOGOS ======
