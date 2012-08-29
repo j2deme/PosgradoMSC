@@ -235,21 +235,20 @@ $app->get('/graficas/procedencia/(:slug)', function($slug) use($app){
 			$ids[$proc] = 1;
 		}
 	}*/
-	for ($i=1; $i <= 10; $i++) { 
+/*	for ($i=1; $i <= 10; $i++) { 
 		$proc = abs($faker->randomDigit);
 		if(isset($ids[$proc])){
 			$ids[$proc]++;
 		} else {
 			$ids[$proc] = 1;
 		}
-	}
+	}*/
 	sort($ids);
-	$count = count($ids);
+/*	$count = count($ids);
 	$names = array();
 	for ($i=0; $i < $count; $i++) { 
 		$names[] = $faker->country();
-	}
-//	ladybug_dump($ids);
+	}*/
 	
 	$data = new pData();
 	$data->addPoints($ids,"Procedencia");
