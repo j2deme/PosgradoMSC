@@ -11,6 +11,7 @@ class Municipio extends ActiveRecord\Model {
 	);
 	
 	static $alias_attribute = array(
+		'estado' => 'estado_id'
 	);
 }
 ?>

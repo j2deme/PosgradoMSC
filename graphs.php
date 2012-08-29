@@ -246,6 +246,12 @@ $app->get('/graficas/procedencia/(:slug)', function($slug) use($app){
 	sort($ids);
 	$count = count($ids);
 	$names = array();
+	
+	foreach ($ids as $key => $value) {
+		$localidad = Localidad::find_one($key);
+		$municipio_id = $localidad->municipio;
+		$municipio = Municipio::find_one($municipio_id);
+	}
 /*	for ($i=0; $i < $count; $i++) { 
 		$names[] = $faker->country();
 	}*/

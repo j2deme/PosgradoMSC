@@ -11,7 +11,7 @@ class Localidad extends ActiveRecord\Model {
 	);
 	
 	static $alias_attribute = array(
-		
+		'municipio' => 'municipio_id'
 	);
 }
 ?>
