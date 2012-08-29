@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="span12">
+	<div class="row">
+		<h2>Eventos</h2>
+	</div>
+	<div class="row">
+		<table id="eventos" class=" table table-bordered table-contened table-striped">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Nombre</th>
+					<th>Autor</th>
+					<th>Descripción</th>
+					<th>Fecha de Inicio</th>
+					<th>Fecha Final</th>
+					<th>Proiridad</th>
+					<th>Fecha de Creación</th>
+					<th>Hora de Inicio</th>
+					<th>Hora Final</th>
+					<th>Validador</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% if eventos is defined %}
+					
+					{% for evento in eventos %}
+					
+						<tr>
+							<td>{{ loop.index }}</td>
+							<td>{{ evento.nombre }}</td>
+							<td>{{ evento.autor }}</td>
+							<td>{{ evento.descripcion }}</td>
+							<td>{{ evento.fecha_inicio }}</td>
+							<td>{{ evento.fecha_fin }}</td>
+							<td>{{ evento.prioridad }}</td>
+							<td>{{ evento.fecha_creado }}</td>
+							<td>{{ evento.hora_inicio }}</td>
+							<td>{{ evento.hora_fin }}</td>
+							<td>{{ evento.validado }}</td>
+							<td>
+								<a href="#" data-toggle="modal" data-target="#editar-evento{{ evento.id }}-modal">Editar</a>
+								<a href="{{ urlFor('borrar-evento',{'id': evento.id}) }}">Borrar</a>
+							</td>
+						</tr>
+						
+					{% endfor %}
+				
+				{% else %}
+
+					<tr>
+								<td> </td>
+								<td>No se encontraron resultados</td>
+								<td> </td>
+								<td> </td>
+							</tr>
+					
+				{% endif %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{% endblock %}
