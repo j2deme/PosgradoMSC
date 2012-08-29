@@ -2054,7 +2054,7 @@ $app->get('/borrar-rol/:id/', function($id) use($app){
 //******
 $app->get('/catalogos/eventos/', function () use($app) {
 	$data['eventos'] = Evento::all();
-    $app->render('eventos.html', $data);
+    $app->render('nuevoevento.html', $data);
 })->name('CatEvento');
 
 $app->post('/nuevo-evento/', function() use($app){
