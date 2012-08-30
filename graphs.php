@@ -124,10 +124,7 @@ $app->get('/graficas/estadistica-genero/(:slug)', function($slug) use($app){
 	$data->addPoints($exalumnos,"Egresados");
 	$data->addPoints($exalumnas,"Egresadas");
 	$pink = array("R"=>250,"G"=>54,"B"=>100,"Alpha"=>100);
-//	$pink = array("R"=>225,"G"=>35,"B"=>35,"Alpha"=>100);
 	$blue = array("R"=>41,"G"=>138,"B"=>238,"Alpha"=>100);
-//	$data->setPalette(array('Candidatos','Aceptados','Alumnos','Egresados'),$blue);
-//	$data->setPalette(array('Candidatas','Aceptadas','Alumnas','Egresadas'),$pink);
 //	$data->setAxisName(0,"Relación por Genero");
 	$data->addPoints($years,"Labels");
 	$data->setSerieDescription("Labels","Años");
@@ -142,7 +139,7 @@ $app->get('/graficas/estadistica-genero/(:slug)', function($slug) use($app){
 //	$graph->drawScale(array("Floating"=>true,"GridR"=>200,"GridG"=>200,"GridB"=>200,"DrawSubTicks"=>true,"CycleBackground"=>true,"Mode"=>SCALE_MODE_ADDALL));
 	$graph->drawScale($scaleSettings);
 	$graph->setShadow(false);
-	$graph->drawBarChart(array("DisplayValues"=>true,"DisplayColor"=>DISPLAY_AUTO,"Gradient"=>false,"Surrounding"=>10,"InnerSurrounding"=>10,"RecordImageMap"=>TRUE));
+	$graph->drawBarChart(array("DisplayValues"=>true, "DisplayColor"=>DISPLAY_AUTO, "Gradient"=>false, "Surrounding"=>10, "InnerSurrounding"=>10, "RecordImageMap"=>TRUE));
 //	$graph->writeLabel(array("Hombres","Mujeres"),1,array("DrawVerticalLine"=>TRUE));
 	$graph->drawLegend($m->lx, $m->ly,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
 	$graph->stroke();
