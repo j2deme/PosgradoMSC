@@ -28,7 +28,7 @@ function humanize_gump($errors, $dictionary = array (),$html = TRUE) {
 	foreach ($errors as $e) {
 		$campo = $e['field'];
 		$regla = $e['rule'];
-		$response[$campo][] = $m = $messages($regla,$campo);
+		$response[$campo][] = $m = $message($regla,$campo);
 		$list .= "<li>" . $m . "</li>";
 	}
 	$list .= "</ul>";
