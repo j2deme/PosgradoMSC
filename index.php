@@ -1214,15 +1214,13 @@ $app->post('/nuevo-datos-personales/',function() use($app){
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
-        'nombre'    => 'required|alpha',
-        'ap'    => 'required|alpha',
-        'am' => 'required|alpha',
+        'nombre'    => 'required',
+        'ap'    => 'required',
+        'am' => 'required',
         'nacimiento' => 'required',
         'sexo' => 'required|numeric',
-        'calle' => 'alpha',
-        'numex' => 'required|numeric|max_len,4|min_len,1',
+        'numex' => 'numeric|max_len,4|min_len,1',
         'numint' => 'numeric|max_len,4|min_len,1',
-        'colonia' => 'alpha',
         'cp' => 'required|numeric|max_len,5|min_len,5',
         'nlocalidad' => 'numeric',
         );
@@ -1239,6 +1237,7 @@ $app->post('/nuevo-datos-personales/',function() use($app){
     );
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
+    
     if($validated === true) {
        $perfilpersonal =  new Personal();
        $perfilpersonal->nombre = $_POST['nombre'];
@@ -1264,13 +1263,16 @@ $app->post('/nuevo-datos-personales/',function() use($app){
         $app->flashKeep();
         $app->redirect($app->urlFor('perfil'));
     } else {
+       
         $msgs = humanize_gump($validated);
+         ladybug_dump($msgs);
         $flash = array(
             "title" => "ERROR",
             "msg" => $msgs,
             "type" => "error",
             "fade" => 0
         );
+        
         $app -> flash("flash", $flash);
         $app->flashKeep();
         $app->redirect($app->urlFor('perfil'));

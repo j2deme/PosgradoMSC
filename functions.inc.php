@@ -2,6 +2,7 @@
 function humanize_gump($errors, $dictionary = array (),$html = TRUE) {
 	$response = array();
 	$message = function($regla,$campo) {
+	     ladybug_dump($errors);
 		$campo = (isset($dictionary[$campo])) ? $dictionary[$campo] : $campo;
 		$messages = array(
 			'validate_required' => "El valor del campo $campo es obligatorio, y no debe ser vacío.",
@@ -28,7 +29,7 @@ function humanize_gump($errors, $dictionary = array (),$html = TRUE) {
 	foreach ($errors as $e) {
 		$campo = $e['field'];
 		$regla = $e['rule'];
-		$response[$campo][] = $m = $messages($regla,$campo);
+		$response[$campo][] = $m = $message($regla,$campo);
 		$list .= "<li>" . $m . "</li>";
 	}
 	$list .= "</ul>";
