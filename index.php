@@ -1211,6 +1211,7 @@ $app->get('/test/', function() use($app){
 })->name('test');
 
 $app->post('/nuevo-datos-personales/',function() use($app){
+    ladybug_dump($_POST['nlocalidad']);
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
@@ -1246,6 +1247,7 @@ $app->post('/nuevo-datos-personales/',function() use($app){
        $perfilpersonal->fdn = $_POST['nacimiento'];
        $perfilpersonal->sexo = $_POST['sexo'];
        $perfilpersonal->procedencia = $_POST['nlocalidad'];
+       
        $perfilpersonal->calle = $_POST['calle'];
        $perfilpersonal->num_ext = $_POST['numex'];
        if (isset($_POST['numint'])) {
