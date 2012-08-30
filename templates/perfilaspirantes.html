@@ -176,19 +176,20 @@
     				</select>
     			</div>
     		</div>
+    		<br />
     		<div class="row">
     			<div class="span4">
     				<label for="ingreso">Fecha de Ingreso:</label>
     				<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
 						<input id="ingreso" name="ingreso" class="span2 datepicker" size="16" type="text" value="{{ academico.ingreso|default('') }}">
-						<span class="add-on datapicker"><i class="icon-calendar"></i></span>
+						<span class="add-on "><i class="icon-calendar"></i></span>
 					</div>
     			</div>
     			<div class="span4">
     				<label for="egreso">Fecha de egreso:</label>
     				<div class="input-append date" id="dp5" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
 						<input id="egreso" name="egreso" class="span2 datepicker" size="16" type="text" value="{{ academico.egreso|default('') }}">
-						<span class="add-on datepicker"><i class="icon-calendar"></i></span>
+						<span class="add-on "><i class="icon-calendar"></i></span>
 					</div>
     			</div>
     		</div>
@@ -220,10 +221,11 @@
     				<select id="localidad" name="localidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
     					<option> </option>
     					{% for localidad in localidades %}
-    					<option value="{{ localidad.id }}" class="localidad.municipio_id">{{ localidad.nombre }}</option>
+    					<option value="{{ localidad.id }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
     					{% endfor %}
     				</select>
-    				<script>
+    			</div>
+    			<script>
     					head.ready(function(){
 							$(function(){
     							$("#municipio").chained("#estado");  
@@ -239,7 +241,6 @@
 							});
 						});
     				</script>
-    			</div>
     		</div>
     		<div class="row">
    	 					<div class="span10 offset1">
@@ -561,7 +562,8 @@
     		<div class="row">
     			<div class="span2 offset1">
     				<label for="idioma">Idioma:</label>
-    				<select id="idioma" class="chzn-select">
+    				<select id="idioma" class="chzn-select" data-placeholder="Seleccione un idioma" >
+    					<option></option>
     					{% for idioma in idiomas %}
     					<option value="{{ idioma.id }}">{{ idioma.nombre }}</option>
     					{% endfor %}
