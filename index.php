@@ -1253,8 +1253,27 @@ $app->post('/nuevo-datos-personales/',function() use($app){
        $perfilpersonal->colonia = $_POST['colonia'];
        $perfilpersonal->cp = $_POST['cp'];
        $perfilpersonal->save();
+       $flash = array(
+            "title" => "OK",
+            "msg" => "Datos personales guardados correctamente.",
+            "type" => "success",
+            "fade" => 1
+        );
+
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('perfil'));
     } else {
-        
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+            "fade" => 0
+        );
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('perfil'));
     }
 })->name('nuevo-datospersonales-post');
 
@@ -1277,7 +1296,7 @@ $app->post('/nuevo-datos-academicos/',function() use($app){
         'carrera'    => 'trim',
         'forma' => 'trim',
         'ingreso' => 'trim',
-        'egreso' => 'trom',
+        'egreso' => 'trim',
         'estado' => 'trim',
         'municipio' => 'trim',
         'localidad' => 'trim',
@@ -1293,8 +1312,27 @@ $app->post('/nuevo-datos-academicos/',function() use($app){
         $perfilacademico->titulacion = $_POST['forma'];
         $perfilacademico->ubicacion = $_POST['localidad'];
         $perfilacademico->save();
+     $flash = array(
+            "title" => "OK",
+            "msg" => "Datos académicos guardados correctamente.",
+            "type" => "success",
+            "fade" => 1
+        );
+
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('perfil'));
     } else {
-        
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+            "fade" => 0
+        );
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('perfil'));
     }
 })->name('nuevo-datosacademicos-post');
 
@@ -1325,8 +1363,27 @@ $app->post('/nuevo-info-contacto/',function() use($app){
         $perfilinfo->contactar = $_POST['mantener'];
         $perfilinfo->forma = $_POST['enterado'];
 		$perfilinfo->save();     
+    $flash = array(
+            "title" => "OK",
+            "msg" => "Datos de contacto guardados correctamente.",
+            "type" => "success",
+            "fade" => 1
+        );
+
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('perfil'));
     } else {
-        
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+            "fade" => 0
+        );
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('perfil'));
     }
 })->name('nuevo-infocontacto-post');
 
@@ -1334,11 +1391,11 @@ $app->post('/nuevo-experiencia-laboral/',function() use($app){
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
-        'trabajo' => 'required|alpha',
-        'anostrabajo' => 'required|alpha',
+        'trabajo' => 'alpha',
+        'anostrabajo' => 'alpha',
     );
     $filters = array(
-        'explab' => 'trim|sanitize_string',
+        'explab' => 'sanitize_string',
     );
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
@@ -1348,8 +1405,27 @@ $app->post('/nuevo-experiencia-laboral/',function() use($app){
         $perfillaboral->experiencia = $_POST['explab'];
         $perfillaboral->tiempo = $_POST['anostrabajo'];
         $perfillaboral->save();
+    $flash = array(
+            "title" => "OK",
+            "msg" => "Datos de experiencia laboral guardados correctamente.",
+            "type" => "success",
+            "fade" => 1
+        );
+
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('perfil'));
     } else {
-        
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+            "fade" => 0
+        );
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('perfil'));
     }
 })->name('nuevo-explaboral-post');
 
