@@ -148,6 +148,7 @@
    	 <form id="datosacademicos" name="datoscademicos" method="post" action="{{ urlFor('nuevo-datosacademicos-post') }}">
     		<div class="row">
     			<div class="span12">
+    				<input id="id" name="id" type="hidden" value="{{ academico.id }}" />
     				<label for="institucion">Institucion de Procedencia:</label>
     				<select id="institucion" name="institucion" class="chzn-select" data-placeholder="Selecciona Institucion" >
     					<option> </option>
@@ -260,6 +261,7 @@
    	 					<div class="span4">
    	 						<label for="email">Email:</label>
    	 						<input id="email"name="email"type="text" placeholder="Email" value="{{ contacto.email|default('') }}"/>
+   	 						<input id="id" name="id" type="hidden" value="{{ contacto.id }}" />
    	 					</div>
    	 					<div class="span4">
    	 						<label for="enterado">Forma Enterado:</label>
@@ -304,6 +306,13 @@
    	 <form id="explaboral" name="explaboral" method="post" action="{{ urlFor('nuevo-explaboral-post') }}">
     		<div class="row">
     			<div class="span2">
+    				{% if laboral is defined %}
+    				{% if laboral is not null %}
+    				<input id="id" name="id" type="hidden" value="{{ laboral.id }}" />
+    				{% endif %}
+    				{% else %}
+    				<input id="id" name="id" type="hidden" value="0" />
+    				{% endif %}
     				<label class="checkbox" for="trabajo"><input id="trabajo"name="trabajo"type="checkbox" {% if laboral.trabajado is defined %} {% if laboral.trabajado==1 %} checked {% endif %}{% endif %}/> Ha trabajado</label>
     			</div>
     			<div class="span4">

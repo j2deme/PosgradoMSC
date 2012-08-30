@@ -1219,8 +1219,7 @@ $app->post('/nuevo-datos-personales/',function() use($app){
         'am' => 'required',
         'nacimiento' => 'required',
         'sexo' => 'required|numeric',
-        'numex' => 'numeric|max_len,4|min_len,1',
-        'numint' => 'numeric|max_len,4|min_len,1',
+        'numex' => 'required|max_len,4|min_len,1',
         'cp' => 'required|numeric|max_len,5|min_len,5',
         'nlocalidad' => 'numeric',
         );
@@ -1239,7 +1238,25 @@ $app->post('/nuevo-datos-personales/',function() use($app){
     $validated = $validator->validate($_POST, $rules);
     
     if($validated === true) {
-       $perfilpersonal =  new Personal();
+        if ( isset($_POST['id'])) {
+            $perfilpersonal=Personal::find(1);
+            $perfilpersonal->nombre = $_POST['nombre'];
+       $perfilpersonal->paterno = $_POST['ap'];
+       $perfilpersonal->materno = $_POST['am'];
+       $perfilpersonal->fdn = $_POST['nacimiento'];
+       $perfilpersonal->sexo = $_POST['sexo'];
+       $perfilpersonal->procedencia = $_POST['nlocalidad'];
+       $perfilpersonal->calle = $_POST['calle'];
+       $perfilpersonal->num_ext = $_POST['numex'];
+       if (isset($_POST['numint'])) {
+                 $perfilpersonal->num_int = $_POST['numint'];  
+       }
+       
+       $perfilpersonal->colonia = $_POST['colonia'];
+       $perfilpersonal->cp = $_POST['cp'];
+       $perfilpersonal->save();
+        } else {
+            $perfilpersonal =  new Personal();
        $perfilpersonal->nombre = $_POST['nombre'];
        $perfilpersonal->paterno = $_POST['ap'];
        $perfilpersonal->materno = $_POST['am'];
@@ -1248,10 +1265,14 @@ $app->post('/nuevo-datos-personales/',function() use($app){
        $perfilpersonal->procedencia = $_POST['nlocalidad'];
        $perfilpersonal->calle = $_POST['calle'];
        $perfilpersonal->num_ext = $_POST['numex'];
-       $perfilpersonal->num_int = $_POST['numint'];
+       if (isset($_POST['numint'])) {
+       $perfilpersonal->num_int = $_POST['numint'];    
+       }
+       
        $perfilpersonal->colonia = $_POST['colonia'];
        $perfilpersonal->cp = $_POST['cp'];
        $perfilpersonal->save();
+        }
        $flash = array(
             "title" => "OK",
             "msg" => "Datos personales guardados correctamente.",
@@ -1306,7 +1327,8 @@ $app->post('/nuevo-datos-academicos/',function() use($app){
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if($validated === true) {
-        $perfilacademico = new Academico();
+        if (isset($_POST['id'])) {
+        $perfilacademico = Academico::find($_POST['id']);
         $perfilacademico->institucion = $_POST['institucion'];
         $perfilacademico->carrera = $_POST['carrera'];
         $perfilacademico->ingreso = $_POST['ingreso'];
@@ -1314,6 +1336,16 @@ $app->post('/nuevo-datos-academicos/',function() use($app){
         $perfilacademico->titulacion = $_POST['forma'];
         $perfilacademico->ubicacion = $_POST['localidad'];
         $perfilacademico->save();
+        } else {
+            $perfilacademico = new Academico();
+        $perfilacademico->institucion = $_POST['institucion'];
+        $perfilacademico->carrera = $_POST['carrera'];
+        $perfilacademico->ingreso = $_POST['ingreso'];
+        $perfilacademico->egreso = $_POST['egreso'];
+        $perfilacademico->titulacion = $_POST['forma'];
+        $perfilacademico->ubicacion = $_POST['localidad'];
+        $perfilacademico->save();
+        }
      $flash = array(
             "title" => "OK",
             "msg" => "Datos académicos guardados correctamente.",
@@ -1358,13 +1390,25 @@ $app->post('/nuevo-info-contacto/',function() use($app){
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if($validated === true) {
-		$perfilinfo = new Contacto();
+        if ($_POST['id']) {
+           $perfilinfo = Contacto::find($_POST['id']);
         $perfilinfo->email = $_POST['email'];
         $perfilinfo->movil = $_POST['movil'];
         $perfilinfo->fijo = $_POST['fijo'];
         $perfilinfo->contactar = $_POST['mantener'];
         $perfilinfo->forma = $_POST['enterado'];
-		$perfilinfo->save();     
+        $perfilinfo->save();      
+        } else {
+            $perfilinfo = new Contacto();
+        $perfilinfo->email = $_POST['email'];
+        $perfilinfo->movil = $_POST['movil'];
+        $perfilinfo->fijo = $_POST['fijo'];
+        $perfilinfo->contactar = $_POST['mantener'];
+        $perfilinfo->forma = $_POST['enterado'];
+        $perfilinfo->save();     
+        }
+        
+		
     $flash = array(
             "title" => "OK",
             "msg" => "Datos de contacto guardados correctamente.",
@@ -1393,8 +1437,6 @@ $app->post('/nuevo-experiencia-laboral/',function() use($app){
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
-        'trabajo' => 'alpha',
-        'anostrabajo' => 'alpha',
     );
     $filters = array(
         'explab' => 'sanitize_string',
@@ -1402,11 +1444,21 @@ $app->post('/nuevo-experiencia-laboral/',function() use($app){
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if($validated === true) {
-		$perfillaboral = new Laboral();
+        if ($_POST['id']) {
+             $perfillaboral =Laboral::find($_POST['id']);
         $perfillaboral->trabajado = $_POST['trabajo'];        
         $perfillaboral->experiencia = $_POST['explab'];
         $perfillaboral->tiempo = $_POST['anostrabajo'];
-        $perfillaboral->save();
+        $perfillaboral->save(); 
+        } else {
+           $perfillaboral = new Laboral();
+        $perfillaboral->trabajado = $_POST['trabajo'];        
+        $perfillaboral->experiencia = $_POST['explab'];
+        $perfillaboral->tiempo = $_POST['anostrabajo'];
+        $perfillaboral->save(); 
+        }
+        
+		
     $flash = array(
             "title" => "OK",
             "msg" => "Datos de experiencia laboral guardados correctamente.",
@@ -1453,13 +1505,14 @@ $app->post('/nuevo-datos-docente/',function() use($app){
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if($validated === true) {
-		$perfldocente= new Docente();
-		$perfldocente->grado = $_POST['grado'];
-		$perfldocente->sni = $_POST['sni'];
-		if(isset($_POST['pertenecesni'])) {
-			$perfldocente->tiene_sni = $_POST['1'];
+        if ($_POST['id']) {
+            $perfldocente=Docente::find($_POST['id']);
+        $perfldocente->grado = $_POST['grado'];
+        $perfldocente->sni = $_POST['sni'];
+        if(isset($_POST['pertenecesni'])) {
+            $perfldocente->tiene_sni = $_POST['1'];
        } else {
-			$perfldocente->tiene_sni = $_POST['0'];
+            $perfldocente->tiene_sni = $_POST['0'];
        }
        
        $perfldocente->sni = $_POST['sni'];
@@ -1467,8 +1520,45 @@ $app->post('/nuevo-datos-docente/',function() use($app){
        $perfldocente->cedula = $_POST['cedula'];
        $perfldocente->promep = $_POST['promep'];
        $perfldocente->save();
-    } else {
+        } else {
+            $perfldocente= new Docente();
+        $perfldocente->grado = $_POST['grado'];
+        $perfldocente->sni = $_POST['sni'];
+        if(isset($_POST['pertenecesni'])) {
+            $perfldocente->tiene_sni = $_POST['1'];
+       } else {
+            $perfldocente->tiene_sni = $_POST['0'];
+       }
+       
+       $perfldocente->sni = $_POST['sni'];
+       $perfldocente->especialidad = $_POST['especialidad'];
+       $perfldocente->cedula = $_POST['cedula'];
+       $perfldocente->promep = $_POST['promep'];
+       $perfldocente->save();
+        }
         
+		
+    $flash = array(
+            "title" => "OK",
+            "msg" => "Datos de docente guardados correctamente.",
+            "type" => "success",
+            "fade" => 1
+        );
+
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('perfil-docente'));
+    } else {
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+            "fade" => 0
+        );
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('perfil-docente'));
     }
 })->name('nuevo-datosdocente-post');
 
