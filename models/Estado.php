@@ -12,7 +12,7 @@ class Estado extends ActiveRecord\Model {
 	
 	static $alias_attribute = array(
 		'nombre' => 'nombre_comun',
-		'noficial' => 'nombre_oficial',
+		'oficial' => 'nombre_oficial',
 		'abr' => 'abreviatura'
 	);
 }
