@@ -21,6 +21,7 @@
     					<div class="span4">
     						<label for="nombre">Nombre:</label>
     						<input id="nombre"name="nombre" type="text" placeholder="Nombre" value="{{ personal.nombre|default('') }}"/>
+    						<input id="id" name="id" type="hidden" value="{{ personal.id }}" />
     					</div>
     					<div class="span4">
     						<label for="ap">Apellido Paterno:</label>
@@ -117,7 +118,7 @@
     							<label for="calle">Calle:</label>
     							<input id="calle"name="calle"type="text"placeholder="Calle" value="{{personal.calle|default('')}}"/>
     							<label for="numex">Numero Externo:</label>
-    							<input id="numex" name="numex"type="number"placeholder="Numero Externo" value="{{ personal.num_ext|default('') }}" />
+    							<input id="numex" name="numex"type="number"placeholder="Numero Externo" vale="{{ personal.num_ext|default('') }}" />
     							<label for="numint">Numero Interno:</label>
     							<input id="numint"name="numint"type="number"placeholder="Numero Interno" value="{{ personal.num_int|default('') }}" />
     						</div>
@@ -130,7 +131,7 @@
     						</div>
     				</div>
     				<div class="row">
-   	 					<div class="span12">
+   	 					<div class="span10 offset1">
    	 						<div class="form-actions">
    	 							<button id="" name="" class="btn btn-primary" type="submit">Guardar</button>
    	 							<button id=""name="" class="btn"type="reset">Cancelar</button>
@@ -149,6 +150,7 @@
    	 					<div class="span4">
    	 						<label for="email">Email:</label>
    	 						<input id="email"name="email"type="text" placeholder="Email" value="{{ contacto.email|default('') }}"/>
+   	 						<input id="id" name="id" type="hidden" value="{{ contacto.id }}" />
    	 					</div>
    	 					<div class="span4">
    	 						<label for="enterado">Forma Enterado:</label>
@@ -179,7 +181,7 @@
    	 			</div>
    	 		</div>
    	 				<div class="row">
-   	 					<div class="span12">
+   	 					<div class="span10 offset1">
    	 						<div class="form-actions">
    	 							<button id="" name="" class="btn btn-primary" type="submit">Guardar</button>
    	 							<button id=""name="" class="btn"type="reset">Cancelar</button>
@@ -192,12 +194,16 @@
      <div class="tab-pane fade" id="tab4">
    	 <form id="explaboral" name="explaboral" method="post" action="{{ urlFor('nuevo-explaboral-post') }}">
     		<div class="row">
-    			<div class="span4">
+    			<div class="span2">
+    				{% if laboral is defined %}
+    				{% if laboral is not null %}
+    				<input id="id" name="id" type="hidden" value="{{ laboral.id }}" />
+    				{% endif %}
+    				{% else %}
+    				<input id="id" name="id" type="hidden" value="0" />
+    				{% endif %}
     				<label class="checkbox" for="trabajo"><input id="trabajo"name="trabajo"type="checkbox" {% if laboral.trabajado is defined %} {% if laboral.trabajado==1 %} checked {% endif %}{% endif %}/> Ha trabajado</label>
-    				<br />
     			</div>
-    		</div>
-    		<div class="row">
     			<div class="span4">
     				<label for="anostrabajo">Años Trabajo:</label>
     				<select id="anostrabajo"name="anostrabajo" class="chzn-select">
@@ -208,15 +214,16 @@
     				</select>
     			</div>
     		</div>
+    		<br />
+    		<br />
     		<div class="row">
     			<div class="span12">
-    				<br />
     				<label for="explab">Esperiencia Laboral:</label>
-    				<textarea id="explab"name="explab">{{ laboral.experiencia|default('') }}</textarea>
+    				<textarea id="explab"name="explab" cols="100" rows="15" style="width: 1058px; height: 271px;">{{ laboral.experiencia|default('') }}</textarea>
     			</div>
     		</div>
-    		<div class="row">
-   	 					<div class="span12">
+    	<div class="row">
+   	 					<div class="span10 offset1">
    	 						<div class="form-actions">
    	 							<button id="" name="" class="btn btn-primary" type="submit">Guardar</button>
    	 							<button id=""name="" class="btn"type="reset">Cancelar</button>
@@ -231,6 +238,12 @@
     		<div class="row">
     			<div class="span4">
     				<label for="grado">Grado:</label>
+    				{% if (docente is defined) and (docente is not null) %}
+    					<input id="id" name="id" type="hidden" value="{{ docente.id }}" />
+    				{% else %}
+    					<input id="id" name="id" type="hidden" value="0" />
+    				{% endif %}
+    					
     				<input id="grado"name="grado" type="text" placeholder="Grado" value="{{ docente.grado|default('') }}"/>
     			</div>
     			<div class="span4">
@@ -286,29 +299,46 @@
     
      <!-------------------------------------------------Sexta Tab-------------------------------------------------------------->
      <div class="tab-pane fade active in" id="tab6">
-   	 <form id="explaboral" name="explaboral" method="post" action="">
+   	 <form id="editusuario" name="editusuario" class="" method="post" action="">
     		<div class="row">
-    			<div class="span12">
+    			<div class="span10 offset1">
     				<div class="row">
-    					<div class="span4">
-    						<label for="usuario-edit">Login:</label>
-    						<input id="usuario-edit"name="usuario-edit" type="text" placeholder="Login" value="{{ usuario.login|default('') }}"/>
+    					<div class="control-group">
+    						<label class="control-label" for="usuario-edit">Login:</label>
+    						<div class="controls">
+    							
+    						<input id="usuario-edit"name="usuario-edit" class="span3" type="text" placeholder="Login" value="{{ usuario.login|default('') }}"/>
+    				
+    						</div>	
     					</div>
-    					<div class="span4">
-    						<label for="password">Password:</label>
-    						<input id="pasword" name="ap" type="text" placeholder="Password"  value="{{ usuario.password|default('') }}"/>
+    					<div class="control-group">
+    						<label class="control-label" for="password">Contraseña:</label>
+    						<div class="controls">
+    							<input id="pasword" name="ap" class="span3" type="text" placeholder="Password"/>
+    				
+    						</div>
     					</div>
-    					<div class="span4">
-    						<input id="email-edit" name="email-edit" type="hidden" placeholder="Password"/>
+    					<div class="control-group">
+    						<label class="control-label" for="confirmacion">Confimacion Contraseña:</label>
+    						<div class="controls">
+    							<input id="confirmacion" name="confirmacion" class="span3" type="text" placeholder="Confirme Contraseña" />
+    						</div>
     					</div>
-    					<div class="row">
-   	 					<div class="span12">
+    				<input id="email-edit" name="email-edit" class="span3" type="hidden"/>
+    						
+
+    					</div>
+    					
+   	 			</div>
+   	 			<div class="row">
+   	 					<div class="span10 offset1">
    	 						<div class="form-actions">
    	 							<button id="" name="" class="btn btn-primary" type="submit">Guardar</button>
    	 							<button id=""name="" class="btn"type="reset">Cancelar</button>
    	 						</div>
    	 					</div>
    	 				</div>
+   	 		</div>
     	</form>
     	
     	

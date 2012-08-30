@@ -148,6 +148,11 @@
    	 <form id="datosacademicos" name="datoscademicos" method="post" action="{{ urlFor('nuevo-datosacademicos-post') }}">
     		<div class="row">
     			<div class="span12">
+    				{% if (academico is defined) and (academico is not null) %}
+    					<input id="id" name="id" type="hidden" value="{{ academico.id }}" />
+    				{% else %}
+    					<input id="id" name="id" type="hidden" value="0" />
+    				{% endif %}
     				<input id="id" name="id" type="hidden" value="{{ academico.id }}" />
     				<label for="institucion">Institucion de Procedencia:</label>
     				<select id="institucion" name="institucion" class="chzn-select" data-placeholder="Selecciona Institucion" >
