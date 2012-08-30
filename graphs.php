@@ -227,41 +227,45 @@ $app->get('/graficas/procedencia/(:slug)', function($slug) use($app){
 	$faker = Faker\Factory::create();
 	$users = Usuario::all(array('include'=>array('personal')));
 	$ids = array();
-/*	foreach ($users as $u) {
+	foreach ($users as $u) {
 		$proc = $u->personal->procedencia;
 		if(isset($ids[$proc])){
 			$ids[$proc]++;
 		} else {
 			$ids[$proc] = 1;
 		}
-	}*/
-	for ($i=1; $i <= 10; $i++) { 
+	}
+/*	for ($i=1; $i <= 10; $i++) { 
 		$proc = abs($faker->randomDigit);
 		if(isset($ids[$proc])){
 			$ids[$proc]++;
 		} else {
 			$ids[$proc] = 1;
 		}
-	}
+	}*/
 	sort($ids);
 	$count = count($ids);
 	$names = array();
-	for ($i=0; $i < $count; $i++) { 
-		$names[] = $faker->country();
+	
+	foreach ($ids as $key => $value) {
+		$localidad = Localidad::find_one($key);
+		$municipio_id = $localidad->municipio;
+		$municipio = Municipio::find_one($municipio_id);
 	}
-//	ladybug_dump($ids);
+/*	for ($i=0; $i < $count; $i++) { 
+		$names[] = $faker->country();
+	}*/
 	
 	$data = new pData();
 	$data->addPoints($ids,"Procedencia");
 	$data->setSerieDescription("Procedencia","Procedencia de los aspirantes");
-	//$data->addPoints(array("A","B","C","D","E","F","G"),"Labels");
 	$data->addPoints($names,"Labels");
  	$data->setAbscissa("Labels"); 
 	
-	$pink = array("R"=>250,"G"=>54,"B"=>100,"Alpha"=>100);
-	$blue = array("R"=>41,"G"=>138,"B"=>238,"Alpha"=>100);
-	$data->setPalette('Hombres',$blue);
-	$data->setPalette('Mujeres',$pink);
+#	$pink = array("R"=>250,"G"=>54,"B"=>100,"Alpha"=>100);
+#	$blue = array("R"=>41,"G"=>138,"B"=>238,"Alpha"=>100);
+#	$data->setPalette('Hombres',$blue);
+#	$data->setPalette('Mujeres',$pink);
 		
 	$graph = new pImage($m->iw, $m->ih, $data,true);
 	$graph->Antialias = true;
@@ -271,18 +275,10 @@ $app->get('/graficas/procedencia/(:slug)', function($slug) use($app){
  	$graph->setShadow(true,array("X"=>2,"Y"=>2,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20)); 
  	
  	$pie = new pPie($graph,$data);
-// 	$pie->setSliceColor(0,array("R"=>143,"G"=>197,"B"=>0));
-// 	$pie->setSliceColor(1,array("R"=>97,"G"=>77,"B"=>63));
-// 	$pie->setSliceColor(2,array("R"=>97,"G"=>113,"B"=>63));
-//	$pie->draw3DPie($m->gx,$m->gy,array("WriteValues"=>TRUE,"DataGapAngle"=>5,"DataGapRadius"=>5,"Border"=>TRUE));
+# 	$pie->setSliceColor(0,array("R"=>143,"G"=>197,"B"=>0));
 	$pie->draw3DPie($m->gx,$m->gy,array("Radius"=>125,"WriteValues"=>true,"LabelStacked"=>TRUE,"DataGapAngle"=>5,"DataGapRadius"=>5,"Border"=>TRUE));
-//	$graph->setGraphArea($m->gx, $m->gy, $m->gw, $m->gh);
-//	$graph->drawScale(array("Floating"=>true,"GridR"=>200,"GridG"=>200,"GridB"=>200,"DrawSubTicks"=>true,"CycleBackground"=>true,"Mode"=>SCALE_MODE_ADDALL));
-//	$graph->setShadow(false);
-//	$graph->drawStackedBarChart(array("DisplayValues"=>true,"DisplayColor"=>DISPLAY_AUTO,"Gradient"=>true,"Surrounding"=>10,"InnerSurrounding"=>10));
 	$graph->setFontProperties(array("FontName"=>$calibri,"FontSize"=>8));
 	$pie->drawPieLegend($m->lx, $m->ly,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_VERTICAL));
-//	$graph->drawLegend($m->lx, $m->ly,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
 	$graph->stroke(); 
 })->name('g-procedencia');
 
