@@ -1199,10 +1199,10 @@ $app->get('/editor-perfil/', function() use($app) {
     $data['areasusuario']=UsuariosAreas::find_all_by_usuario_id(1);
     $data['formas']=FormaTitulacion::all();
     $data['carreras']=Carrera::all();
+    $data['ue']=Localidad::find_by_id($data['procedencia']->procedencia,array('include' => array('municipio' =>('estado'))));
+    ladybug_dump($data['procedencia']->procedencia);
     
-    /*ladybug_dump($data);*/
-    
-	$app->render('perfilaspirantes.html', $data);
+	/*$app->render('perfilaspirantes.html', $data);*/
 })->name('perfil');
 
 $app->get('/test/', function() use($app){
@@ -1211,7 +1211,6 @@ $app->get('/test/', function() use($app){
 })->name('test');
 
 $app->post('/nuevo-datos-personales/',function() use($app){
-    ladybug_dump($_POST['nlocalidad']);
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
@@ -1222,7 +1221,7 @@ $app->post('/nuevo-datos-personales/',function() use($app){
         'sexo' => 'required|numeric',
         'numex' => 'required|max_len,4|min_len,1',
         'cp' => 'required|numeric|max_len,5|min_len,5',
-        'nlocalidad' => 'numeric',
+       
         );
     $filters = array(
         'nombre'    => 'trim',
