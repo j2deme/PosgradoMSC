@@ -1,0 +1,41 @@
+* [31mdc97c9e[m -[33m (HEAD, origin/master, origin/HEAD, master)[m Correccion de redireccionamientos y duplicidad en Perfil Docente [32m(2 minutes ago) [1;34m<Luis>[m
+*   [31m2185809[m -[33m[m Merge branch 'master' of github.com:j2deme/PosgradoMSC [32m(17 minutes ago) [1;34m<Luis>[m
+[32m|[m[33m\[m  
+[32m|[m * [31m5aa8ea3[m -[33m[m Ladybug borrado de humanize_gump() [32m(65 minutes ago) [1;34m<j2deme>[m
+* [33m|[m [31macc8be1[m -[33m[m Cambios en perfil Aspirantes 	Correccion con duplicidad de registros [32m(18 minutes ago) [1;34m<Luis>[m
+[33m|[m[33m/[m  
+*   [31m3fecf5b[m -[33m[m Merge branch 'master' of github.com:j2deme/PosgradoMSC [32m(73 minutes ago) [1;34m<Luis>[m
+[34m|[m[35m\[m  
+[34m|[m *   [31md1d10bf[m -[33m[m Merge branch 'master' of github.com:j2deme/PosgradoMSC [32m(77 minutes ago) [1;34m<j2deme>[m
+[34m|[m [36m|[m[1;31m\[m  
+[34m|[m * [1;31m|[m [31m09e2def[m -[33m[m Funcion isAllowed reparada. [32m(78 minutes ago) [1;34m<j2deme>[m
+* [1;31m|[m [1;31m|[m [31m2f23249[m -[33m[m Ahora si correccion de problemas de direccionamiento en perfil [32m(76 minutes ago) [1;34m<Luis>[m
+[1;31m|[m [1;31m|[m[1;31m/[m  
+[1;31m|[m[1;31m/[m[1;31m|[m   
+* [1;31m|[m   [31mac89c36[m -[33m[m Merge branch 'master' of github.com:j2deme/PosgradoMSC [32m(3 hours ago) [1;34m<Luis>[m
+[1;32m|[m[1;31m\[m [1;31m\[m  
+[1;32m|[m [1;31m|[m[1;31m/[m  
+[1;32m|[m * [31mf3c05a5[m -[33m[m Modificacion de los modelos de Localidad y Municipio [32m(21 hours ago) [1;34m<j2deme>[m
+[1;32m|[m * [31ma7746e1[m -[33m[m Grafica de Pie para Procedencia [32m(23 hours ago) [1;34m<j2deme>[m
+[1;32m|[m *   [31m1cd05f4[m -[33m[m Merge branch 'master' of github.com:j2deme/PosgradoMSC [32m(24 hours ago) [1;34m<j2deme>[m
+[1;32m|[m [1;34m|[m[1;35m\[m  
+[1;32m|[m * [1;35m|[m [31m23b9b16[m -[33m[m Faker eliminado de los datos [32m(24 hours ago) [1;34m<j2deme>[m
+[1;32m|[m * [1;35m|[m [31m6dc898f[m -[33m[m Cambio de permisos [32m(26 hours ago) [1;34m<j2deme>[m
+* [1;35m|[m [1;35m|[m [31m281ba3f[m -[33m[m Correccion de problemas en el prefil de aspirantes [32m(17 hours ago) [1;34m<Luis>[m
+* [1;35m|[m [1;35m|[m   [31m8a94c98[m -[33m[m Merge branch 'perfiles' [32m(24 hours ago) [1;34m<Luis>[m
+[1;35m|[m[31m\[m [1;35m\[m [1;35m\[m  
+[1;35m|[m [31m|[m[1;35m_[m[1;35m|[m[1;35m/[m  
+[1;35m|[m[1;35m/[m[31m|[m [1;35m|[m   
+[1;35m|[m * [1;35m|[m [31mef53cc4[m -[33m[m Eliminacion de scrip extra de paco jajaja [32m(25 hours ago) [1;34m<Luis>[m
+[1;35m|[m * [1;35m|[m [31me7838c6[m -[33m[m Cracion de Template evento [32m(25 hours ago) [1;34m<Luis>[m
+* [31m|[m [1;35m|[m [31m2152b46[m -[33m[m Cambio de Gestor de Eventos [32m(25 hours ago) [1;34m<Luis>[m
+[1;35m|[m [31m|[m[1;35m/[m  
+[1;35m|[m[1;35m/[m[31m|[m   
+* [31m|[m [31m18879c5[m -[33m[m Gráficas añadidas [32m(2 days ago) [1;34m<j2deme>[m
+* [31m|[m [31ma2a7147[m -[33m[m Actualizacion de templates [32m(2 days ago) [1;34m<Luis>[m
+[31m|[m[31m/[m  
+* [31mdd30177[m -[33m[m otra mamada [32m(2 days ago) [1;34m<Luis>[m
+* [31m713b4fd[m -[33m[m prueba de subida [32m(2 days ago) [1;34m<Luis>[m
+* [31m57ea7f9[m -[33m[m Inicio de Proyecto [32m(2 days ago) [1;34m<j2deme>[m
+* [31m1ffb264[m -[33m[m README Modificado [32m(2 days ago) [1;34m<j2deme>[m
+* [31mcda37e5[m -[33m[m Initial commit [32m(2 days ago) [1;34m<Jaime Jesús Delgado Meraz>[m
