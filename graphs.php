@@ -202,6 +202,7 @@ $app->get('/graficas/estadistica-genero-rol/(:year)', function($year) use($app){
 	$graph->stroke();
 })->name('g-genero-rol-anual');
 
+#XXX Estadistica de Procedencia
 $app->get('/graficas/procedencia/(:slug)', function($slug) use($app){
 	//Settings
 	$forgotte = __DIR__."/vendor/pChart/fonts/Forgotte.ttf";
@@ -222,7 +223,8 @@ $app->get('/graficas/procedencia/(:slug)', function($slug) use($app){
 	$m->tx = 150;//Title X
 	$m->ty = 35;//Title Y
 	$faker = Faker\Factory::create();
-	$users = Usuario::all(array('include'=>array('personal')));
+	$users = Usuario::find('all',array('include'=>array('personal')));
+//    $users = Usuario::find('all');
 	$ids = array();
 	foreach ($users as $u) {
 		$proc = $u->personal->procedencia;
@@ -240,15 +242,20 @@ $app->get('/graficas/procedencia/(:slug)', function($slug) use($app){
 			$ids[$proc] = 1;
 		}
 	}*/
-	sort($ids);
+	arsort($ids);
 	$count = count($ids);
 	$names = array();
 	
 	foreach ($ids as $key => $value) {
-		$localidad = Localidad::find_one($key);
+		$localidad = Localidad::find($key);
 		$municipio_id = $localidad->municipio;
-		$municipio = Municipio::find_one($municipio_id);
+		$municipio = Municipio::find($municipio_id);
+        $estado_id = $municipio->estado;
+        $estado = Estado::find($estado_id);
+        $names[] = $localidad->nombre.",".$estado->abr;
 	}
+    
+    #TODO It works!
 /*	for ($i=0; $i < $count; $i++) { 
 		$names[] = $faker->country();
 	}*/
