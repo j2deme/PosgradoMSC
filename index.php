@@ -1199,7 +1199,13 @@ $app->get('/editor-perfil/', function() use($app) {
     $data['areasusuario']=UsuariosAreas::find_all_by_usuario_id(1);
     $data['formas']=FormaTitulacion::all();
     $data['carreras']=Carrera::all();
-    
+    $data['ul']=Localidad::find_by_id($data['personal']->procedencia);
+    $data['um']=Municipio::find_by_id($data['ul']->clave);
+    $data['ue']=Estado::find_by_id($data['um']->clave);
+     $data['il']=Localidad::find_by_id($data['academico']->ubicacion);
+    $data['im']=Municipio::find_by_id($data['il']->clave);
+    $data['ie']=Estado::find_by_id($data['im']->clave);
+    $data['formasenterado']=FormaEnterado::all();
     /*ladybug_dump($data);*/
     
 	$app->render('perfilaspirantes.html', $data);
@@ -1221,7 +1227,7 @@ $app->post('/nuevo-datos-personales/',function() use($app){
         'sexo' => 'required|numeric',
         'numex' => 'required|max_len,4|min_len,1',
         'cp' => 'required|numeric|max_len,5|min_len,5',
-        'nlocalidad' => 'numeric',
+       
         );
     $filters = array(
         'nombre'    => 'trim',
@@ -1246,6 +1252,7 @@ $app->post('/nuevo-datos-personales/',function() use($app){
        $perfilpersonal->fdn = $_POST['nacimiento'];
        $perfilpersonal->sexo = $_POST['sexo'];
        $perfilpersonal->procedencia = $_POST['nlocalidad'];
+       
        $perfilpersonal->calle = $_POST['calle'];
        $perfilpersonal->num_ext = $_POST['numex'];
        if (isset($_POST['numint'])) {
@@ -1304,14 +1311,12 @@ $app->post('/nuevo-datos-academicos/',function() use($app){
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
-        'institucion' => 'required|alpha',
-        'carrera'    => 'required|alpha',
-        'forma' => 'required|alpha',
+        'institucion' => 'required',
+        'carrera'    => 'required',
+        'forma' => 'required',
         'ingreso' => 'required',
-        'egreso' => 'required|numeric',
-        'estado' => 'alpha',
-        'municipio' => 'required|numeric|max_len,4|min_len,1',
-        'localidad' => 'numeric|max_len,4|min_len,1',
+        'egreso' => 'required',
+        'localidad' => 'required|numeric|max_len,4|min_len,1',
         
     );
     $filters = array(
@@ -1320,8 +1325,6 @@ $app->post('/nuevo-datos-academicos/',function() use($app){
         'forma' => 'trim',
         'ingreso' => 'trim',
         'egreso' => 'trim',
-        'estado' => 'trim',
-        'municipio' => 'trim',
         'localidad' => 'trim',
     );
     $_POST = $validator->filter($_POST, $filters);
@@ -1374,11 +1377,10 @@ $app->post('/nuevo-info-contacto/',function() use($app){
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
-        'email' => 'required|alpha',
-        'enterado' => 'required|alpha',
-        'mantener' => 'required|alpha',
-        'movil' => 'required|numeric',
-        'fijo' => 'alpha',
+        'email' => 'required',
+        'enterado' => 'required',
+        'mantener' => 'required',
+        'fijo' => 'required',
     );
     $filters = array(
         'email' => 'trim',
@@ -1444,17 +1446,19 @@ $app->post('/nuevo-experiencia-laboral/',function() use($app){
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if($validated === true) {
-        if ($_POST['id']) {
+        if (isset($_POST['id'])) {
              $perfillaboral =Laboral::find($_POST['id']);
         $perfillaboral->trabajado = $_POST['trabajo'];        
         $perfillaboral->experiencia = $_POST['explab'];
         $perfillaboral->tiempo = $_POST['anostrabajo'];
+        $perfillaboral->usuario_id = 1;
         $perfillaboral->save(); 
         } else {
            $perfillaboral = new Laboral();
         $perfillaboral->trabajado = $_POST['trabajo'];        
         $perfillaboral->experiencia = $_POST['explab'];
         $perfillaboral->tiempo = $_POST['anostrabajo'];
+        $perfillaboral->usuario_id = 1;
         $perfillaboral->save(); 
         }
         
@@ -1487,9 +1491,9 @@ $app->post('/nuevo-datos-docente/',function() use($app){
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
-        'grado'    => 'required|alpha',
+        'grado'    => 'required',
         'cedula'    => 'required|alpha_numeric',
-        'especialidad'    => 'required|alpha',
+        'especialidad'    => 'required',
         'promep'    => 'required',
         'sni'    => 'required',
         'completo'    => 'required'

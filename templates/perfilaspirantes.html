@@ -62,31 +62,35 @@
     				<h3>Lugar de Nacimiento</h3>
     			</div>
     			<div class="span4">
+    		
     				<label for="nestado">Estado:</label>
     				<select id="nestado" name="nestado" class="chzn-select" data-placeholder="Selecciona Estado" >
     					<option> </option>
     					{% for estado in estados %}
-    					<option value="{{ estado.id }}">{{ estado.nombre }}</option>
+    					<option {% if ue.clave==estado.clave %} selected=""  {% endif %} value="{{ estado.clave }}">{{ estado.nombre }}</option>
     					{% endfor %}
     				</select>
+    			
     			</div>
     			<div class="span4">
     				<label for="nmunicipio">Municipio:</label>
     				<select id="nmunicipio" name="nmunicipio" class="chzn-select" data-placeholder="Selecciona Municipio" >
     					<option> </option>
     					{% for municipio in municipios %}
-    					<option value="{{ municipio.id }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
+    					<option {% if um.clave==municipio.clave %} selected=""  {% endif %}  value="{{ municipio.clave }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
     					{% endfor %}
     				</select>
     			</div>
     			<div class="span4">
+    				
     				<label for="nlocalidad">Localidad:</label>
     				<select id="nlocalidad" name="nlocalidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
     					<option> </option>
     					{% for localidad in localidades %}
-    					<option value="{{ localidad.id }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
+    					<option {% if ul.clave==localidad.clave %} selected="" {% endif %} value="{{ localidad.clave }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
     					{% endfor %}
     				</select>
+    			
     				<script>
     					head.ready(function(){
 							$(function(){
@@ -118,7 +122,7 @@
     							<label for="calle">Calle:</label>
     							<input id="calle"name="calle"type="text"placeholder="Calle" value="{{personal.calle|default('')}}"/>
     							<label for="numex">Numero Externo:</label>
-    							<input id="numex" name="numex"type="number"placeholder="Numero Externo" vale="{{ personal.num_ext|default('') }}" />
+    							<input id="numex" name="numex"type="number"placeholder="Numero Externo" value="{{ personal.num_ext|default('') }}" />
     							<label for="numint">Numero Interno:</label>
     							<input id="numint"name="numint"type="number"placeholder="Numero Interno" value="{{ personal.num_int|default('') }}" />
     						</div>
@@ -206,29 +210,32 @@
     				<h3>Ubicacion del Plantel</h3>
     			</div>
     			<div class="span4">
+    		
     				<label for="estado">Estado:</label>
     				<select id="estado" name="estado" class="chzn-select" data-placeholder="Selecciona Estado" >
     					<option> </option>
     					{% for estado in estados %}
-    					<option value="{{ estado.id }}">{{ estado.nombre }}</option>
+    					<option {% if (ie is not null) and (ie.clave==estado.clave) %} selected=""  {% endif %} value="{{ estado.clave }}">{{ estado.nombre }}</option>
     					{% endfor %}
     				</select>
+    			
     			</div>
     			<div class="span4">
     				<label for="municipio">Municipio:</label>
     				<select id="municipio" name="municipio" class="chzn-select" data-placeholder="Selecciona Municipio" >
     					<option> </option>
     					{% for municipio in municipios %}
-    					<option value="{{ municipio.id }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
+    					<option {% if (im is not null) and (im.clave==municipio.clave) %} selected=""  {% endif %}  value="{{ municipio.clave }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
     					{% endfor %}
     				</select>
     			</div>
     			<div class="span4">
+    				
     				<label for="localidad">Localidad:</label>
     				<select id="localidad" name="localidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
     					<option> </option>
     					{% for localidad in localidades %}
-    					<option value="{{ localidad.id }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
+    					<option {% if (il is not null) and (il.clave==localidad.clave) %} selected="" {% endif %} value="{{ localidad.clave }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
     					{% endfor %}
     				</select>
     			</div>
@@ -269,9 +276,15 @@
    	 						<input id="id" name="id" type="hidden" value="{{ contacto.id }}" />
    	 					</div>
    	 					<div class="span4">
-   	 						<label for="enterado">Forma Enterado:</label>
-   	 						<input id="enterado" name="enterado" placeholder="Forma que se entero" value="{{ contacto.forma|default('') }}"/>
-   	 					</div>
+    				
+    				<label for="enterado">Forma Enterado:</label>
+    				<select id="enterado" name="enterado" class="chzn-select" data-placeholder="Selecciona Forma" >
+    					<option> </option>
+    					{% for formaenterado in formasenterado %}
+    					<option {% if contacto.forma==formaenterado.id %} selected="" {% endif %} value="{{ formaenterado.id }}" >{{ formaenterado.nombre }}</option>
+    					{% endfor %}
+    				</select>
+    			</div>
    	 					<div class="span4">
    	 						<input id="mantener"name="mantener" type="checkbox" {% if contacto.contactar is defined %}{% if contacto.contactar==1 %} checked {% endif %}{% endif %}/> Mantener Contacto
    	 					</div>
@@ -557,13 +570,13 @@
     				<input id="entiende" name="entiende" value="{{ idiomausuario.entiende }}"/>		
     			</div>
     		</div>		
-    		
+    		 <div class="modal-footer">
+    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
+    	<button id="" name="" class="btn btn-primary" type="submit" > Guardar</button>
+    </div>
             </form>
     </div>
-    <div class="modal-footer">
-    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
-    	<button class="btn btn-primary" > Guardar</button>
-    </div>
+   
 </div>
 {% endfor %}
 
@@ -593,12 +606,12 @@
     				<input id="entiende" name="entiende" />		
     			</div>
     		</div>		
-    		
+    		div class="modal-footer">
+    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
+    	<button class="btn btn-primary" type="submit" > Guardar</button>
+    </div>
             </form>
     </div>
-    <div class="modal-footer">
-    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
-    	<button class="btn btn-primary" > Guardar</button>
-    </div>
+    <
 </div>
 {% endblock %}
