@@ -21,6 +21,7 @@
     					<div class="span4">
     						<label for="nombre">Nombre:</label>
     						<input id="nombre"name="nombre" type="text" placeholder="Nombre" value="{{ personal.nombre|default('') }}"/>
+    						<input id="perfil" name="perfil" type="hidden" value="1" />
     						<input id="id" name="id" type="hidden" value="{{ personal.id }}" />
     					</div>
     					<div class="span4">
@@ -67,7 +68,7 @@
     				<select id="nestado" name="nestado" class="chzn-select" data-placeholder="Selecciona Estado" >
     					<option> </option>
     					{% for estado in estados %}
-    					<option {% if ue.clave==estado.clave %} selected=""  {% endif %} value="{{ estado.clave }}">{{ estado.nombre }}</option>
+    					<option {% if( ue is not null) and (ue.clave==estado.clave) %} selected=""  {% endif %} value="{{ estado.clave }}">{{ estado.nombre }}</option>
     					{% endfor %}
     				</select>
     			
@@ -77,7 +78,7 @@
     				<select id="nmunicipio" name="nmunicipio" class="chzn-select" data-placeholder="Selecciona Municipio" >
     					<option> </option>
     					{% for municipio in municipios %}
-    					<option {% if um.clave==municipio.clave %} selected=""  {% endif %}  value="{{ municipio.clave }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
+    					<option {% if ( um is not null) and (um.clave==municipio.clave) %} selected=""  {% endif %}  value="{{ municipio.clave }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
     					{% endfor %}
     				</select>
     			</div>
@@ -87,7 +88,7 @@
     				<select id="nlocalidad" name="nlocalidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
     					<option> </option>
     					{% for localidad in localidades %}
-    					<option {% if ul.clave==localidad.clave %} selected="" {% endif %} value="{{ localidad.clave }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
+    					<option {% if ( ul is not null) and (ul.clave==localidad.clave) %} selected="" {% endif %} value="{{ localidad.clave }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
     					{% endfor %}
     				</select>
     			
@@ -155,8 +156,10 @@
     				{% if (academico is defined) and (academico is not null) %}
     					<input id="id" name="id" type="hidden" value="{{ academico.id }}" />
     				{% else %}
+    				
     					<input id="id" name="id" type="hidden" value="0" />
     				{% endif %}
+    				<input id="perfil" name="perfil" type="hidden" value="1" />
     				<input id="id" name="id" type="hidden" value="{{ academico.id }}" />
     				<label for="institucion">Institucion de Procedencia:</label>
     				<select id="institucion" name="institucion" class="chzn-select" data-placeholder="Selecciona Institucion" >
@@ -274,6 +277,7 @@
    	 						<label for="email">Email:</label>
    	 						<input id="email"name="email"type="text" placeholder="Email" value="{{ contacto.email|default('') }}"/>
    	 						<input id="id" name="id" type="hidden" value="{{ contacto.id }}" />
+   	 						<input id="perfil" name="perfil" type="hidden" value="1" />
    	 					</div>
    	 					<div class="span4">
     				
@@ -324,9 +328,11 @@
    	 <form id="explaboral" name="explaboral" method="post" action="{{ urlFor('nuevo-explaboral-post') }}">
     		<div class="row">
     			<div class="span2">
+    				<input id="perfil" name="perfil" type="hidden" value="1" />
     				{% if laboral is defined %}
     				{% if laboral is not null %}
     				<input id="id" name="id" type="hidden" value="{{ laboral.id }}" />
+    				
     				{% endif %}
     				{% else %}
     				<input id="id" name="id" type="hidden" value="0" />
@@ -367,6 +373,8 @@
     		<div class="row">
     			<div class="span10 offset1">
     				<div class="row">
+    					<input id="perfil" name="perfil" type="hidden" value="1" />
+    					<input id="id" name="id" type="hidden" value="{{ usuario.id }}" />
     					<div class="control-group">
     						<label class="control-label" for="usuario-edit">Login:</label>
     						<div class="controls">
@@ -410,6 +418,7 @@
 	
 	<form id="conocimiento" name="conocimiento" class="" method="post" action="{{ urlFor('nuevo-conocimiento-post') }}">
 		<div class="row">
+			<input id="perfil" name="perfil" type="hidden" value="1" />
 		<div class="span12">
 		<div class="row">
 			<div class="span4 offset1">
@@ -417,21 +426,27 @@
     				<select id="area" name="area" class="chzn-select" multiple="" data-placeholder="Selecciona Area de Interes" >
     					<option> </option>
     					{% for area in areas %}
-    					{% for areausuario in areasusuario %}
-    					<option {% if areausuario.area_id==area.id %} selected=""  {% endif %} value="{{ area.id }}">{{ area.nombre }}</option>
-    					{% endfor %}
-    					{% endfor %}
+     {% for areausuario in areasusuario %}
+     <option {% if areausuario.area_id==area.id %} selected="" {% endif %} value="{{ area.id }}">{{ area.nombre }}</option>
+     {% endfor %}
+     {% endfor %}
     				</select>
     			</div>
     		<div class="span4 offset1">
     				<label for="lenguaje">Lenguaje:</label>
     				<select id="lenguaje" name="lenguaje[]" multiple="" class="chzn-select" data-placeholder="Selecciona Lenguaje" >
     					<option> </option>
-    					{% for lenguaje in lenguajes %}
-    					{% for lenguajeusuario in lenguajesusuario %}
-    					<option {% if lenguajeusuario.lenguaje_id==lenguaje.id %} selected="" {% endif %} value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
-    					{% endfor %}
-    					{% endfor %}
+    					{% if lenguajesusuario is defined %}
+    				    	{% for lenguajeusuario in lenguajesusuario %}
+    							{% for lenguaje in lenguajes %}
+    								<option {% if lenguajeusuario.lenguaje_id==lenguaje.id %} selected="" {% endif %} value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
+    							{% endfor %}
+    						{% endfor %}
+    					{% else %}
+    						{% for lenguaje in lenguajes %}
+    							<option {% if lenguajeusuario.lenguaje_id==lenguaje.id %} selected="" {% endif %} value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
+    						{% endfor %}
+    					{% endif %}
     				</select>
     			</div>
     			
@@ -447,10 +462,10 @@
     				<label for="herramienta">Herramientas:</label>
     				<select id="herramienta" name="herramienta[]" class="chzn-select" multiple="" data-placeholder="Selecciona Herramienta" >
     					<option> </option>
+    					{% for herramientausuario in herramientasusuario %}
     					{% for herramienta in herramientas %}
-    						{% for herramientausuario in herramientasusuario %}
     						<option {% if herramientausuario.herramienta_id==herramienta.id %} selected="" {% endif %} value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
-    						{% endfor %}
+    					{% endfor %}
     					{% endfor %}
     				</select>
     			</div>
@@ -459,8 +474,8 @@
     				<label for="plataformas">Plataformas:</label>
     				<select id="plataformas" name="plataformas[]" class="chzn-select" multiple="" data-placeholder="Selecciona Plataformas" >
     					<option> </option>
+    					{% for plataformausuario in plataformasusuario %}
     					{% for plataforma in plataformas %}
-    						{% for plataformausuario in plataformasusuario %}
     						<option {% if plataformausuario.plataforma_id==plataforma.id %} selected="" {% endif %} value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
     						{% endfor %}
     					{% endfor %}
@@ -559,7 +574,7 @@
     		<form class="" method="post" action="{{ urlFor('nuevo-idioma-post') }}">
     		<div class="row">
     			<div class="span2 offset1">
-    				
+    				<input id="perfil" name="perfil" type="hidden" value="1" />
     				<label for="lee">Lee:</label> 
     				<input id="lee" name="lee" value="{{ idiomausuario.lee }}"/>
     				<label for="escribe">Escribe:</label> 
@@ -587,6 +602,7 @@
     </div>
     <div class="modal-body">
     		<form class="" method="post" action="{{ urlFor('nuevo-idioma-post') }}">
+    			<input id="perfil" name="perfil" type="hidden" value="1" />
     		<div class="row">
     			<div class="span2 offset1">
     				<label for="idioma">Idioma:</label>
@@ -596,6 +612,8 @@
     					<option value="{{ idioma.id }}">{{ idioma.nombre }}</option>
     					{% endfor %}
     				</select>
+    				<br />
+    				<br />
     				<label for="lee">Lee:</label> 
     				<input id="lee" name="lee" />
     				<label for="escribe">Escribe:</label> 
@@ -606,12 +624,11 @@
     				<input id="entiende" name="entiende" />		
     			</div>
     		</div>		
-    		div class="modal-footer">
+    		<div class="modal-footer">
     	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
     	<button class="btn btn-primary" type="submit" > Guardar</button>
     </div>
             </form>
     </div>
-    <
 </div>
 {% endblock %}

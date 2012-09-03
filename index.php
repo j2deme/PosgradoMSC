@@ -1176,7 +1176,7 @@ $app->post('/nuevo-subir-doc/',function() use($app){
  * =======================*/
 $app->get('/editor-perfil/', function() use($app) {
 	$data['user'] = isAllowed(array('Alumno','Aspirante'), false);
-	$data['usuario'] = Usuario::find(1, array('include' => array('academico','personal','contacto','pg','laboral','docente')));
+	$data['usuario'] = Usuario::find($data['user']->id, array('include' => array('academico','personal','contacto','pg','laboral','docente')));
 	$data['contacto'] = $data['usuario']->contacto;
 	$data['personal'] = $data['usuario']->personal;
 	$data['academico'] = $data['usuario']->academico;
@@ -1192,11 +1192,11 @@ $app->get('/editor-perfil/', function() use($app) {
 	$data['idiomas'] = Idioma::all();
 	$data['lenguajes'] = Lenguaje::all();
 	$data['plataformas'] = Plataforma::all();
-    $data['idiomasusuario']=UsuariosIdiomas::find_all_by_usuario_id(1,array('include' => array('idioma')));
-    $data['herramientasusuario']=UsuariosHerramientas::find_all_by_usuario_id(1,array('include'=>array('herramienta')));
-    $data['plataformasusuario']=UsuariosPlataformas::find_all_by_usuario_id(1,array('include'=>array('plataforma')));
-    $data['lenguajesusuario']=UsuariosLenguajes::find_all_by_usuario_id(1,array('include'=>array('lenguaje')));
-    $data['areasusuario']=UsuariosAreas::find_all_by_usuario_id(1);
+    $data['idiomasusuario']=UsuariosIdiomas::find_all_by_usuario_id($data['user']->id,array('include' => array('idioma')));
+    $data['herramientasusuario']=UsuariosHerramientas::find_all_by_usuario_id($data['user']->id,array('include'=>array('herramienta')));
+    $data['plataformasusuario']=UsuariosPlataformas::find_all_by_usuario_id($data['user']->id,array('include'=>array('plataforma')));
+    $data['lenguajesusuario']=UsuariosLenguajes::find_all_by_usuario_id($data['user']->id,array('include'=>array('lenguaje')));
+    $data['areasusuario']=UsuariosAreas::find_all_by_usuario_id($data['user']->id);
     $data['formas']=FormaTitulacion::all();
     $data['carreras']=Carrera::all();
     $data['ul']=Localidad::find_by_id($data['personal']->procedencia);
@@ -1217,6 +1217,7 @@ $app->get('/test/', function() use($app){
 })->name('test');
 
 $app->post('/nuevo-datos-personales/',function() use($app){
+   $data['user'] = isAllowed(array('Alumno','Aspirante',"Docente"), false);
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
@@ -1245,7 +1246,7 @@ $app->post('/nuevo-datos-personales/',function() use($app){
     
     if($validated === true) {
         if ( isset($_POST['id'])) {
-            $perfilpersonal=Personal::find(1);
+            $perfilpersonal=Personal::find($_POST['id']);
             $perfilpersonal->nombre = $_POST['nombre'];
        $perfilpersonal->paterno = $_POST['ap'];
        $perfilpersonal->materno = $_POST['am'];
@@ -1264,6 +1265,7 @@ $app->post('/nuevo-datos-personales/',function() use($app){
        $perfilpersonal->save();
         } else {
             $perfilpersonal =  new Personal();
+       $perfilpersonal->usuario_id = $_POST['user']->id;
        $perfilpersonal->nombre = $_POST['nombre'];
        $perfilpersonal->paterno = $_POST['ap'];
        $perfilpersonal->materno = $_POST['am'];
@@ -1289,7 +1291,11 @@ $app->post('/nuevo-datos-personales/',function() use($app){
 
         $app -> flash("flash", $flash);
         $app->flashKeep();
-        $app->redirect($app->urlFor('perfil'));
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
     } else {
        
         $msgs = humanize_gump($validated);
@@ -1303,11 +1309,16 @@ $app->post('/nuevo-datos-personales/',function() use($app){
         
         $app -> flash("flash", $flash);
         $app->flashKeep();
-        $app->redirect($app->urlFor('perfil'));
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
     }
 })->name('nuevo-datospersonales-post');
 
 $app->post('/nuevo-datos-academicos/',function() use($app){
+    $data['user'] = isAllowed(array('Alumno','Aspirante',"Docente"), false);
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
@@ -1341,6 +1352,7 @@ $app->post('/nuevo-datos-academicos/',function() use($app){
         $perfilacademico->save();
         } else {
             $perfilacademico = new Academico();
+        $perfilacademico->usuario_id = $_POST['user']->id;
         $perfilacademico->institucion = $_POST['institucion'];
         $perfilacademico->carrera = $_POST['carrera'];
         $perfilacademico->ingreso = $_POST['ingreso'];
@@ -1358,7 +1370,11 @@ $app->post('/nuevo-datos-academicos/',function() use($app){
 
         $app -> flash("flash", $flash);
         $app->flashKeep();
-        $app->redirect($app->urlFor('perfil'));
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
     } else {
         $msgs = humanize_gump($validated);
         $flash = array(
@@ -1369,17 +1385,21 @@ $app->post('/nuevo-datos-academicos/',function() use($app){
         );
         $app -> flash("flash", $flash);
         $app->flashKeep();
-        $app->redirect($app->urlFor('perfil'));
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
     }
 })->name('nuevo-datosacademicos-post');
 
 $app->post('/nuevo-info-contacto/',function() use($app){
+    $data['user'] = isAllowed(array('Alumno','Aspirante',"Docente"), false);
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
         'email' => 'required',
         'enterado' => 'required',
-        'mantener' => 'required',
         'fijo' => 'required',
     );
     $filters = array(
@@ -1392,20 +1412,32 @@ $app->post('/nuevo-info-contacto/',function() use($app){
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if($validated === true) {
-        if ($_POST['id']) {
+        if (isset($_POST['id'])) {
            $perfilinfo = Contacto::find($_POST['id']);
         $perfilinfo->email = $_POST['email'];
         $perfilinfo->movil = $_POST['movil'];
         $perfilinfo->fijo = $_POST['fijo'];
-        $perfilinfo->contactar = $_POST['mantener'];
+        if ($_POST['mantener']=="on") {
+        $perfilinfo->contactar = 1;    
+        }
+        else {
+            $perfilinfo->contactar =0;
+        }
+        
         $perfilinfo->forma = $_POST['enterado'];
         $perfilinfo->save();      
         } else {
             $perfilinfo = new Contacto();
+        $perfilinfo->usuario_id = $_POST['user']->id;
         $perfilinfo->email = $_POST['email'];
         $perfilinfo->movil = $_POST['movil'];
         $perfilinfo->fijo = $_POST['fijo'];
-        $perfilinfo->contactar = $_POST['mantener'];
+         if ($_POST['mantener']=="on") {
+        $perfilinfo->contactar = 1;    
+        }
+        else {
+            $perfilinfo->contactar =0;
+        }
         $perfilinfo->forma = $_POST['enterado'];
         $perfilinfo->save();     
         }
@@ -1420,7 +1452,11 @@ $app->post('/nuevo-info-contacto/',function() use($app){
 
         $app -> flash("flash", $flash);
         $app->flashKeep();
-        $app->redirect($app->urlFor('perfil'));
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
     } else {
         $msgs = humanize_gump($validated);
         $flash = array(
@@ -1431,11 +1467,16 @@ $app->post('/nuevo-info-contacto/',function() use($app){
         );
         $app -> flash("flash", $flash);
         $app->flashKeep();
-        $app->redirect($app->urlFor('perfil'));
+       if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
     }
 })->name('nuevo-infocontacto-post');
 
 $app->post('/nuevo-experiencia-laboral/',function() use($app){
+    $data['user'] = isAllowed(array('Alumno','Aspirante',"Docente"), false);   
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
@@ -1447,18 +1488,27 @@ $app->post('/nuevo-experiencia-laboral/',function() use($app){
     $validated = $validator->validate($_POST, $rules);
     if($validated === true) {
         if (isset($_POST['id'])) {
-             $perfillaboral =Laboral::find($_POST['id']);
-        $perfillaboral->trabajado = $_POST['trabajo'];        
+             $perfillaboral =Laboral::find($_POST['id']);         
         $perfillaboral->experiencia = $_POST['explab'];
         $perfillaboral->tiempo = $_POST['anostrabajo'];
-        $perfillaboral->usuario_id = 1;
+        $perfillaboral->usuario_id =$data['user']->id;
+        if ($_POST['trabajo']=="on") {
+            $perfillaboral->trabajado =1;       
+        } else {
+            $perfillaboral->trabajado =0;   
+        }
+        
         $perfillaboral->save(); 
         } else {
            $perfillaboral = new Laboral();
-        $perfillaboral->trabajado = $_POST['trabajo'];        
+        if ($_POST['trabajo']=="on") {
+            $perfillaboral->trabajado =1;       
+        } else {
+            $perfillaboral->trabajado =0;   
+        }     
         $perfillaboral->experiencia = $_POST['explab'];
         $perfillaboral->tiempo = $_POST['anostrabajo'];
-        $perfillaboral->usuario_id = 1;
+        $perfillaboral->usuario_id =$data['user']->id;
         $perfillaboral->save(); 
         }
         
@@ -1472,7 +1522,11 @@ $app->post('/nuevo-experiencia-laboral/',function() use($app){
 
         $app -> flash("flash", $flash);
         $app->flashKeep();
-        $app->redirect($app->urlFor('perfil'));
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
     } else {
         $msgs = humanize_gump($validated);
         $flash = array(
@@ -1483,11 +1537,16 @@ $app->post('/nuevo-experiencia-laboral/',function() use($app){
         );
         $app -> flash("flash", $flash);
         $app->flashKeep();
-        $app->redirect($app->urlFor('perfil'));
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
     }
 })->name('nuevo-explaboral-post');
 
 $app->post('/nuevo-datos-docente/',function() use($app){
+    $data['user'] = isAllowed(array('Docente'), false);    
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
@@ -1513,7 +1572,7 @@ $app->post('/nuevo-datos-docente/',function() use($app){
             $perfldocente=Docente::find($_POST['id']);
         $perfldocente->grado = $_POST['grado'];
         $perfldocente->sni = $_POST['sni'];
-        if(isset($_POST['pertenecesni'])) {
+        if($_POST['pertenecesni']=="on") {
             $perfldocente->tiene_sni = $_POST['1'];
        } else {
             $perfldocente->tiene_sni = $_POST['0'];
@@ -1526,9 +1585,10 @@ $app->post('/nuevo-datos-docente/',function() use($app){
        $perfldocente->save();
         } else {
             $perfldocente= new Docente();
+        $perfldocente->usuario_id = $data['user']->id;
         $perfldocente->grado = $_POST['grado'];
         $perfldocente->sni = $_POST['sni'];
-        if(isset($_POST['pertenecesni'])) {
+        if($_POST['pertenecesni']=="on") {
             $perfldocente->tiene_sni = $_POST['1'];
        } else {
             $perfldocente->tiene_sni = $_POST['0'];
@@ -1568,7 +1628,7 @@ $app->post('/nuevo-datos-docente/',function() use($app){
 
 $app->post('/nuevo-conocimiento/',function() use($app){
     
-    $data['user'] = isAllowed(array("Docente","Alumno"),FALSE);
+    $data['user'] = isAllowed(array("Docente","Alumno","Aspirante"),FALSE);
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
@@ -1581,45 +1641,82 @@ $app->post('/nuevo-conocimiento/',function() use($app){
         
         if (isset($_POST['area'])) {
             foreach ($_POST['area'] as $area) {
-                 
-             $areainteres=new UsuariosAreas;
-             $areainteres->usuario_id=1;
-             $areainteres->area_id=$_POST['area'];
-             $areainteres->save();   
+                 $ar=AreaInteres::find_by_id($area);
+                 if (is_null($ar)) {
+                    $areainteres=new UsuariosAreas;
+                    $areainteres->usuario_id=$data['user']->id;
+                    $areainteres->area_id=$_POST['area'];
+                    $areainteres->save();    
+                 }  
             }
         }
         if (isset($_POST['lenguaje'])) {
             foreach ($_POST['lenguaje'] as $lenguaje) {
-                
-                
-                
-                $lenguajes=new UsuariosLenguajes;
-                $lenguajes->usuario_id=1/*$data['user']->id*/;
+                $leng=Lenguaje::find_by_id($lenguaje);
+                if (is_null($leng)) {
+                    $lenguajes=new UsuariosLenguajes;
+                $lenguajes->usuario_id=$data['user']->id;
                 $lenguajes->lenguaje_id=$lenguaje;
                 $lenguajes->save();
+                }
             }    
         }
         if (isset($_POST['herramienta'])) {
             foreach ($_POST['herramienta'] as $herramienta) {
-                $herramientas=new UsuariosHerramientas;
-                $herramientas->usuario_id=1;
+                $herr=Herramienta::find_by_id($herramienta);
+                if (is_null($herr)) {
+                    $herramientas=new UsuariosHerramientas;
+                $herramientas->usuario_id=$data['user']->id;
                 $herramientas->herramienta_id=$herramienta;
-                $herramientas->save();
+                $herramientas->save();    
+                }
+                
             }
         }
         if (isset($_POST['plataformas'])) {
             foreach ($_POST['plataformas'] as $plataformas) {
-                $plataforma=new UsuariosPlataformas;
-                $plataforma->usuario_id=1;
+                $plat=Plataforma::find_by_id($plataformas);
+                if (is_null($plat)) {
+                   $plataforma=new UsuariosPlataformas;
+                $plataforma->usuario_id=$data['user']->id;
                 $plataforma->plataforma_id=$plataformas;
-                $plataforma->save();  
+                $plataforma->save();   
+                }
+                
             }
         }
         
+       $flash = array(
+            "title" => "OK",
+            "msg" => "Conocimiento de Herramientas,plataformas y lenguajes se agregó satisfactoriamente .",
+            "type" => "success",
+            "fade" => 1
+        );
+
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
         
-        /*ladybug_dump($_POST);*/
+       
     } else {
-        
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+            "fade" => 0
+        );
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
     }
 })->name('nuevo-conocimiento-post');
 
