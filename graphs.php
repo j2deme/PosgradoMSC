@@ -124,10 +124,7 @@ $app->get('/graficas/estadistica-genero/(:slug)', function($slug) use($app){
 	$data->addPoints($exalumnos,"Egresados");
 	$data->addPoints($exalumnas,"Egresadas");
 	$pink = array("R"=>250,"G"=>54,"B"=>100,"Alpha"=>100);
-//	$pink = array("R"=>225,"G"=>35,"B"=>35,"Alpha"=>100);
 	$blue = array("R"=>41,"G"=>138,"B"=>238,"Alpha"=>100);
-//	$data->setPalette(array('Candidatos','Aceptados','Alumnos','Egresados'),$blue);
-//	$data->setPalette(array('Candidatas','Aceptadas','Alumnas','Egresadas'),$pink);
 //	$data->setAxisName(0,"Relación por Genero");
 	$data->addPoints($years,"Labels");
 	$data->setSerieDescription("Labels","Años");
@@ -142,7 +139,7 @@ $app->get('/graficas/estadistica-genero/(:slug)', function($slug) use($app){
 //	$graph->drawScale(array("Floating"=>true,"GridR"=>200,"GridG"=>200,"GridB"=>200,"DrawSubTicks"=>true,"CycleBackground"=>true,"Mode"=>SCALE_MODE_ADDALL));
 	$graph->drawScale($scaleSettings);
 	$graph->setShadow(false);
-	$graph->drawBarChart(array("DisplayValues"=>true,"DisplayColor"=>DISPLAY_AUTO,"Gradient"=>false,"Surrounding"=>10,"InnerSurrounding"=>10,"RecordImageMap"=>TRUE));
+	$graph->drawBarChart(array("DisplayValues"=>true, "DisplayColor"=>DISPLAY_AUTO, "Gradient"=>false, "Surrounding"=>10, "InnerSurrounding"=>10, "RecordImageMap"=>TRUE));
 //	$graph->writeLabel(array("Hombres","Mujeres"),1,array("DrawVerticalLine"=>TRUE));
 	$graph->drawLegend($m->lx, $m->ly,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
 	$graph->stroke();
@@ -205,6 +202,7 @@ $app->get('/graficas/estadistica-genero-rol/(:year)', function($year) use($app){
 	$graph->stroke();
 })->name('g-genero-rol-anual');
 
+#XXX Estadistica de Procedencia
 $app->get('/graficas/procedencia/(:slug)', function($slug) use($app){
 	//Settings
 	$forgotte = __DIR__."/vendor/pChart/fonts/Forgotte.ttf";
@@ -225,7 +223,8 @@ $app->get('/graficas/procedencia/(:slug)', function($slug) use($app){
 	$m->tx = 150;//Title X
 	$m->ty = 35;//Title Y
 	$faker = Faker\Factory::create();
-	$users = Usuario::all(array('include'=>array('personal')));
+	$users = Usuario::find('all',array('include'=>array('personal')));
+//    $users = Usuario::find('all');
 	$ids = array();
 	foreach ($users as $u) {
 		$proc = $u->personal->procedencia;
@@ -243,15 +242,20 @@ $app->get('/graficas/procedencia/(:slug)', function($slug) use($app){
 			$ids[$proc] = 1;
 		}
 	}*/
-	sort($ids);
+	arsort($ids);
 	$count = count($ids);
 	$names = array();
 	
 	foreach ($ids as $key => $value) {
-		$localidad = Localidad::find_one($key);
+		$localidad = Localidad::find($key);
 		$municipio_id = $localidad->municipio;
-		$municipio = Municipio::find_one($municipio_id);
+		$municipio = Municipio::find($municipio_id);
+        $estado_id = $municipio->estado;
+        $estado = Estado::find($estado_id);
+        $names[] = $localidad->nombre.",".$estado->abr;
 	}
+    
+    #TODO It works!
 /*	for ($i=0; $i < $count; $i++) { 
 		$names[] = $faker->country();
 	}*/
