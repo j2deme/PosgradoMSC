@@ -6,16 +6,37 @@
 			<div class="span11">
 				{#<h2>Estadísticas</h2>#}
 				<div class="page-header">
-    				<h1>Estadísticas</h1>
-    			</div>
+					<h1>Estadísticas</h1>
+				</div>
 			</div>
 		</div>
 		<div class="row">
 			<div class="span11">
-				<div id="results" class="hide">
-					<img src="{{ urlFor('g-matriculacion') }}" alt="" class=""/>
-					<img src="{{ urlFor('g-genero-rol-anual',{'year':'2011'}) }}" alt=""/>
-					<img src="{{ urlFor('g-procedencia',{'slug':'2011'}) }}" alt=""/>
+				<div id="results" class=""><!--hide-->
+					<div class="tabbable">
+						<ul class="nav nav-tabs">
+							<li class="active">
+								<a href="#tab1" data-toggle="tab">Matriculación Anual</a>
+							</li>
+							<li>
+								<a href="#tab2" data-toggle="tab">Distribución por Genero</a>
+							</li>
+							<li>
+								<a href="#tab3" data-toggle="tab">Procedencia</a>
+							</li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="tab1" name="tab1">
+								<img src="{{ urlFor('g-matriculacion') }}"/>
+							</div>
+							<div class="tab-pane" id="tab2" name="tab2">
+								<img src="{{ urlFor('g-genero-rol-anual',{'year':'2011'}) }}"/>								
+							</div>
+							<div class="tab-pane" id="tab3" name="tab3">
+								<img src="{{ urlFor('g-procedencia',{'slug':'2011'}) }}"/>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -23,12 +44,11 @@
 </div>
 
 <script>
-head.ready("app", function(){
-	head.js(
-	);
-	$(function(){
-		$('#results').fadeIn(1500);
-	});
-});
+	head.ready("app", function() {
+		head.js();
+		$(function() {
+//			$('#results').fadeIn(1500);
+		});
+	}); 
 </script>
 {% endblock %}
