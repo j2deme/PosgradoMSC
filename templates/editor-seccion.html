@@ -1,244 +1,254 @@
 {% extends 'admin-base.html' %}
 {% block content %}
 <div class="row">
-	<div class="span12">
-		<div class="row">
-			<div class="span11">
-				<div class="page-header">
+    <div class="span12">
+        <div class="row">
+            <div class="span11">
+                <div class="page-header">
                     <h1>Editor de Sección <small>{{ seccion.nombre }}</small></h1>
                 </div>
-			</div>
-		</div>
-		<div class="row">
-{#			<div class="offset1 span9">#}
-			<div class="span11">
-				<div id="loader" name="loader" class="">Cargando Editor <img src="{{ urlFor('home') }}img/loader.gif"></div>
-				<form id="editor" name="editor" method="post" class="form-horizontal hide span8" action="{{ urlFor('actualiza-seccion-post', {'id': seccion.id }) }}">
-				{#width: 800px; #}
-				<textarea id="contenido" name="contenido" class="wysihtml5 span8" style="height: 300px">
-				{% if seccion is defined %}
-				{{ seccion.contenido|raw }}
-				{% endif %}
-				</textarea>
-          		<div class="control-group">
-          			<br />
-            		<label for="contenedor" class="control-label">Contenedor</label>
-            		<div class="controls">
-            		{% set headers = ['General','Aspirantes','Alumnos','Posgrado'] %}
-              			<select id="contenedor" name="contenedor">
-                		{% for i in 0..3 %}
-                		<option value="{{ i }}" 
-                		{% if seccion.contenedor == i %}
-                		selected
-                		{% endif %}
-                		>{{ headers[i] }}</option>
-                		{% endfor %}
-              			</select>
-            		</div>
-          		</div>
-          		<div class="form-actions">
-            		<button class="btn btn-primary" type="submit"><i class="icon-save"> </i> Guardar Cambios</button>
-            		<a href="{{ urlFor('admin-secciones') }}" class="btn"><i class="icon-remove-sign"> </i> Cancelar</a>
-          		</div>
-				</form>
-				<form id="fileupload" action="{{ urlFor('uploader') }}" method="POST" enctype="multipart/form-data">
-			        <div class="row fileupload-buttonbar">
-			        	<div class="span7">
-							<span class="btn btn-success fileinput-button">
-			                	<i class="icon-plus"> </i><span>Añadir archivos...</span>
-			                	<input type="file" name="files[]" multiple>
-			                </span>
-			                <button type="submit" class="btn btn-primary start">
-			                    <i class="icon-upload"> </i><span>Comenzar subida</span>
-			                </button>
-			                <button type="reset" class="btn btn-warning cancel">
-			                    <i class="icon-ban-circle"></i>
-			                    <span>Cancelar subida</span>
-			                </button>
-			                {#<button type="button" class="btn btn-danger delete">
-			                    <i class="icon-trash"></i>
-			                    <span>Eliminar</span>
-			                </button>
-			                <input type="checkbox" class="toggle">#}
-			            </div>
-			            <div class="span5 fileupload-progress fade">
-			                <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-			                    <div class="bar" style="width:0%;"></div>
-			                </div>
-			                <div class="progress-extended">&nbsp;</div>
-			            </div>
-			        </div>
-			        <div class="fileupload-loading"></div>
-			        <table role="presentation" class="table table-striped">
-{#			        	<tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">#}
-			        	<tbody class="files">
-			        		
-			        	</tbody>
-			        </table>
-			    </form>
-			    <!-- modal-gallery is the modal dialog used for the image gallery -->
-<div id="modal-gallery" class="modal modal-gallery hide fade" data-filter=":odd">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">&times;</a>
-        <h3 class="modal-title"></h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span11">
+                <div class="tabbable">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#tab1" data-toggle="tab">Editor</a>
+                        </li>
+                        <li>
+                            <a href="#tab2" data-toggle="tab">Adjuntos</a>
+                        </li>
+                        <li>
+                            <a href="#tab3" data-toggle="tab">Adjuntar Archivos</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab1" name="tab1">
+                            <div id="loader" name="loader" class="">
+                                Cargando Editor <img src="{{ urlFor('home') }}img/loader.gif">
+                            </div>
+                            <form id="editor" name="editor" method="post" class="form-horizontal hide" action="{{ urlFor('editar-seccion-post', {'id': seccion.id }) }}">
+                                <textarea id="contenido" name="contenido" class="wysihtml5 span10" style="height: 300px">
+                                {% if seccion is defined %}
+                                {{ seccion.contenido|raw }}
+                                {% endif %}
+                                </textarea>
+                                <div class="control-group">
+                                    <br />
+                                    <label for="contenedor" class="control-label">Contenedor</label>
+                                    <div class="controls">
+                                        {% set headers = ['General','Aspirantes','Alumnos','Posgrado'] %}
+                                        <select id="contenedor" name="contenedor">
+                                            {% for i in 0..3 %}
+                                            <option value="{{ i }}"
+                                            {% if seccion.contenedor == i %}
+                                            selected
+                                            {% endif %}
+                                            >{{ headers[i] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="icon-save"> </i> Guardar Cambios
+                                    </button>
+                                    <a href="{{ urlFor('admin-secciones') }}" class="btn"><i class="icon-remove-sign"> </i> Cancelar</a>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane" id="tab2" name="tab2">
+                            <h2>Archivos</h2>
+                        </div>
+                        <div class="tab-pane" id="tab3" name="tab3">
+                            <form id="fileupload" action="{{ urlFor('uploader') }}" method="POST" enctype="multipart/form-data">
+                                <div class="row fileupload-buttonbar">
+                                    <div class="span7">
+                                        <span class="btn btn-success fileinput-button"> <i class="icon-plus"> </i><span>Añadir archivos...</span>
+                                            <input type="file" name="files[]" multiple>
+                                        </span>
+                                        <button type="submit" class="btn btn-primary start">
+                                            <i class="icon-upload"> </i><span>Comenzar subida</span>
+                                        </button>
+                                        <button type="reset" class="btn btn-warning cancel">
+                                            <i class="icon-ban-circle"></i>
+                                            <span>Cancelar subida</span>
+                                        </button>
+                                        {#
+                                        <button type="button" class="btn btn-danger delete">
+                                            <i class="icon-trash"></i>
+                                            <span>Eliminar</span>
+                                        </button>
+                                        <input type="checkbox" class="toggle">
+                                        #}
+                                    </div>
+                                    <div class="span5 fileupload-progress fade">
+                                        <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                            <div class="bar" style="width:0%;"></div>
+                                        </div>
+                                        <div class="progress-extended">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="fileupload-loading"></div>
+                                <table role="presentation" class="table table-striped">
+                                    <!--<tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody>-->
+                                    <tbody class="files"> </tbody>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- modal-gallery is the modal dialog used for the image gallery -->
+                <div id="modal-gallery" class="modal modal-gallery hide fade" data-filter=":odd">
+                    <div class="modal-header">
+                        <a class="close" data-dismiss="modal">&times;</a>
+                        <h3 class="modal-title"></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="modal-image"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn modal-download" target="_blank"> <i class="icon-download"></i> <span>Download</span> </a>
+                        <a class="btn btn-success modal-play modal-slideshow" data-slideshow="5000"> <i class="icon-play icon-white"></i> <span>Slideshow</span> </a>
+                        <a class="btn btn-info modal-prev"> <i class="icon-arrow-left icon-white"></i> <span>Previous</span> </a>
+                        <a class="btn btn-primary modal-next"> <span>Next</span> <i class="icon-arrow-right icon-white"></i> </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="modal-body"><div class="modal-image"></div></div>
-    <div class="modal-footer">
-        <a class="btn modal-download" target="_blank">
-            <i class="icon-download"></i>
-            <span>Download</span>
-        </a>
-        <a class="btn btn-success modal-play modal-slideshow" data-slideshow="5000">
-            <i class="icon-play icon-white"></i>
-            <span>Slideshow</span>
-        </a>
-        <a class="btn btn-info modal-prev">
-            <i class="icon-arrow-left icon-white"></i>
-            <span>Previous</span>
-        </a>
-        <a class="btn btn-primary modal-next">
-            <span>Next</span>
-            <i class="icon-arrow-right icon-white"></i>
-        </a>
-    </div>
-</div>
-			</div>
-		</div>
-	</div>
 </div>
 
 {% raw %}
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
-{% for (var i=0, file; file=o.files[i]; i++) { %}
+    {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-upload fade">
-        <td class="preview"><span class="fade"></span></td>
-        <td class="name"><span>{%=file.name%}</span></td>
-        <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
-        {% if (file.error) { %}
-            <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
-        {% } else if (o.files.valid && !i) { %}
-            <td>
-                <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
-            </td>
-            <td class="start">{% if (!o.options.autoUpload) { %}
-                <button class="btn btn-primary">
-                    <i class="icon-upload icon-white"></i>
-                    <span>{%=locale.fileupload.start%}</span>
-                </button>
-            {% } %}</td>
-        {% } else { %}
-            <td colspan="2"></td>
-        {% } %}
-        <td class="cancel">{% if (!i) { %}
-            <button class="btn btn-warning">
-                <i class="icon-ban-circle icon-white"></i>
-                <span>{%=locale.fileupload.cancel%}</span>
-            </button>
-        {% } %}</td>
+    <td class="preview"><span class="fade"></span></td>
+    <td class="name"><span>{%=file.name%}</span></td>
+    <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+    {% if (file.error) { %}
+    <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+    {% } else if (o.files.valid && !i) { %}
+    <td>
+    <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
+    </td>
+    <td class="start">{% if (!o.options.autoUpload) { %}
+    <button class="btn btn-primary">
+    <i class="icon-upload"></i>
+    <span>{%=locale.fileupload.start%}</span>
+    </button>
+    {% } %}</td>
+    {% } else { %}
+    <td colspan="2"></td>
+    {% } %}
+    <td class="cancel">{% if (!i) { %}
+    <button class="btn btn-warning">
+    <i class="icon-ban-circle"></i>
+    <span>{%=locale.fileupload.cancel%}</span>
+    </button>
+    {% } %}</td>
     </tr>
-{% } %}
+    {% } %}
 </script>
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
-{% for (var i=0, file; file=o.files[i]; i++) { %}
+    {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-download fade">
-        {% if (file.error) { %}
-            <td></td>
-            <td class="name"><span>{%=file.name%}</span></td>
-            <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
-            <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
-        {% } else { %}
-            <td class="preview">{% if (file.thumbnail_url) { %}
-                <a href="{%=file.url%}" title="{%=file.name%}" rel="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}"></a>
-            {% } %}</td>
-            <td class="name">
-                <a href="{%=file.url%}" title="{%=file.name%}" rel="{%=file.thumbnail_url&&'gallery'%}" download="{%=file.name%}">{%=file.name%}</a>
-            </td>
-            <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
-            <td colspan="2"></td>
-        {% } %}
-        <td class="delete">
-            <button class="btn btn-danger" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}">
-                <i class="icon-trash icon-white"></i>
-                <span>{%=locale.fileupload.destroy%}</span>
-            </button>
-            <input type="checkbox" name="delete" value="1">
-        </td>
+    {% if (file.error) { %}
+    <td></td>
+    <td class="name"><span>{%=file.name%}</span></td>
+    <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+    <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+    {% } else { %}
+    <td class="preview">{% if (file.thumbnail_url) { %}
+    <a href="{%=file.url%}" title="{%=file.name%}" rel="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}"></a>
+    {% } %}</td>
+    <td class="name">
+    <a href="{%=file.url%}" title="{%=file.name%}" rel="{%=file.thumbnail_url&&'gallery'%}" download="{%=file.name%}">{%=file.name%}</a>
+    </td>
+    <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+    <td colspan="2"></td>
+    {% } %}
+    <td class="delete">
+<!--    <button class="btn btn-danger" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}">-->
+    <button class="btn btn-danger" data-type="{%=file.delete_type%}" data-url="{%=file.url%}">
+    <i class="icon-trash"></i>
+    <span>{%=locale.fileupload.destroy%}</span>
+    </button>
+    <input type="checkbox" name="delete" value="1">
+    </td>
     </tr>
-{% } %}
+    {% } %}
 </script>
 {% endraw %}
 
 <script>
-head.ready("app", function(){
-	head.js(
-		{wysihtml5: "{{ urlFor('home') }}js/wysihtml5-0.3.0.js"},
-		{bwysihtml5: "{{ urlFor('home') }}js/bootstrap-wysihtml5.js"},
-		{jqueryuiw: "{{ urlFor('home') }}js/jquery-file-upload/jquery.ui.widget.js"},
-		"{{ urlFor('home') }}js/jquery-file-upload/tmpl.min.js",
-		"{{ urlFor('home') }}js/jquery-file-upload/load-image.min.js",
-		"{{ urlFor('home') }}js/jquery-file-upload/canvas-to-blob.min.js",
-		"{{ urlFor('home') }}js/jquery-file-upload/jquery.iframe-transport.js",
-		"{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload.js",
-		{underscore: "{{ urlFor('home') }}js/underscore-min.js"},
-		{bootstrap_gallery: "{{ urlFor('home') }}js/bootstrap-image-gallery.min.js"},
-		"{{ urlFor('home') }}js/jquery-file-upload/jquery.iframe-transport.js",
-		"{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload.js",
-		"{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload-fp.js",
-		"{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload-ui.js",
-		"{{ urlFor('home') }}js/jquery-file-upload/locale.js"
-	);
-	$(function(){
-		$('.wysihtml5').wysihtml5();
-		var modal = $('.bootstrap-wysihtml5-insert-section-link-modal');
-		var urlSelect = modal.find('.bootstrap-wysihtml5-insert-link-url');
-		{% if secciones is defined%}
-		{% for seccion in secciones %}
-			$(urlSelect).append('<option value="@{{ seccion.slug }}">{{ seccion.nombre }}</option>');
-		{% endfor %}
-			$(urlSelect).append('<option value="@relacion-aceptados">Relación de Aceptados</option>');
-			$(urlSelect).append('<option value="@plan-estudios">Estructura del Plan de Estudios</option>');
-			$(urlSelect).append('<option value="@horarios">Horarios</option>');
-			$(urlSelect).append('<option value="@publicaciones">Publicaciones</option>');
-			$(urlSelect).append('<option value="@egresados">Egresados</option>');
-			$(urlSelect).append('<option value="@matriculacion">Matriculación</option>');
-			$(urlSelect).append('<option value="@productividad-academica">Productividad Académica</option>');
-			$(urlSelect).append('<option value="@nucleo-basico-academico">Núcleo Básico Académico</option>');
-			$(urlSelect).append('<option value="@registro-aspirante">Registro de Aspirante</option>');
-		{% endif %}
+    head.ready("app", function() {
+        head.js(
+            {wysihtml5 : "{{ urlFor('home') }}js/wysihtml5-0.3.0.js"},
+            {bwysihtml5 : "{{ urlFor('home') }}js/bootstrap-wysihtml5.js"},
+            {jqueryuiw : "{{ urlFor('home') }}js/jquery-file-upload/jquery.ui.widget.js"},
+            "{{ urlFor('home') }}js/jquery-file-upload/tmpl.min.js",
+            "{{ urlFor('home') }}js/jquery-file-upload/load-image.min.js",
+            "{{ urlFor('home') }}js/jquery-file-upload/canvas-to-blob.min.js",
+            "{{ urlFor('home') }}js/jquery-file-upload/jquery.iframe-transport.js",
+            "{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload.js",
+            {underscore : "{{ urlFor('home') }}js/underscore-min.js"},
+            {bootstrap_gallery : "{{ urlFor('home') }}js/bootstrap-image-gallery.min.js"},
+//            "{{ urlFor('home') }}js/jquery-file-upload/jquery.iframe-transport.js",
+//            "{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload.js",
+            "{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload-fp.js",
+            "{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload-ui.js",
+            "{{ urlFor('home') }}js/jquery-file-upload/locale.js");
+        $(function() {
+            $('.wysihtml5').wysihtml5();
+            var modal = $('.bootstrap-wysihtml5-insert-section-link-modal');
+            var urlSelect = modal.find('.bootstrap-wysihtml5-insert-link-url');
+            {% if secciones is defined%}
+            {% for seccion in secciones %}
+            $(urlSelect).append('<option value="@{{ seccion.slug }}">{{ seccion.nombre }}</option>');
+            {% endfor %}
+            $(urlSelect).append('<option value="@relacion-aceptados">Relación de Aceptados</option>');
+            $(urlSelect).append('<option value="@plan-estudios">Estructura del Plan de Estudios</option>');
+            $(urlSelect).append('<option value="@horarios">Horarios</option>');
+            $(urlSelect).append('<option value="@publicaciones">Publicaciones</option>');
+            $(urlSelect).append('<option value="@egresados">Egresados</option>');
+            $(urlSelect).append('<option value="@matriculacion">Matriculación</option>');
+            $(urlSelect).append('<option value="@productividad-academica">Productividad Académica</option>');
+            $(urlSelect).append('<option value="@nucleo-basico-academico">Núcleo Básico Académico</option>');
+            $(urlSelect).append('<option value="@registro-aspirante">Registro de Aspirante</option>');
+            {% endif %}
 
-		$("#loader").delay(200).fadeOut(300);		
-		$('#editor').delay(500).fadeIn(300);
-	    $('#fileupload').fileupload({
-	    	url: '{{ urlFor("uploader") }}',
-            maxFileSize: 50000000, //50MB
-//            acceptFileTypes: /(\.|\/)(zip|pdf|gif|jpe?g|png)$/i,
-            process: [
-                {
-                    action: 'load',
-                    fileTypes: /^image\/(gif|jpeg|png)$/,
-                    maxFileSize: 20000000 // 20MB
-                },
-                {
-                    action: 'resize',
-                    maxWidth: 1440,
-                    maxHeight: 900
-                },
-                {
-                    action: 'save'
-                }
-            ]
-	        /*dataType: 'json',
-	        done: function (e, data) {
-	            $.each(data.result, function (index, file) {
-	                $('<p/>').text(file.name).appendTo(document.body);
-	            });
-	        }*/
-	    });
-	    
-	    
-	});
-});
+            $("#loader").delay(200).fadeOut(300);
+            $('#editor').delay(500).fadeIn(300);
+            $('#fileupload').fileupload({
+                url : '{{ urlFor("uploader") }}',
+                maxFileSize : 50000000, //50MB
+                //acceptFileTypes: /(\.|\/)(zip|pdf|gif|jpe?g|png)$/i,
+                process : [{
+                    action : 'load',
+                    fileTypes : /^image\/(gif|jpeg|png)$/,
+                    maxFileSize : 20000000 // 20MB
+                }, {
+                    action : 'resize',
+                    maxWidth : 1440,
+                    maxHeight : 900
+                }, {
+                    action : 'save'
+                }]
+                /*dataType: 'json',
+                 done: function (e, data) {
+                 $.each(data.result, function (index, file) {
+                 $('<p/>').text(file.name).appendTo(document.body);
+                 });
+                 }*/
+            });
+
+        });
+    }); 
 </script>
 {% endblock %}

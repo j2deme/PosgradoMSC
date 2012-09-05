@@ -513,7 +513,7 @@ $app->get('/download/:file', function($file) use ($app) {
      }
 })->name('file-reader');
 
-$app->map('/uploader/',function() use ($app) {
+$app->map('/uploader/',function() use ($app) {//XXX Uploader
     $upload_handler = new UploadHandler();
     header('Pragma: no-cache');
     header('Cache-Control: no-store, no-cache, must-revalidate');
@@ -598,12 +598,25 @@ $app->get('/admin/secciones/editor/:slug', function($slug) use ($app) {
         array("name" => "Editor", "alias" => "editor-seccion")
     );
     $data['secciones'] = Seccion::find('all', array('order' => 'nombre asc'));
-    $data['seccion'] = Seccion::find_by_slug($slug);
+    $seccion = Seccion::find_by_slug($slug);
+    $contenido = (array) json_decode($seccion->contenido);
+    $proseccion = array(
+        'id' => $seccion->id,
+        'nombre' => $seccion->nombre,
+        'slug' => $seccion->slug,
+        'contenedor' => $seccion->contenedor,
+        'orden' => $seccion->orden,
+        'contenido' => $contenido['data'],
+        'files' => $contenido['files'],
+        'actualizado' => $seccion->actualizado
+    );
+    //ladybug_dump($proseccion);
+    $data['seccion'] = $proseccion; 
 
     $app->render('editor-seccion.html', $data);
 })->name('editor-seccion');
 
-$app->post('/actualiza-seccion/:id/', function($id) use ($app) {
+$app->post('/editar-seccion-post/:id/', function($id) use ($app) {//XXX Actualiza Seccion
     $validator = new GUMP();
     //$_POST = $validator->sanitize($_POST);
     $rules = array(
@@ -615,7 +628,17 @@ $app->post('/actualiza-seccion/:id/', function($id) use ($app) {
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
         $seccion = Seccion::find($id);
-        $seccion->contenido = $_POST['contenido'];
+        $contenido = $seccion->contenido;
+        $contenido = (array) json_decode($contenido);
+        if(!array_key_exists('data', $contenido)){
+            $contenido = array(
+                'data' => $_POST['contenido'],
+                'files' => array()
+            );
+        } else {
+            
+        }
+        $seccion->contenido = json_encode($contenido);// $_POST['contenido'];
         $seccion->contenedor = $_POST['contenedor'];
         $seccion->actualizado = time();
         $seccion->save();
@@ -638,7 +661,7 @@ $app->post('/actualiza-seccion/:id/', function($id) use ($app) {
     }
     $app->flashKeep();
     $app->redirect($app->urlFor('admin-secciones'));
-})->name('actualiza-seccion-post');
+})->name('editar-seccion-post');
 
 $app->get('/admin/noticias/', function() use ($app) {
     $data['breadcrumb'] = array(
