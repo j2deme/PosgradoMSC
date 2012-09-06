@@ -2,633 +2,638 @@
 {% block content %}
 <div class="row">
 	<div class="span12">
-	 <ul class="nav nav-tabs">
-    		<li class="active"><a href="#tab5" data-toggle="tab">Datos de Acceso</a></li>
-    		<li class=""><a href="#tab1" data-toggle="tab">Datos Personales</a></li>
-   			 <li><a href="#tab2" data-toggle="tab">Datos Academicos</a></li>
-   			 <li><a href="#tab3" data-toggle="tab">Información de Contacto</a></li>
-   			 <li><a href="#tab4" data-toggle="tab">Experiencia Laboral</a></li>
-   			 <li><a href="#tab6" data-toggle="tab">Conocimiento</a></li>
-   			 <li><a href="#tab7" data-toggle="tab">Idiomas</a></li>
-  	  	</ul>
-    	<div class="tab-content">
-    		<!-------------------------------------------------Primera Tab...........------------------------------------------------------>
-    <div class="tab-pane fade" id="tab1">
-    	<form id="datosperosnales" name="datospersonales" method="post" action="{{ urlFor('nuevo-datospersonales-post') }}">
-    		<div class="row">
-    			<div class="span12">
-    				<div class="row">
-    					<div class="span4">
-    						<label for="nombre">Nombre:</label>
-    						<input id="nombre"name="nombre" type="text" placeholder="Nombre" value="{{ personal.nombre|default('') }}"/>
-    						<input id="perfil" name="perfil" type="hidden" value="1" />
-    						<input id="id" name="id" type="hidden" value="{{ personal.id }}" />
-    					</div>
-    					<div class="span4">
-    						<label for="ap">Apellido Paterno:</label>
-    						<input id="ap" name="ap" type="text" placeholder="Apellido Paterno"  value="{{ personal.paterno|default('') }}"/>
-    					</div>
-    					<div class="span4">
-    						<label for="am">Apellido Materno:</label>
-    						<input id="am" name="am" type="text" placeholder="Apellido Materno" value="{{personal.materno|default('')}}" />
-    					</div>
-    				</div>
-    				<div class="row">
-    					<div class="span4">
-    						<label for="nacimento">Fecha de Nacimiento:</label>
-    						<div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-								<input id="nacimiento" name="nacimiento" class="span2 datepicker" size="16" type="text" value="{{ personal.fdn|default('') }}">
-								<span class="add-on"><i class="icon-calendar"></i></span>
+		<ul class="nav nav-tabs">
+			<li class="active">
+				<a href="#tab5" data-toggle="tab">Datos de Acceso</a>
+			</li>
+			<li class="">
+				<a href="#tab1" data-toggle="tab">Datos Personales</a>
+			</li>
+			<li>
+				<a href="#tab2" data-toggle="tab">Datos Academicos</a>
+			</li>
+			<li>
+				<a href="#tab3" data-toggle="tab">Información de Contacto</a>
+			</li>
+			<li>
+				<a href="#tab4" data-toggle="tab">Experiencia Laboral</a>
+			</li>
+			<li>
+				<a href="#tab6" data-toggle="tab">Conocimiento</a>
+			</li>
+			<li>
+				<a href="#tab7" data-toggle="tab">Idiomas</a>
+			</li>
+		</ul>
+		<div class="tab-content">
+			<!-------------------------------------------------Primera Tab...........------------------------------------------------------>
+			<div class="tab-pane fade" id="tab1">
+				<form id="datosperosnales" name="datospersonales" method="post" action="{{ urlFor('nuevo-datospersonales-post') }}">
+					<div class="row">
+						<div class="span12">
+							<div class="row">
+								<div class="span4">
+									<label for="nombre">Nombre:</label>
+									<input id="nombre"name="nombre" type="text" placeholder="Nombre" value="{{ personal.nombre|default('') }}"/>
+									<input id="perfil" name="perfil" type="hidden" value="1" />
+									<input id="id" name="id" type="hidden" value="{{ personal.id }}" />
+								</div>
+								<div class="span4">
+									<label for="ap">Apellido Paterno:</label>
+									<input id="ap" name="ap" type="text" placeholder="Apellido Paterno"  value="{{ personal.paterno|default('') }}"/>
+								</div>
+								<div class="span4">
+									<label for="am">Apellido Materno:</label>
+									<input id="am" name="am" type="text" placeholder="Apellido Materno" value="{{personal.materno|default('')}}" />
+								</div>
 							</div>
-    					</div>
-    					<div class="span4">
-    						<label class="control-label">Sexo:</label>
-    							<div class="controls">
-    								{% if personal.sexo is defined  %}
-    								{% endif %}
-    								<div class="radio">
-    									<input {% if personal.sexo is defined  %} {% if personal.sexo==1 %}checked {% endif %} {% endif %} id="masculino" name="sexo" type="radio" value="1" />
-    									Masculino	
-    								</div>
-    								<div class="radio">
-    									<input {% if personal.sexo is defined  %} {% if personal.sexo==0 %}checked {% endif %} {% endif %} id="femenino"name="sexo" type="radio" value="0"/>
-    									Femenino	
-    								</div>
-    							</div>
-    					</div>
-    				</div>
-    				<hr />
-    		<div class="row">
-    			<div class="span12">
-    				<h3>Lugar de Nacimiento</h3>
-    			</div>
-    			<div class="span4">
-    		
-    				<label for="nestado">Estado:</label>
-    				<select id="nestado" name="nestado" class="chzn-select" data-placeholder="Selecciona Estado" >
-    					<option> </option>
-    					{% for estado in estados %}
-    					<option {% if( ue is not null) and (ue.clave==estado.clave) %} selected=""  {% endif %} value="{{ estado.clave }}">{{ estado.nombre }}</option>
-    					{% endfor %}
-    				</select>
-    			
-    			</div>
-    			<div class="span4">
-    				<label for="nmunicipio">Municipio:</label>
-    				<select id="nmunicipio" name="nmunicipio" class="chzn-select" data-placeholder="Selecciona Municipio" >
-    					<option> </option>
-    					{% for municipio in municipios %}
-    					<option {% if ( um is not null) and (um.clave==municipio.clave) %} selected=""  {% endif %}  value="{{ municipio.clave }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
-    					{% endfor %}
-    				</select>
-    			</div>
-    			<div class="span4">
-    				
-    				<label for="nlocalidad">Localidad:</label>
-    				<select id="nlocalidad" name="nlocalidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
-    					<option> </option>
-    					{% for localidad in localidades %}
-    					<option {% if ( ul is not null) and (ul.clave==localidad.clave) %} selected="" {% endif %} value="{{ localidad.clave }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
-    					{% endfor %}
-    				</select>
-    			
-    				<script>
-    					head.ready(function(){
-							$(function(){
-    							$("#nmunicipio").chained("#nestado");  
-    							$('#nmunicipio').trigger("liszt:updated");
-    							 $("#nestado").bind("change", function(){
-       							 $("#nmunicipio").trigger("liszt:updated")
-   								 });
-								$("#nlocalidad").chained("#nmunicipio");
-								$('#nlocalidad').trigger("liszt:updated");
-								$("#nmunicipio").bind("change", function(){
-       							 $("#nlocalidad").trigger("liszt:updated")
-   								 });
-							});
-						});
-    				</script>
-    			</div>
-    		</div>
-    					<hr />
-    					<div class="row">
-    						<div class="span12">
-    							<h3>Direccion</h3>
-    						</div>
-    					</div>
-    					<div class="row">
-    						
-    						<div class="span4">
-    							
-    							<label for="calle">Calle:</label>
-    							<input id="calle"name="calle"type="text"placeholder="Calle" value="{{personal.calle|default('')}}"/>
-    							<label for="numex">Numero Externo:</label>
-    							<input id="numex" name="numex"type="number"placeholder="Numero Externo" value="{{ personal.num_ext|default('') }}" />
-    							<label for="numint">Numero Interno:</label>
-    							<input id="numint"name="numint"type="number"placeholder="Numero Interno" value="{{ personal.num_int|default('') }}" />
-    						</div>
-    						<div class="span4">
-    							<label for="colonia">Colonia:</label>
-    							<input id="colonia"name="colonia"type="text"placeholder="Colonia" value="{{ personal.colonia|default('') }}" />
-    							<label for="cp">Codigo Postal:</label>
-    							<input id="cp" name="cp"type="number"placeholder="Codigo Posatal" value="{{ personal.cp|default('') }}" />
-    							
-    						</div>
-    				</div>
-    				<div class="row">
-   	 					<div class="span10 offset1">
-   	 						<div class="form-actions">
-   	 							<button id="" name="" class="btn btn-primary" type="submit">Guardar</button>
-   	 							<button id=""name="" class="btn"type="reset">Cancelar</button>
-   	 						</div>
-   	 					</div>
-   	 				</div>
-    			</div>
-    		</div>
-    	</form>
-    </div>
-    <!-----------------------------------------------------------Segunda Tab--------------------------------------------------------------->
-    
-    <div class="tab-pane fade" id="tab2">
-   	 <form id="datosacademicos" name="datoscademicos" method="post" action="{{ urlFor('nuevo-datosacademicos-post') }}">
-    		<div class="row">
-    			<div class="span12">
-    				{% if (academico is defined) and (academico is not null) %}
-    					<input id="id" name="id" type="hidden" value="{{ academico.id }}" />
-    				{% else %}
-    				
-    					<input id="id" name="id" type="hidden" value="0" />
-    				{% endif %}
-    				<input id="perfil" name="perfil" type="hidden" value="1" />
-    				<input id="id" name="id" type="hidden" value="{{ academico.id }}" />
-    				<label for="institucion">Institucion de Procedencia:</label>
-    				<select id="institucion" name="institucion" class="chzn-select" data-placeholder="Selecciona Institucion" >
-    					<option> </option>
-    					{% for institucion in instituciones %}
-    					<option {% if academico.institucion==institucion.id %}selected {% endif %} value="{{ institucion.id }}" >{{ institucion.nombre|default('') }}</option>
-    					{% endfor %}
-    				</select>
-    			</div>
-    		</div>
-    		<div class="row">
-    			<div class="span4">
-    				<label for="carrera">Carrera:</label>
-    				<select id="carrera" name="carrera" class="chzn-select" data-placeholder="Selecciona Carrera" >
-    					<option> </option>
-    					{% for carrera in carreras %}
-    					<option {% if academico.carrera==carrera.id %}selected {% endif %} value="{{ carrera.id }}" >{{ carrera.nombre|default('') }}</option>
-    					{% endfor %}
-    				</select>
-    			</div>
-    			<div class="span4">
-    				<label for="forma">Forma Titulacion:</label>
-    				<select id="forma" name="forma" class="chzn-select" data-placeholder="Selecciona Forma de Titulacion" >
-    					<option> </option>
-    					{% for forma in formas %}
-    					<option {% if academico.titulacion==forma.id %}selected {% endif %} value="{{ forma.id }}" >{{ forma.nombre|default('') }}</option>
-    					{% endfor %}
-    				</select>
-    			</div>
-    		</div>
-    		<br />
-    		<div class="row">
-    			<div class="span4">
-    				<label for="ingreso">Fecha de Ingreso:</label>
-    				<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-						<input id="ingreso" name="ingreso" class="span2 datepicker" size="16" type="text" value="{{ academico.ingreso|default('') }}">
-						<span class="add-on "><i class="icon-calendar"></i></span>
-					</div>
-    			</div>
-    			<div class="span4">
-    				<label for="egreso">Fecha de egreso:</label>
-    				<div class="input-append date" id="dp5" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-						<input id="egreso" name="egreso" class="span2 datepicker" size="16" type="text" value="{{ academico.egreso|default('') }}">
-						<span class="add-on "><i class="icon-calendar"></i></span>
-					</div>
-    			</div>
-    		</div>
-    		<hr />
-    		<div class="row">
-    			<div class="span12">
-    				<h3>Ubicacion del Plantel</h3>
-    			</div>
-    			<div class="span4">
-    		
-    				<label for="estado">Estado:</label>
-    				<select id="estado" name="estado" class="chzn-select" data-placeholder="Selecciona Estado" >
-    					<option> </option>
-    					{% for estado in estados %}
-    					<option {% if (ie is not null) and (ie.clave==estado.clave) %} selected=""  {% endif %} value="{{ estado.clave }}">{{ estado.nombre }}</option>
-    					{% endfor %}
-    				</select>
-    			
-    			</div>
-    			<div class="span4">
-    				<label for="municipio">Municipio:</label>
-    				<select id="municipio" name="municipio" class="chzn-select" data-placeholder="Selecciona Municipio" >
-    					<option> </option>
-    					{% for municipio in municipios %}
-    					<option {% if (im is not null) and (im.clave==municipio.clave) %} selected=""  {% endif %}  value="{{ municipio.clave }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
-    					{% endfor %}
-    				</select>
-    			</div>
-    			<div class="span4">
-    				
-    				<label for="localidad">Localidad:</label>
-    				<select id="localidad" name="localidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
-    					<option> </option>
-    					{% for localidad in localidades %}
-    					<option {% if (il is not null) and (il.clave==localidad.clave) %} selected="" {% endif %} value="{{ localidad.clave }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
-    					{% endfor %}
-    				</select>
-    			</div>
-    			<script>
-    					head.ready(function(){
-							$(function(){
-    							$("#municipio").chained("#estado");  
-    							$('#municipio').trigger("liszt:updated");
-    							 $("#estado").bind("change", function(){
-       							 $("#municipio").trigger("liszt:updated")
-   								 });
-								$("#localidad").chained("#municipio");
-								$('#localidad').trigger("liszt:updated");
-								$("#municipio").bind("change", function(){
-       							 $("#localidad").trigger("liszt:updated")
-   								 });
-							});
-						});
-    				</script>
-    		</div>
-    		<div class="row">
-   	 					<div class="span10 offset1">
-   	 						<div class="form-actions">
-   	 							<button id="" name="" class="btn btn-primary" type="submit">Guardar</button>
-   	 							<button id=""name="" class="btn"type="reset">Cancelar</button>
-   	 						</div>
-   	 					</div>
-   	 				</div>
-    	</form>
-    </div>
-    <!-----------------------------------------------Trecera Tab------------------------------------------------------------------------------------->
-    <div class="tab-pane fade" id="tab3">
-   	 	<form id="infocontacto" name="infocontacto" method="post" action="{{ urlFor('nuevo-infocontacto-post') }}">
-   	 		<div class="row">
-   	 					<div class="span4">
-   	 						<label for="email">Email:</label>
-   	 						<input id="email"name="email"type="text" placeholder="Email" value="{{ contacto.email|default('') }}"/>
-   	 						<input id="id" name="id" type="hidden" value="{{ contacto.id }}" />
-   	 						<input id="perfil" name="perfil" type="hidden" value="1" />
-   	 					</div>
-   	 					<div class="span4">
-    				
-    				<label for="enterado">Forma Enterado:</label>
-    				<select id="enterado" name="enterado" class="chzn-select" data-placeholder="Selecciona Forma" >
-    					<option> </option>
-    					{% for formaenterado in formasenterado %}
-    					<option {% if contacto.forma==formaenterado.id %} selected="" {% endif %} value="{{ formaenterado.id }}" >{{ formaenterado.nombre }}</option>
-    					{% endfor %}
-    				</select>
-    			</div>
-   	 					<div class="span4">
-   	 						<input id="mantener"name="mantener" type="checkbox" {% if contacto.contactar is defined %}{% if contacto.contactar==1 %} checked {% endif %}{% endif %}/> Mantener Contacto
-   	 					</div>
-   	 				</div>
-   	 				<hr />
-   	 		<div class="row">
-   	 			<div class="span12">
-   	 				<h3>Telefonos</h3>
-   	 				<br />
-   	 			</div>
-   	 		</div>
-   	 		<div class="row">
-   	 			<div class="span12">
-   	 				<label for="movil">Movil:</label>
-   	 				<input id="nomvil"name="movil" type="number" placeholder="Numero" value="{{contacto.movil|default('')}}"/>
-   	 			</div>
-   	 		</div>
-   	 			<div class="row">
-   	 			<div class="span12">
-   	 				<label for="fijo">Fijo (Casa,Oficina):</label>
-   	 				<input id="fijo"name="fijo"type="number"placeholder="Numero" value="{{ contacto.fijo|default('') }}" />
-   	 				<br />
-   	 			</div>
-   	 		</div>
-   	 				<div class="row">
-   	 					<div class="span10 offset1">
-   	 						<div class="form-actions">
-   	 							<button id="" name="" class="btn btn-primary" type="submit">Guardar</button>
-   	 							<button id=""name="" class="btn"type="reset">Cancelar</button>
-   	 						</div>
-   	 					</div>
-   	 				</div>
-    	</form>
-    </div>
-    <!-------------------------------------------------Cuarta Tab-------------------------------------------------------------->
-     <div class="tab-pane fade" id="tab4">
-   	 <form id="explaboral" name="explaboral" method="post" action="{{ urlFor('nuevo-explaboral-post') }}">
-    		<div class="row">
-    			<div class="span2">
-    				<input id="perfil" name="perfil" type="hidden" value="1" />
-    				{% if laboral is defined %}
-    				{% if laboral is not null %}
-    				<input id="id" name="id" type="hidden" value="{{ laboral.id }}" />
-    				
-    				{% endif %}
-    				{% else %}
-    				<input id="id" name="id" type="hidden" value="0" />
-    				{% endif %}
-    				<label class="checkbox" for="trabajo"><input id="trabajo"name="trabajo"type="checkbox" {% if laboral.trabajado is defined %} {% if laboral.trabajado==1 %} checked {% endif %}{% endif %}/> Ha trabajado</label>
-    			</div>
-    			<div class="span4">
-    				<label for="anostrabajo">Años Trabajo:</label>
-    				<select id="anostrabajo"name="anostrabajo" class="chzn-select">
-    					<option {% if laboral.tiempo is defined %}{% if laboral.tiempo==0 %} selected {% endif %}{% endif %} value="0">Seleccione</option>
-    					<option {% if laboral.tiempo is defined %}{% if laboral.tiempo==1 %} selected {% endif %}{% endif %} value="1">0-1</option>
-    					<option {% if laboral.tiempo is defined %}{% if laboral.tiempo==2 %} selected {% endif %}{% endif %} value="2">2-4</option>
-    					<option {% if laboral.tiempo is defined %}{% if laboral.tiempo==3 %} selected {% endif %}{% endif %} value="3">5 o mas</option>
-    				</select>
-    			</div>
-    		</div>
-    		<br />
-    		<br />
-    		<div class="row">
-    			<div class="span12">
-    				<label for="explab">Esperiencia Laboral:</label>
-    				<textarea id="explab"name="explab" cols="100" rows="15" style="width: 1058px; height: 271px;">{{ laboral.experiencia|default('') }}</textarea>
-    			</div>
-    		</div>
-    	<div class="row">
-   	 					<div class="span10 offset1">
-   	 						<div class="form-actions">
-   	 							<button id="" name="" class="btn btn-primary" type="submit">Guardar</button>
-   	 							<button id=""name="" class="btn"type="reset">Cancelar</button>
-   	 						</div>
-   	 					</div>
-   	 				</div>
-    	</form>
-    </div>
-      <!-------------------------------------------------Quinta Tab-------------------------------------------------------------->
-     <div class="tab-pane fade active in" id="tab5">
-   	 <form id="editusuario" name="editusuario" class="" method="post" action="">
-    		<div class="row">
-    			<div class="span10 offset1">
-    				<div class="row">
-    					<input id="perfil" name="perfil" type="hidden" value="1" />
-    					<input id="id" name="id" type="hidden" value="{{ usuario.id }}" />
-    					<div class="control-group">
-    						<label class="control-label" for="usuario-edit">Login:</label>
-    						<div class="controls">
-    							
-    						<input id="usuario-edit"name="usuario-edit" class="span3" type="text" placeholder="Login" value="{{ usuario.login|default('') }}"/>
-    				
-    						</div>	
-    					</div>
-    					<div class="control-group">
-    						<label class="control-label" for="password">Contraseña:</label>
-    						<div class="controls">
-    							<input id="pasword" name="ap" class="span3" type="text" placeholder="Password"/>
-    				
-    						</div>
-    					</div>
-    					<div class="control-group">
-    						<label class="control-label" for="confirmacion">Confimacion Contraseña:</label>
-    						<div class="controls">
-    							<input id="confirmacion" name="confirmacion" class="span3" type="text" placeholder="Confirme Contraseña" />
-    						</div>
-    					</div>
-    				<input id="email-edit" name="email-edit" class="span3" type="hidden"/>
-    						
+							<div class="row">
+								<div class="span4">
+									<label for="nacimento">Fecha de Nacimiento:</label>
+									<div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+										<input id="nacimiento" name="nacimiento" class="span2 datepicker" size="16" type="text" value="{{ personal.fdn|default('') }}">
+										<span class="add-on"><i class="icon-calendar"></i></span>
+									</div>
+								</div>
+								<div class="span4">
+									<label class="control-label">Sexo:</label>
+									<div class="controls">
+										{% if personal.sexo is defined  %}
+										{% endif %}
+										<div class="radio">
+											<input {% if personal.sexo is defined  %} {% if personal.sexo==1 %}checked {% endif %} {% endif %} id="masculino" name="sexo" type="radio" value="1" />
+											Masculino
+										</div>
+										<div class="radio">
+											<input {% if personal.sexo is defined  %} {% if personal.sexo==0 %}checked {% endif %} {% endif %} id="femenino"name="sexo" type="radio" value="0"/>
+											Femenino
+										</div>
+									</div>
+								</div>
+							</div>
+							<hr />
+							<div class="row">
+								<div class="span12">
+									<h3>Lugar de Nacimiento</h3>
+								</div>
+								<div class="span4">
+									<label for="nestado">Estado:</label>
+									<select id="nestado" name="nestado" class="chzn-select" data-placeholder="Selecciona Estado" >
+										<option></option>
+										{% for estado in estados %} <option {% if( ue is not null) and (ue.clave==estado.clave) %} selected=""  {% endif %} value="{{ estado.clave }}">{{ estado.nombre }}</option>
+										{% endfor %}
+									</select>
+								</div>
+								<div class="span4">
+									<label for="nmunicipio">Municipio:</label>
+									<select id="nmunicipio" name="nmunicipio" class="chzn-select" data-placeholder="Selecciona Municipio" >
+										<option></option>
+										{% for municipio in municipios %} <option {% if ( um is not null) and (um.clave==municipio.clave) %} selected=""  {% endif %}  value="{{ municipio.clave }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
+										{% endfor %}
+									</select>
+								</div>
+								<div class="span4">
+									<label for="nlocalidad">Localidad:</label>
+									<select id="nlocalidad" name="nlocalidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
+										<option></option>
+										{% for localidad in localidades %} <option {% if ( ul is not null) and (ul.clave==localidad.clave) %} selected="" {% endif %} value="{{ localidad.clave }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
+										{% endfor %}
+									</select>
+									<script>
+										head.ready(function() {
+											$(function() {
+												$("#nmunicipio").chained("#nestado");
+												$('#nmunicipio').trigger("liszt:updated");
+												$("#nestado").bind("change", function() {
+													$("#nmunicipio").trigger("liszt:updated")
+												});
+												$("#nlocalidad").chained("#nmunicipio");
+												$('#nlocalidad').trigger("liszt:updated");
+												$("#nmunicipio").bind("change", function() {
+													$("#nlocalidad").trigger("liszt:updated")
+												});
+											});
+										});
 
-    					</div>
-    					
-   	 			</div>
-   	 			<div class="row">
-   	 					<div class="span10 offset1">
-   	 						<div class="form-actions">
-   	 							<button id="" name="" class="btn btn-primary" type="submit">Guardar</button>
-   	 							<button id=""name="" class="btn"type="reset">Cancelar</button>
-   	 						</div>
-   	 					</div>
-   	 				</div>
-   	 		</div>
-    	</form>
-    </div>
-	<!-----------------------------------------------------------------------Sexta Tab--------------------------------------------------------------->
-	<div class="tab-pane fade" id="tab6">
-	
-	<form id="conocimiento" name="conocimiento" class="" method="post" action="{{ urlFor('nuevo-conocimiento-post') }}">
-		<div class="row">
-			<input id="perfil" name="perfil" type="hidden" value="1" />
-		<div class="span12">
-		<div class="row">
-			<div class="span4 offset1">
-    				<label for="area">Area de Interes:</label>
-    				<select id="area" name="area" class="chzn-select" multiple="" data-placeholder="Selecciona Area de Interes" >
-    					<option> </option>
-    					{% for area in areas %}
-     {% for areausuario in areasusuario %}
-     <option {% if areausuario.area_id==area.id %} selected="" {% endif %} value="{{ area.id }}">{{ area.nombre }}</option>
-     {% endfor %}
-     {% endfor %}
-    				</select>
-    			</div>
-    		<div class="span4 offset1">
-    				<label for="lenguaje">Lenguaje:</label>
-    				<select id="lenguaje" name="lenguaje[]" multiple="" class="chzn-select" data-placeholder="Selecciona Lenguaje" >
-    					<option> </option>
-    					{% if lenguajesusuario is defined %}
-    				    	{% for lenguajeusuario in lenguajesusuario %}
-    							{% for lenguaje in lenguajes %}
-    								<option {% if lenguajeusuario.lenguaje_id==lenguaje.id %} selected="" {% endif %} value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
-    							{% endfor %}
-    						{% endfor %}
-    					{% else %}
-    						{% for lenguaje in lenguajes %}
-    							<option {% if lenguajeusuario.lenguaje_id==lenguaje.id %} selected="" {% endif %} value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
-    						{% endfor %}
-    					{% endif %}
-    				</select>
-    			</div>
-    			
-    	</div>
-    			<br />
-    			<br />
-    	<div class="row">
-    				
-    		
-    			
-    		
-    			<div class="span4 offset1">
-    				<label for="herramienta">Herramientas:</label>
-    				<select id="herramienta" name="herramienta[]" class="chzn-select" multiple="" data-placeholder="Selecciona Herramienta" >
-    					<option> </option>
-    					{% for herramientausuario in herramientasusuario %}
-    					{% for herramienta in herramientas %}
-    						<option {% if herramientausuario.herramienta_id==herramienta.id %} selected="" {% endif %} value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
-    					{% endfor %}
-    					{% endfor %}
-    				</select>
-    			</div>
-    			
-    			<div class="span4 offset1">
-    				<label for="plataformas">Plataformas:</label>
-    				<select id="plataformas" name="plataformas[]" class="chzn-select" multiple="" data-placeholder="Selecciona Plataformas" >
-    					<option> </option>
-    					{% for plataformausuario in plataformasusuario %}
-    					{% for plataforma in plataformas %}
-    						<option {% if plataformausuario.plataforma_id==plataforma.id %} selected="" {% endif %} value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
-    						{% endfor %}
-    					{% endfor %}
-    				</select>
-    			</div>
-    	
-    	</div>
-    	<div class="row">
-   	 					<div class="span10 offset1">
-   	 						<div class="form-actions">
-   	 							<button id="" name="" class="btn btn-primary" type="submit">Guardar</button>
-   	 							<button id=""name="" class="btn"type="reset">Cancelar</button>
-   	 						</div>
-   	 					</div>
-   	 				</div>
-    		
-    	</div>
-		</div>
-	</form>
-	</div>
-<!----------------------------------------------------------------------Tab 7--------------------------------------------------------------------->
-
-<div class="tab-pane fade" id="tab7">
-	<form id="idiomas" name="idiomas" method="post" action="">
-		
-		<div class="row">
-			<div class="span10 offset1">
-				
-				<br />
-				<button class="btn-primary btn "  data-toggle="modal" href="#modnuevoidioma">
-					Nuevo idioma
-				</button>
-				<br />
-				<br />
-				
-				<table id="tablaidiomas" name="tablaisiomas" class="table table-striped table-bordered">
-					
-					<thead>
-						<tr>
-							<th align="center">#</th>
-							<th align="center">Idioma</th>
-							<th align="center">Lee</th>
-							<th align="center">Escribe</th>
-							<th align="center">Habla</th>
-							<th align="center">Entiende</th>
-							<th align="center">Opciones</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% if idiomasusuario is defined %}
-							{% for  idiomausuario in idiomasusuario %}
-						<tr>
-							<td>{{ idiomausuario.id }}</td>
-							<td>{{ idiomausuario.idioma.nombre }}</td>
-							<td>{{ idiomausuario.lee }}%</td>
-							<td>{{ idiomausuario.escribe }}%</td>
-							<td>{{ idiomausuario.habla }}%</td>
-							<td>{{ idiomausuario.entiende }}%</td>
-							<td>
-								<a data-toggle="modal" href="#modeditaridioma{{ idiomausuario.id }}">Editar</a>
-								<a href="{{ urlFor('nuevo-tesista-post') }}">Borrar</a>
-							</td>
-						</tr>
-							{% endfor %}
-							{% else %}
-							<td>No se han agregado idiomas en su perfil</td>
-						{% endif %}
-						
-					</tbody>
-					
-				</table>
-								
+									</script>
+								</div>
+							</div>
+							<hr />
+							<div class="row">
+								<div class="span12">
+									<h3>Direccion</h3>
+								</div>
+							</div>
+							<div class="row">
+								<div class="span4">
+									<label for="calle">Calle:</label>
+									<input id="calle"name="calle"type="text"placeholder="Calle" value="{{personal.calle|default('')}}"/>
+									<label for="numex">Numero Externo:</label>
+									<input id="numex" name="numex"type="number"placeholder="Numero Externo" value="{{ personal.num_ext|default('') }}" />
+									<label for="numint">Numero Interno:</label>
+									<input id="numint"name="numint"type="number"placeholder="Numero Interno" value="{{ personal.num_int|default('') }}" />
+								</div>
+								<div class="span4">
+									<label for="colonia">Colonia:</label>
+									<input id="colonia"name="colonia"type="text"placeholder="Colonia" value="{{ personal.colonia|default('') }}" />
+									<label for="cp">Codigo Postal:</label>
+									<input id="cp" name="cp"type="number"placeholder="Codigo Posatal" value="{{ personal.cp|default('') }}" />
+								</div>
+							</div>
+							<div class="row">
+								<div class="span10 offset1">
+									<div class="form-actions">
+										<button id="" name="" class="btn btn-primary" type="submit">
+											Guardar
+										</button>
+										<button id=""name="" class="btn"type="reset">
+											Cancelar
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
 			</div>
-			
+			<!-----------------------------------------------------------Segunda Tab--------------------------------------------------------------->
+			<div class="tab-pane fade" id="tab2">
+				<form id="datosacademicos" name="datoscademicos" method="post" action="{{ urlFor('nuevo-datosacademicos-post') }}">
+					<div class="row">
+						<div class="span12">
+							{% if (academico is defined) and (academico is not null) %}
+							<input id="id" name="id" type="hidden" value="{{ academico.id }}" />
+							{% else %}
+							<input id="id" name="id" type="hidden" value="0" />
+							{% endif %}
+							<input id="perfil" name="perfil" type="hidden" value="1" />
+							<input id="id" name="id" type="hidden" value="{{ academico.id }}" />
+							<label for="institucion">Institucion de Procedencia:</label>
+							<select id="institucion" name="institucion" class="chzn-select" data-placeholder="Selecciona Institucion" >
+								<option></option>
+								{% for institucion in instituciones %} <option {% if academico.institucion==institucion.id %}selected {% endif %} value="{{ institucion.id }}" >{{ institucion.nombre|default('') }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="span4">
+							<label for="carrera">Carrera:</label>
+							<select id="carrera" name="carrera" class="chzn-select" data-placeholder="Selecciona Carrera" >
+								<option></option>
+								{% for carrera in carreras %} <option {% if academico.carrera==carrera.id %}selected {% endif %} value="{{ carrera.id }}" >{{ carrera.nombre|default('') }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="span4">
+							<label for="forma">Forma Titulacion:</label>
+							<select id="forma" name="forma" class="chzn-select" data-placeholder="Selecciona Forma de Titulacion" >
+								<option></option>
+								{% for forma in formas %} <option {% if academico.titulacion==forma.id %}selected {% endif %} value="{{ forma.id }}" >{{ forma.nombre|default('') }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					<br />
+					<div class="row">
+						<div class="span4">
+							<label for="ingreso">Fecha de Ingreso:</label>
+							<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+								<input id="ingreso" name="ingreso" class="span2 datepicker" size="16" type="text" value="{{ academico.ingreso|default('') }}">
+								<span class="add-on "><i class="icon-calendar"></i></span>
+							</div>
+						</div>
+						<div class="span4">
+							<label for="egreso">Fecha de egreso:</label>
+							<div class="input-append date" id="dp5" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+								<input id="egreso" name="egreso" class="span2 datepicker" size="16" type="text" value="{{ academico.egreso|default('') }}">
+								<span class="add-on "><i class="icon-calendar"></i></span>
+							</div>
+						</div>
+					</div>
+					<hr />
+					<div class="row">
+						<div class="span12">
+							<h3>Ubicacion del Plantel</h3>
+						</div>
+						<div class="span4">
+							<label for="estado">Estado:</label>
+							<select id="estado" name="estado" class="chzn-select" data-placeholder="Selecciona Estado" >
+								<option></option>
+								{% for estado in estados %} <option {% if (ie is not null) and (ie.clave==estado.clave) %} selected=""  {% endif %} value="{{ estado.clave }}">{{ estado.nombre }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="span4">
+							<label for="municipio">Municipio:</label>
+							<select id="municipio" name="municipio" class="chzn-select" data-placeholder="Selecciona Municipio" >
+								<option></option>
+								{% for municipio in municipios %} <option {% if (im is not null) and (im.clave==municipio.clave) %} selected=""  {% endif %}  value="{{ municipio.clave }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="span4">
+							<label for="localidad">Localidad:</label>
+							<select id="localidad" name="localidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
+								<option></option>
+								{% for localidad in localidades %} <option {% if (il is not null) and (il.clave==localidad.clave) %} selected="" {% endif %} value="{{ localidad.clave }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<script>
+							head.ready(function() {
+								$(function() {
+									$("#municipio").chained("#estado");
+									$('#municipio').trigger("liszt:updated");
+									$("#estado").bind("change", function() {
+										$("#municipio").trigger("liszt:updated")
+									});
+									$("#localidad").chained("#municipio");
+									$('#localidad').trigger("liszt:updated");
+									$("#municipio").bind("change", function() {
+										$("#localidad").trigger("liszt:updated")
+									});
+								});
+							});
+
+						</script>
+					</div>
+					<div class="row">
+						<div class="span10 offset1">
+							<div class="form-actions">
+								<button id="" name="" class="btn btn-primary" type="submit">
+									Guardar
+								</button>
+								<button id=""name="" class="btn"type="reset">
+									Cancelar
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-----------------------------------------------Trecera Tab------------------------------------------------------------------------------------->
+			<div class="tab-pane fade" id="tab3">
+				<form id="infocontacto" name="infocontacto" method="post" action="{{ urlFor('nuevo-infocontacto-post') }}">
+					<div class="row">
+						<div class="span4">
+							<label for="email">Email:</label>
+							<input id="email"name="email"type="text" placeholder="Email" value="{{ contacto.email|default('') }}"/>
+							<input id="id" name="id" type="hidden" value="{{ contacto.id }}" />
+							<input id="perfil" name="perfil" type="hidden" value="1" />
+						</div>
+						<div class="span4">
+							<label for="enterado">Forma Enterado:</label>
+							<select id="enterado" name="enterado" class="chzn-select" data-placeholder="Selecciona Forma" >
+								<option></option>
+								{% for formaenterado in formasenterado %} <option {% if contacto.forma==formaenterado.id %} selected="" {% endif %} value="{{ formaenterado.id }}" >{{ formaenterado.nombre }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="span4">
+							<input id="mantener"name="mantener" type="checkbox" {% if contacto.contactar is defined %}{% if contacto.contactar==1 %} checked {% endif %}{% endif %}/>
+							Mantener Contacto
+						</div>
+					</div>
+					<hr />
+					<div class="row">
+						<div class="span12">
+							<h3>Telefonos</h3>
+							<br />
+						</div>
+					</div>
+					<div class="row">
+						<div class="span12">
+							<label for="movil">Movil:</label>
+							<input id="nomvil"name="movil" type="number" placeholder="Numero" value="{{contacto.movil|default('')}}"/>
+						</div>
+					</div>
+					<div class="row">
+						<div class="span12">
+							<label for="fijo">Fijo (Casa,Oficina):</label>
+							<input id="fijo"name="fijo"type="number"placeholder="Numero" value="{{ contacto.fijo|default('') }}" />
+							<br />
+						</div>
+					</div>
+					<div class="row">
+						<div class="span10 offset1">
+							<div class="form-actions">
+								<button id="" name="" class="btn btn-primary" type="submit">
+									Guardar
+								</button>
+								<button id=""name="" class="btn"type="reset">
+									Cancelar
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-------------------------------------------------Cuarta Tab-------------------------------------------------------------->
+			<div class="tab-pane fade" id="tab4">
+				<form id="explaboral" name="explaboral" method="post" action="{{ urlFor('nuevo-explaboral-post') }}">
+					<div class="row">
+						<div class="span2">
+							<input id="perfil" name="perfil" type="hidden" value="1" />
+							{% if laboral is defined %}
+							{% if laboral is not null %}
+							<input id="id" name="id" type="hidden" value="{{ laboral.id }}" />
+							{% endif %}
+							{% else %}
+							<input id="id" name="id" type="hidden" value="0" />
+							{% endif %} <label class="checkbox" for="trabajo">
+								<input id="trabajo"name="trabajo"type="checkbox" {% if laboral.trabajado is defined %} {% if laboral.trabajado==1 %} checked {% endif %}{% endif %}/>
+								Ha trabajado</label>
+						</div>
+						<div class="span4">
+							<label for="anostrabajo">Años Trabajo:</label>
+							<select id="anostrabajo"name="anostrabajo" class="chzn-select">
+								<option {% if laboral.tiempo is defined %}{% if laboral.tiempo==0 %} selected {% endif %}{% endif %} value="0">Seleccione</option>
+								<option {% if laboral.tiempo is defined %}{% if laboral.tiempo==1 %} selected {% endif %}{% endif %} value="1">0-1</option>
+								<option {% if laboral.tiempo is defined %}{% if laboral.tiempo==2 %} selected {% endif %}{% endif %} value="2">2-4</option>
+								<option {% if laboral.tiempo is defined %}{% if laboral.tiempo==3 %} selected {% endif %}{% endif %} value="3">5 o mas</option>
+							</select>
+						</div>
+					</div>
+					<br />
+					<br />
+					<div class="row">
+						<div class="span12">
+							<label for="explab">Esperiencia Laboral:</label>
+							<textarea id="explab"name="explab" cols="100" rows="15" style="width: 1058px; height: 271px;">{{ laboral.experiencia|default('') }}</textarea>
+						</div>
+					</div>
+					<div class="row">
+						<div class="span10 offset1">
+							<div class="form-actions">
+								<button id="" name="" class="btn btn-primary" type="submit">
+									Guardar
+								</button>
+								<button id=""name="" class="btn"type="reset">
+									Cancelar
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-------------------------------------------------Quinta Tab-------------------------------------------------------------->
+			<div class="tab-pane fade active in" id="tab5">
+				<form id="editusuario" name="editusuario" class="" method="post" action="{{ urlFor('actualiza-usuario') }}">
+					<div class="row">
+						<div class="span10 offset1">
+							<div class="row">
+								<input id="perfil" name="perfil" type="hidden" value="1" />
+								<input id="id" name="id" type="hidden" value="{{ usuario.id }}" />
+								<div class="control-group">
+									<label class="control-label" for="login">Login:</label>
+									<div class="controls">
+										<input id="login"name="login" class="span3" type="text" placeholder="Login" value="{{ usuario.login|default('') }}"/>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="paspassword">Contraseña Actual:</label>
+									<div class="controls">
+										<input id="paspassword" name="paspassword" class="span3" type="text" placeholder="Password"/>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="password">Contraseña Nueva:</label>
+									<div class="controls">
+										<input id="password" name="password" class="span3" type="text" placeholder="Password"/>
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="control-label" for="confirmacion">Confimacion Contraseña:</label>
+									<div class="controls">
+										<input id="confirmacion" name="confirmacion" class="span3" type="text" placeholder="Confirme Contraseña" />
+									</div>
+								</div>
+								<input id="email-edit" name="email-edit" class="span3" type="hidden"/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="span10 offset1">
+								<div class="form-actions">
+									<button id="" name="" class="btn btn-primary" type="submit">
+										Guardar
+									</button>
+									<button id=""name="" class="btn"type="reset">
+										Cancelar
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-----------------------------------------------------------------------Sexta Tab--------------------------------------------------------------->
+			<div class="tab-pane fade" id="tab6">
+				<form id="conocimiento" name="conocimiento" class="" method="post" action="{{ urlFor('nuevo-conocimiento-post') }}">
+					<div class="row">
+						<div class="span12">
+							<div class="row">
+								<div class="span4 offset1">
+									<label for="area">Area de Interes:</label>
+									<select id="area" name="area" class="chzn-select" multiple="" data-placeholder="Selecciona Area de Interes" >
+										<option></option>
+										{% for area in areas %}
+										{% for areausuario in areasusuario %}
+										{{ area.nombre }} <option {% if areausuario.area_id==area.id %} selected=""  {% endif %} value="{{ area.id }}">{{ area.nombre }}</option>
+										{% endfor %}
+										{% endfor %}
+									</select>
+								</div>
+								<div class="span4 offset1">
+									<label for="lenguaje">Lenguaje:</label>
+									<select id="lenguaje" name="lenguaje[]" multiple="" class="chzn-select" data-placeholder="Selecciona Lenguaje" >
+										<option></option>
+										{% for lenguaje in lenguajes %}
+										{% for lenguajeusuario in lenguajesusuario %} <option {% if lenguajeusuario.lenguaje_id==lenguaje.id %} selected="" {% endif %} value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
+										{% endfor %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<br />
+							<br />
+							<div class="row">
+								<div class="span4 offset1">
+									<label for="herramienta">Herramientas:</label>
+									<select id="herramienta" name="herramienta[]" class="chzn-select" multiple="" data-placeholder="Selecciona Herramienta" >
+										<option></option>
+										{% for herramienta in herramientas %}
+										{% for herramientausuario in herramientasusuario %} <option {% if herramientausuario.herramienta_id==herramienta.id %} selected="" {% endif %} value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
+										{% endfor %}
+										{% endfor %}
+									</select>
+								</div>
+								<div class="span4 offset1">
+									<label for="plataformas">Plataformas:</label>
+									<select id="plataformas" name="plataformas[]" class="chzn-select" multiple="" data-placeholder="Selecciona Plataformas" >
+										<option></option>
+										{% for plataforma in plataformas %}
+										{% for plataformausuario in plataformasusuario %} <option {% if plataformausuario.plataforma_id==plataforma.id %} selected="" {% endif %} value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
+										{% endfor %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="row">
+								<div class="span10 offset1">
+									<div class="form-actions">
+										<button id="" name="" class="btn btn-primary" type="submit">
+											Guardar
+										</button>
+										<button id=""name="" class="btn"type="reset">
+											Cancelar
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!----------------------------------------------------------------------Tab 7--------------------------------------------------------------------->
+			<div class="tab-pane fade" id="tab7">
+				<form id="idiomas" name="idiomas" method="post" action="">
+					<div class="row">
+						<div class="span10 offset1">
+							<br />
+							<button class="btn-primary btn "  data-toggle="modal" href="#modnuevoidioma">
+								Nuevo idioma
+							</button>
+							<br />
+							<br />
+							<table id="tablaidiomas" name="tablaisiomas" class="table table-striped table-bordered">
+								<thead>
+									<tr>
+										<th align="center">#</th>
+										<th align="center">Idioma</th>
+										<th align="center">Lee</th>
+										<th align="center">Escribe</th>
+										<th align="center">Habla</th>
+										<th align="center">Entiende</th>
+										<th align="center">Opciones</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% if idiomasusuario is defined %}
+									{% for  idiomausuario in idiomasusuario %}
+									<tr>
+										<td>{{ loop.index }}</td>
+										<td>{{ idiomausuario.idioma.nombre }}</td>
+										<td>{{ idiomausuario.lee }}%</td>
+										<td>{{ idiomausuario.escribe }}%</td>
+										<td>{{ idiomausuario.habla }}%</td>
+										<td>{{ idiomausuario.entiende }}%</td>
+										<td><a data-toggle="modal" href="#modeditaridioma{{ idiomausuario.id }}">Editar</a><a href="{{ urlFor('borrar-idioma-usuario-post',{'id': idiomausuario.id,'perfil': 1}) }}">Borrar</a></td>
+									</tr>
+									{% endfor %}
+									{% else %} <td>No se han agregado idiomas en su perfil</td>
+									{% endif %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</form>
+			</div>
 		</div>
-		
-	</form>
+	</div>
 </div>
-
-</div>
-</div>
-
-
-</div>
-
-
-
-
 <!-------------------------------------------------------------Modales----------------------------------------------------------------->
-     {% for idiomausuario in idiomasusuario %} 
-    <div class="modal hide fade" id="modeditaridioma{{ idiomausuario.id }}">
-    <div class="modal-header">
-    	<h3>Editar Idioma</h3>
-    </div>
-    <div class="modal-body">
-    		<form class="" method="post" action="{{ urlFor('nuevo-idioma-post') }}">
-    		<div class="row">
-    			<div class="span2 offset1">
-    				<input id="perfil" name="perfil" type="hidden" value="1" />
-    				<label for="lee">Lee:</label> 
-    				<input id="lee" name="lee" value="{{ idiomausuario.lee }}"/>
-    				<label for="escribe">Escribe:</label> 
-    				<input id="escribe" name="escribe" value="{{ idiomausuario.escribe }}"/>
-    				<label for="habla">Habla:</label> 
-    				<input id="habla" name="habla" value="{{ idiomausuario.habla }}" />
-    				<label for="entiende">Entiende:</label> 
-    				<input id="entiende" name="entiende" value="{{ idiomausuario.entiende }}"/>		
-    			</div>
-    		</div>		
-    		 <div class="modal-footer">
-    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
-    	<button id="" name="" class="btn btn-primary" type="submit" > Guardar</button>
-    </div>
-            </form>
-    </div>
-   
+{% for idiomausuario in idiomasusuario %}
+<div class="modal hide fade" id="modeditaridioma{{ idiomausuario.id }}">
+	<div class="modal-header">
+		<h3>Editar Idioma</h3>
+	</div>
+	<div class="modal-body">
+		<form class="" method="post" action="{{ urlFor('actualizar-idioma-usuario-post') }}">
+			<div class="row">
+				<div class="span2 offset1">
+					<input id="perfil" name="perfil" type="hidden" value="1" />
+					<input id="idioma" name="idioma" type="hidden" value="{{ idiomausuario.idioma_id }}" />
+					<label id="el" name="el" for="lee">Lee: {{ idiomausuario.lee|default(0) }}%</label>
+					<input id="lee" name="lee"  class="range" type="range" min="0" max="100" value="{{ idiomausuario.lee|default(0) }}" step="1" data-label="el" data-texto="Lee: "/>
+					<label id="ee" name="ee" for="escribe">Escribe: {{ idiomausuario.escribe|default(0) }}%</label>
+					<input id="escribe" name="escribe" class="range" type="range" min="0" max="100" value="{{ idiomausuario.escribe|default(0) }}" step="1" data-label="ee" data-texto="Escribe: "/>
+					<label id="eh" name="eh" for="habla">Habla: {{ idiomausuario.habla|default(0) }}%</label>
+					<input id="habla" name="habla" class="range" type="range" min="0" max="100" value="{{ idiomausuario.habla|default(0) }}" step="1" data-label="eh" data-texto="Habla: "/>
+					<label id="een" name="een" for="entiende">Entiende: {{ idiomausuario.entiende|default(0) }}%</label>
+					<input id="entiende" name="entiende" class="range" type="range" min="0" max="100" value="{{ idiomausuario.entiende|default(0) }}" step="1" data-label="een" data-texto="Entiende: "/>
+					
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn" data-dismiss="modal">Cancelar</a><!---->
+				<button id="" name="" class="btn btn-primary" type="submit" >
+					Guardar
+				</button>
+			</div>
+		</form>
+	</div>
 </div>
 {% endfor %}
-
-
 <div class="modal hide fade" id="modnuevoidioma">
-    <div class="modal-header">
-    	<h3>Nuevo Idioma</h3>
-    </div>
-    <div class="modal-body">
-    		<form class="" method="post" action="{{ urlFor('nuevo-idioma-post') }}">
-    			<input id="perfil" name="perfil" type="hidden" value="1" />
-    		<div class="row">
-    			<div class="span2 offset1">
-    				<label for="idioma">Idioma:</label>
-    				<select id="idioma" class="chzn-select" data-placeholder="Seleccione un idioma" >
-    					<option></option>
-    					{% for idioma in idiomas %}
-    					<option value="{{ idioma.id }}">{{ idioma.nombre }}</option>
-    					{% endfor %}
-    				</select>
-    				<br />
-    				<br />
-    				<label for="lee">Lee:</label> 
-    				<input id="lee" name="lee" />
-    				<label for="escribe">Escribe:</label> 
-    				<input id="escribe" name="escribe" />
-    				<label for="habla">Habla:</label> 
-    				<input id="habla" name="habla" />
-    				<label for="entiende">Entiende:</label> 
-    				<input id="entiende" name="entiende" />		
-    			</div>
-    		</div>		
-    		<div class="modal-footer">
-    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
-    	<button class="btn btn-primary" type="submit" > Guardar</button>
-    </div>
-            </form>
-    </div>
+	<div class="modal-header">
+		<h3>Nuevo Idioma</h3>
+	</div>
+	<div class="modal-body">
+		<form class="" method="post" action="{{ urlFor('nuevo-idioma-usuario-post') }}">
+			<input id="perfil" name="perfil" type="hidden" value="1" />
+			<div class="row">
+				<div class="span2 offset1">
+					<label for="idioma">Idioma:</label>
+					<select id="idioma" name="idioma" class="chzn-select" data-placeholder="Seleccione un idioma" >
+						<option></option>
+						{% for idioma in idiomas %} 
+						<option value="{{ idioma.id }}">{{ idioma.nombre }}</option>
+						{% endfor %}
+					</select>
+					<br />
+				
+					
+					<label id="elee" name="elee" for="lee">Lee:</label>
+					<input id="lee" name="lee"  class="range" type="range" min="0" max="100" value="0" step="1" data-label="elee" data-texto="Lee: "/>
+					<label id="eescribe" name="eescribe" for="escribe">Escribe:</label>
+					<input id="escribe" name="escribe" class="range" type="range" min="0" max="100" value="0" step="1" data-label="eescribe" data-texto="Escribe: "/>
+					<label id="ehabla" name="ehabla" for="habla">Habla:</label>
+					<input id="habla" name="habla" class="range" type="range" min="0" max="100" value="0" step="1" data-label="ehabla" data-texto="Habla: "/>
+					<label id="eentiende" name="eentiende" for="entiende">Entiende:</label>
+					<input id="entiende" name="entiende" class="range" type="range" min="0" max="100" value="0" step="1" data-label="eentiende" data-texto="Entiende: "/>
+					<script type="text/javascript">
+						head.ready(function() {
+							$('input[type="range"]').change(function(e) {
+								var value = $(this).val();
+								var tag = $(this).attr('data-label');
+								var text = $(this).attr('data-texto');
+								
+								showValue(value, tag, text);
+							});
+						});
+						function showValue(newValue, etiqueta, texto) {
+							//$(etiqueta).html= texto + newValue;
+							document.getElementById(etiqueta).innerHTML = texto+newValue+"%";
+						}
+					</script>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn" data-dismiss="modal">Cancelar</a><!---->
+				<button class="btn btn-primary" type="submit" >
+					Guardar
+				</button>
+			</div>
+		</form>
+	</div>
 </div>
+<script>
+	head.ready("app", function() {
+		head.js({
+			html5slider : "{{ urlFor('home') }}js/html5slider.js"
+		});
+	});
+
+</script>
 {% endblock %}

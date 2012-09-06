@@ -336,6 +336,86 @@ $app->post('/actualiza-usuario/:id/', function($id) use($app){
 	}	
 })->name('actualiza-usuario-post');
 
+
+
+$app->post('/actualiza-usuario/', function() use($app){
+	$validator = new GUMP();
+	$_POST = $validator->sanitize($_POST);
+	$rules = array(
+		'confirmacion'=>'required',
+		'login'=>'required',
+		'paspassword'=>'required',
+		'password'=>'required',
+		'id'=>'required',
+	);
+
+	$filters = array(
+		
+		'paspassword' => 'trim|md5',
+		'password' => 'trim|md5',
+		'confirmacion' => 'trim|md5'
+	);
+	$post = $_POST = $validator->filter($_POST, $filters);
+	$validated = $validator->validate($_POST, $rules);
+	if($validated === true) {
+			$u=Usuario::find($_POST['id']);
+           
+            if ($u->password==$_POST['paspassword']) {
+                if ($_POST['password']==$_POST['confirmacion']) {
+                        
+                    $u->password=$_POST['password'];
+                    $u->save();
+                    
+                    $flash = array(
+                        "title" => "OK",
+                          "msg" => "El usuario se ha actualizado con éxito.",
+                         "type" => "success",
+                             "fade" => 1
+                    );  
+                }else{
+                    
+                    $flash = array(
+                "title" => "ERROR",
+                "msg" => "El campo de contraseña nuevo y confirmacion debe ser iguales.",
+                "type" => "error",
+                "fade" => 0
+            );
+                    
+                }
+            } else {
+                
+                $flash = array(
+                "title" => "ERROR",
+                "msg" => "La contraseña actual es incorrecta.",
+                "type" => "error",
+                "fade" => 0
+            );
+                
+            }
+                
+                
+			
+			
+		} else {
+		    $msgs = humanize_gump($validated);
+			$flash = array(
+				"title" => "ERROR",
+				"msg" => $msgs,
+				"type" => "error",
+				"fade" => 0
+			);
+		}
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        }else{
+            $app->redirect($app->urlFor('docente-perfil')); 
+        }
+		
+        
+})->name('actualiza-usuario');
+
 $app->get('/cambiar-status-usuario/:id/', function($id) use($app){
 	$usuario = Usuario::find($id);
 	if($usuario->activo == 0){
@@ -1721,6 +1801,184 @@ $app->post('/nuevo-conocimiento/',function() use($app){
 })->name('nuevo-conocimiento-post');
 
 
+$app->post('/nuevo-idioma-usuario/',function() use($app){
+    
+    $data['user'] = isAllowed(array("Docente","Alumno","Aspirante"),FALSE);
+    $validator = new GUMP();
+    $_POST = $validator->sanitize($_POST);
+    $rules = array(
+    
+                    'idioma'=>'required',
+                    'lee'=>'required',
+                    'escribe' => 'required',
+                    'habla'=>'required',
+                    'entiende'=>'required',
+    
+        );
+    $filters = array(
+    );
+    $_POST = $validator->filter($_POST, $filters);
+    $validated = $validator->validate($_POST, $rules);
+    if($validated === TRUE) {
+        
+        $iu=UsuariosIdiomas::find_by_usuario_id($data['user']->id);
+        
+            foreach ($iu as $idioma) {
+                if ($idioma->idioma_id==$_POST['idioma']) {
+                     $flash = array(
+                         "title" => "ERROR",
+                          "msg" => "El Idioma que esta tratando de guardar ya existe en su perfil .",
+                          "type" => "error",
+                          "fade" => 0
+                );
+
+                $app -> flash("flash", $flash);
+                $app->flashKeep();
+                if ($_POST['perfil']==1) {
+                    $app->redirect($app->urlFor('perfil')); 
+                } else {
+                    $app->redirect($app->urlFor('perfil-docente'));
+                }
+       
+                } else {
+                    $ui=new UsuariosIdiomas;
+                    $ui->usuario_id=$data['user']->id;
+                    $ui->idioma_id=$_POST['idioma'];
+                    $ui->lee=$_POST['lee'];
+                    $ui->escribe=$_POST['escribe'];
+                    $ui->habla=$_POST['habla'];
+                    $ui->entiende=$_POST['entiende'];
+                    $ui->save();
+                    
+                }
+                
+            }
+        
+        
+       $flash = array(
+            "title" => "OK",
+            "msg" => "El idioma se ha guardado correctamente.",
+            "type" => "success",
+            "fade" => 1
+        );
+
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
+        
+       
+    } else {
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+            "fade" => 0
+        );
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
+    }
+})->name('nuevo-idioma-usuario-post');
+
+$app->post('/actualizar-idioma-usuario/',function() use($app){
+    
+    $data['user'] = isAllowed(array("Docente","Alumno","Aspirante"),FALSE);
+    $validator = new GUMP();
+    $_POST = $validator->sanitize($_POST);
+    $rules = array(
+    
+         'idioma'=>'required',
+         'lee'=>'required',
+         'escribe' => 'required',
+         'habla'=>'required',
+         'entiende'=>'required',
+    
+        );
+    $filters = array(
+    );
+    $_POST = $validator->filter($_POST, $filters);
+    $validated = $validator->validate($_POST, $rules);
+    if($validated === TRUE) {
+        
+        $iu=UsuariosIdiomas::all(array('conditions' => array('usuario_id ='.$data['user']->id.'AND idioma_id ='.$_POST['idioma'])));
+        $iu->lee=$_POST['lee'];
+        $iu->eescribe=$_POST['escribe'];
+        $iu->habla=$_POST['habla'];
+        $iu->entiende=$_POST['entiende'];
+        $iu->save();
+        
+        
+       $flash = array(
+            "title" => "OK",
+            "msg" => "El idioma se ha actualizado correctamente.",
+            "type" => "success",
+            "fade" => 1
+        );
+
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
+        
+       
+    } else {
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+            "fade" => 0
+        );
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        if ($_POST['perfil']==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
+    }
+})->name('actualizar-idioma-usuario-post');
+
+
+
+$app->get('/borrar-idioma-usuario/:id/:perfil/',function($id,$perfil) use($app){
+    
+    $data['user'] = isAllowed(array("Docente","Alumno","Aspirante"),FALSE);
+    
+       
+        $iu=UsuariosIdiomas::find($id);
+        $iu->delete();
+         
+              $flash = array(
+            "title" => "OK",
+            "msg" => "El idioma se ha borrado correctamente.",
+            "type" => "success",
+            "fade" => 1
+        );
+        
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        if ($perfil==1) {
+            $app->redirect($app->urlFor('perfil')); 
+        } else {
+             $app->redirect($app->urlFor('perfil-docente'));
+        }
+        
+       
+   
+})->name('borrar-idioma-usuario-post');
 
 /* =======================
  * ====== CATALOGOS ======
@@ -2764,10 +3022,62 @@ $app->get('/borrar-rol/:id/', function($id) use($app){
 //******
 $app->get('/catalogos/eventos/', function () use($app) {
 	$data['eventos'] = Evento::all();
-    $app->render('nuevoevento.html', $data);
+    $app->render('eventos.html', $data);
 })->name('CatEvento');
 
 $app->post('/nuevo-evento/', function() use($app){
+	$validator = new GUMP();
+	$_POST = $validator->sanitize($_POST);
+	$rules = array(
+		'nombre'    => 'required|max_len,100|min_len,1',
+		'descripcion'    => 'required|max_len,100|min_len,1',
+		'fecha_inicio'    => 'required|max_len,100|min_len,1',
+		'fecha_fin'    => 'required|max_len,100|min_len,1',
+		'prioridad'    => 'required|max_len,100|min_len,1',
+		'hora_inicio'    => 'required|max_len,10|min_len,1',
+		'hora_fin'    => 'required|max_len,100|min_len,1',
+	);
+	$filters = array(
+		'nombre' 	  => 'trim|sanitize_string',
+	);
+	$post = $_POST = $validator->filter($_POST, $filters);
+	$validated = $validator->validate($_POST, $rules);
+	if($validated === TRUE) {
+		$evento = new Evento();
+		$evento->nombre = $_POST['nombre'];
+		$evento->autor = $_POST['autor'];
+		$evento->descripcion = $_POST['descripcion'];
+		$evento->fecha_inicio = $_POST['fecha_inicio'];
+		$evento->fecha_fin = $_POST['fecha_fin'];
+		$evento->prioridad = $_POST['prioridad'];
+		$evento->fecha_creado = $_POST['fecha_creado'];
+		$evento->hora_inicio = $_POST['hora_inicio'];
+		$evento->hora_fin = $_POST['hora_fin'];
+		$evento->validado = $_POST['validado'];
+		$evento->save();
+		$flash = array(
+			"title" => "OK",
+			"msg" => "El evento se agregó satisfactoriamente .",
+			"type" => "success",
+			"fade" => 1
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatEvento'));
+	} else {
+		$msgs = humanize_gump($validated);
+		$flash = array(
+			"title" => "ERROR",
+			"msg" => $msgs,
+			"type" => "error",
+			"fade" => 0
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatEvento'));
+	}
+})->name('nuevo-evento');
+$app->post('/nuevo-evento-post/', function() use($app){
 	$validator = new GUMP();
 	$_POST = $validator->sanitize($_POST);
 	$rules = array(
