@@ -8,6 +8,7 @@ $(function(){
     .click(function(e) {
         e.preventDefault()
 	});
+	$('.carousel').carousel();
 	$('.timepicker').timepicker();
 //	$('.wysihtml5').wysihtml5();
     $(".chzn-select").chosen();
