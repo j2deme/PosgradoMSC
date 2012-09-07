@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3 align="center">Estadisticas de matriculacion</h3>
+
+<hr>
+
+<h4 align="center">Total de alumnos aspirantes y matriculados por año.</h4>
+<br /> 
+<br />
+<table class="table-striped">
+	<thead>
+		<tr>
+			<th class="ziseTable">Año</th>
+			<th class="ziseTable">Aspirantes</th>
+			<th class="ziseTable">Aceptados</th>
+			<th class="ziseTable">Porcentaje</th>
+		</tr>
+	</thead>
+	
+	<tbody>
+	{% if matriculaciones is defined %}
+	{% if matriculaciones |length > 0  %}
+	{% for matriculacion in matriculaciones %}
+		<tr>
+
+			<td align="center">{{ matriculacion.periodo }}</td>			
+			<td align="center">{{ matriculacion.aspirantes }}</td>
+			<td align="center">{{ matriculacion.aceptados }}</td>
+			<td align="center">{{ '%.0f' | format((100*matriculacion.aceptados)/matriculacion.aspirantes) }}%</td>
+		</tr>
+	{% endfor %}
+	{% else %}
+			<tr>
+				<td> </td>
+				<td colspan="4" align="center">No se encontraron resultados</td>
+				<td> </td>			
+			</tr>
+	{% endif %}
+	{% endif %}
+	</tbody>
+</table>
+<!----resultados-
+<br />
+<h4 align="center">Se muestra el total de alumnos de la maestria profecionalizante</h4>
+<br />
+<br />
+<table class="table-striped">
+	<thead>
+		<tr>
+			<th class="ziseTable">Aspirantes</th>
+			<th class="ziseTable">Aceptados</th>
+			<th class="ziseTable">Porcentaje</th>
+		</tr>
+	</thead>
+	
+	<tbody>
+
+		<tr>
+			<td align="center">xx</td>
+			<td align="center">xx</td>
+			<td align="center">xx%</td>
+		</tr>
+
+	</tbody>
+</table>-->
+<br />
+<br />
+<h4 align="center">Hay una sola convocatoria para el programa de maestria por año. Esto nos ha permitido llevar un seguimiento mas personalizado de nuestros estudiantes.</h4>
+
+
+
+{% endblock %}
