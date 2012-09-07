@@ -513,7 +513,7 @@ $app->get('/download/:file', function($file) use ($app) {
      }
 })->name('file-reader');
 
-$app->map('/uploader/',function() use ($app) {
+$app->map('/uploader/',function() use ($app) {//XXX Uploader
     $upload_handler = new UploadHandler();
     header('Pragma: no-cache');
     header('Cache-Control: no-store, no-cache, must-revalidate');
@@ -598,12 +598,25 @@ $app->get('/admin/secciones/editor/:slug', function($slug) use ($app) {
         array("name" => "Editor", "alias" => "editor-seccion")
     );
     $data['secciones'] = Seccion::find('all', array('order' => 'nombre asc'));
-    $data['seccion'] = Seccion::find_by_slug($slug);
+    $seccion = Seccion::find_by_slug($slug);
+    $contenido = (array) json_decode($seccion->contenido);
+    $proseccion = array(
+        'id' => $seccion->id,
+        'nombre' => $seccion->nombre,
+        'slug' => $seccion->slug,
+        'contenedor' => $seccion->contenedor,
+        'orden' => $seccion->orden,
+        'contenido' => $contenido['data'],
+        'files' => $contenido['files'],
+        'actualizado' => $seccion->actualizado
+    );
+    //ladybug_dump($proseccion);
+    $data['seccion'] = $proseccion; 
 
     $app->render('editor-seccion.html', $data);
 })->name('editor-seccion');
 
-$app->post('/actualiza-seccion/:id/', function($id) use ($app) {
+$app->post('/editar-seccion-post/:id/', function($id) use ($app) {//XXX Actualiza Seccion
     $validator = new GUMP();
     //$_POST = $validator->sanitize($_POST);
     $rules = array(
@@ -615,7 +628,16 @@ $app->post('/actualiza-seccion/:id/', function($id) use ($app) {
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
         $seccion = Seccion::find($id);
-        $seccion->contenido = $_POST['contenido'];
+        $contenido = (array) json_decode($seccion->contenido);
+        if(!array_key_exists('data', $contenido)){
+            $contenido = array(
+                'data' => $_POST['contenido'],
+                'files' => array()
+            );
+        } else {
+            $contenido['data'] = $_POST['contenido'];
+        }
+        $seccion->contenido = json_encode($contenido);// $_POST['contenido'];
         $seccion->contenedor = $_POST['contenedor'];
         $seccion->actualizado = time();
         $seccion->save();
@@ -638,7 +660,7 @@ $app->post('/actualiza-seccion/:id/', function($id) use ($app) {
     }
     $app->flashKeep();
     $app->redirect($app->urlFor('admin-secciones'));
-})->name('actualiza-seccion-post');
+})->name('editar-seccion-post');
 
 $app->get('/admin/noticias/', function() use ($app) {
     $data['breadcrumb'] = array(
@@ -707,7 +729,7 @@ $app->get('/relacion-aceptados/', function() use ($app) {
     //TODO Relacion Aceptados
     $app->render('relacion-aceptados.html');
 })->name('relacion-aceptados');
-//TODO por ver
+
 $app->get('/publicaciones/', function() use ($app) {
     $user['usuarios'] = Usuario::find_by_id('1');
     $data['publicaciones']= Publicacion::find_all_by_usuario_id($user['usuarios']->id);
@@ -721,10 +743,6 @@ $app->get('/egresados/', function() use ($app) {
 $app->get('/estadisticas/matriculacion/', function() use ($app) {
     $app->render('EstadisticaMatriculacion.html');
 })->name('matriculacion');
-
-$app->get('/registro-aspirante/', function() use ($app) {
-    //TODO Registro Aspirante
-})->name('registro-aspirante');
 
 /* =======================
  * ======= DOCENTE =======
@@ -979,7 +997,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
           );
           $app -> flash("flash", $flash);
           $app->flashKeep();
-          $app->redirect($app->urlFor('registro-aspirante'));
+          $app->redirect($app->urlFor('registro-aspirantes'));
 
       } else {
            $flash = array(
@@ -990,7 +1008,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
       );
       $app -> flash("flash", $flash);
      $app->flashKeep();
-     $app->redirect($app->urlFor('registro-aspirante'));
+     $app->redirect($app->urlFor('registro-aspirantes'));
      }
     }
  })->name('registro-aspirante-post');
@@ -3036,9 +3054,9 @@ $app->post('/actualiza-carrera/:id/', function($id) use ($app) {
 
 //
 $app->get('/borrar-carrera/:id/', function($id) use ($app) {
-//	$relaciones = UsuariosHerramientas::find_all_by_herramienta_id($id);
-//	$cant_relaciones = count($relaciones);
-//	if ($cant_relaciones == 0) {
+	$relaciones = Academico::find_all_by_carrera($id); 
+	$cant_relaciones = count($relaciones);
+	if ($cant_relaciones == 0){		
         $carrera = Carrera::find($id);
         $carrera->delete();
         $flash = array(
@@ -3050,18 +3068,18 @@ $app->get('/borrar-carrera/:id/', function($id) use ($app) {
         $app -> flash("flash", $flash);
         $app->flashKeep();
         $app->redirect($app->urlFor('CatCarrera'));
-//	}
-//	else {
-//		$flash = array(
-//			"title" => "OK",
-//			"msg" => "La Carrera esta relacionado, no se permite la eliminación.",
-//			"type" => "info",
-//			"fade" => 1
-//		);
-//		$app -> flash("flash", $flash);
-//		$app->flashKeep();
-//		$app->redirect($app->urlFor('CatHerramienta'));
-//	}
+	}
+	else {
+		$flash = array(
+			"title" => "OK",
+			"msg" => "La Carrera esta relacionada, no se permite la eliminación.",
+			"type" => "info",
+			"fade" => 1
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatCarrera'));
+	}
 })->name('borrar-carrera');
 
 //*******
@@ -3084,7 +3102,7 @@ $app->post('/nueva-titulacion/', function() use ($app) {
     $post = $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if ($validated === TRUE) {
-        $titulacion = new Formas_titulacion();
+		$titulacion = new FormaTitulacion();
         $titulacion->nombre = $_POST['nombre'];
         $titulacion->save();
         $flash = array(
@@ -3122,7 +3140,7 @@ $app->post('/actualiza-titulacion/:id/', function($id) use ($app) {
     $post = $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if ($validated === TRUE) {
-        $titulacion = Formas_titulacion::find($id);
+		$titulacion = FormaTitulacion::find($id);
         $titulacion -> nombre = $_POST['nombre-edit'];
         $titulacion -> save();
         $flash = array(
@@ -3150,11 +3168,11 @@ $app->post('/actualiza-titulacion/:id/', function($id) use ($app) {
 
 //
 $app->get('/borrar-titulacion/:id/', function($id) use ($app) {
-//	$relaciones = UsuariosHerramientas::find_all_by_herramienta_id($id);
-//	$cant_relaciones = count($relaciones);
-//	if ($cant_relaciones == 0) {
-        $carrera = Formas_titulacion::find($id);
-        $carrera->delete();
+	$relaciones = Academico::find_all_by_forma_titulacion($id); 
+	$cant_relaciones = count($relaciones);
+	if ($cant_relaciones == 0){		
+		$titulacion = FormaTitulacion::find($id);
+		$titulacion->delete();
         $flash = array(
             "title" => "OK",
             "msg" => "La Forma de Titulación ha sido borrada correctamente.",
@@ -3163,19 +3181,19 @@ $app->get('/borrar-titulacion/:id/', function($id) use ($app) {
         );
         $app -> flash("flash", $flash);
         $app->flashKeep();
-        $app->redirect($app->urlFor('CatCarrera'));
-//	}
-//	else {
-//		$flash = array(
-//			"title" => "OK",
-//			"msg" => "La Carrera esta relacionado, no se permite la eliminación.",
-//			"type" => "info",
-//			"fade" => 1
-//		);
-//		$app -> flash("flash", $flash);
-//		$app->flashKeep();
-//		$app->redirect($app->urlFor('CatHerramienta'));
-//	}
+		$app->redirect($app->urlFor('CatFormaTitulacion'));
+	}
+	else {
+		$flash = array(
+			"title" => "OK",
+			"msg" => "La Forma de Tirulación esta relacionado, no se permite la eliminación.",
+			"type" => "info",
+			"fade" => 1
+		);
+		$app -> flash("flash", $flash);
+		$app->flashKeep();
+		$app->redirect($app->urlFor('CatFormaTitulacion'));
+	}
 })->name('borrar-titulacion');
 
 /* =======================
@@ -3186,8 +3204,20 @@ $app->get('/(:slug/)', function ($slug = "") use ($app) {
     if ($slug != "") {
         $seccion = Seccion::find_by_slug($slug);
         if ($seccion) {
-            $seccion->contenido = replace_hashes($seccion->contenido);
-            $data['seccion'] = $seccion;
+            $contenido = (array) json_decode($seccion->contenido);
+            $proseccion = array(
+                'id' => $seccion->id,
+                'nombre' => $seccion->nombre,
+                'slug' => $seccion->slug,
+                'contenedor' => $seccion->contenedor,
+                'orden' => $seccion->orden,
+                'contenido' => replace_hashes($contenido['data']),
+                'files' => $contenido['files'],
+                'actualizado' => $seccion->actualizado
+            );
+            $data['seccion'] = $proseccion;
+#            $seccion->contenido = replace_hashes($seccion->contenido);
+#            $data['seccion'] = $seccion;
         }
     }
     $app->render('index.html', $data);
