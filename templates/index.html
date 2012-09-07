@@ -7,7 +7,7 @@
 <div class="row">
 	<div class="span8">
 		{% if seccion is defined %}
-		{{ seccion.contenido|raw }}
+		{% include 'section.twig.html' %}
 		{% endif %}
 	</div>	
 </div>
