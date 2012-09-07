@@ -3219,6 +3219,9 @@ $app->get('/(:slug/)', function ($slug = "") use ($app) {
 #            $seccion->contenido = replace_hashes($seccion->contenido);
 #            $data['seccion'] = $seccion;
         }
+    } else {
+        $images = glob("img/gallery/{*.jpg,*.gif,*.png}", GLOB_BRACE);
+        $data['imgs'] = $images;
     }
     $app->render('index.html', $data);
 })->name('home');
