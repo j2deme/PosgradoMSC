@@ -27,7 +27,7 @@ $connections = array(
 ActiveRecord\Config::initialize(function ($cfg) use ($connections) {
     $cfg->set_model_directory('models');
     $cfg->set_connections($connections);
-    $cfg->set_default_connection('dev');
+    $cfg->set_default_connection('prod');
 });
 
 TwigView::$twigOptions = array('charset' => 'utf-8','strict_variables' => true);
@@ -699,9 +699,10 @@ $app->get('/estadisticas/nucleo-academico/', function() use ($app) {
     $data['usuarios'] = Usuario::find_all_by_id($rolus->usuario_id,array('include'=> array('personal','docente')));
     $app->render('nucleoacademico.html',$data);
 })->name('nucleo-academico');
-
-$app->get('/estadisticas/productividad-academica/', function() use ($app) {
-    $rol = Rol::find_by_nombre('Docente');
+#TODO Verificar publicaciones VS productividad academica
+//$app->get('/estadisticas/productividad-academica/', function() use ($app) {
+$app->get('/publicaciones/', function() use ($app) {
+    /*$rol = Rol::find_by_nombre('Docente');
     $rolus = UsuariosRoles::find_all_by_rol_id($rol->id);
     $idusuarios = array();
     foreach ($rolus as $u) {
@@ -717,8 +718,8 @@ $app->get('/estadisticas/productividad-academica/', function() use ($app) {
         }
     }
     $data['pub'] = $publicaciones;
-    ladybug_dump($data);
-    //$app->render('productividadacademica.html',$data);
+    ladybug_dump($data);*/
+    $app->render('productividadacademica.html');
 })->name('productividad-academica');
 
 $app->get('/calendario/', function() use ($app) {
