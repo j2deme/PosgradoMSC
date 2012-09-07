@@ -37,4 +37,7 @@ build/config/buildinfo.properties
 # Folders to ignore
 ignore/
 tarballs/
-Drive/
+blueimp-jQuery-File-Upload/
+
+# Files to ignore
+vendor/log.txt
