@@ -164,9 +164,9 @@ $app->post('/nuevo-usuario/', function() use ($app) {
         $tb = new Toolbox();
         $password = $tb->generate_password(7,7);
         $ok = Usuario::transaction(function() use ($post,$tb,$password) {
-            //TODO Verificar que el nombre de usuario no exista antes de guardar
             $user = Usuario::find_by_login($_POST['usuario']);
             if(is_object($user)) return false;
+            
             $usuario = new Usuario();
             $usuario->usuario = $_POST['usuario'];
             $usuario->password = md5($password);
@@ -209,8 +209,8 @@ $app->post('/nuevo-usuario/', function() use ($app) {
             return true;
         });
         if ($ok) {
-#TODO Verificar recepcion de correo con datos de acceso
-#TODO Generar interfaz para activación de cuenta y cambio de contraseña
+/*TODO Verificar recepcion de correo con datos de acceso
+ Generar interfaz para activación de cuenta y cambio de contraseña*/
             $mailData = array(
                 "to" => $_POST['email'],
                 "subject" => "Activación de cuenta",
@@ -301,8 +301,7 @@ $app->post('/actualiza-usuario/:id/', function($id) use ($app) {
             return true;
         });
         if ($ok) {
-#TODO Enviar el correo al usuario con los datos de acceso actualizados
-#TODO Enviar notificacion de datos actualizados.
+/*TODO Enviar el correo al usuario con los datos de acceso actualizados*/
             $flash = array(
                 "title" => "OK",
                 "msg" => "El usuario se ha actualizado con éxito.",
@@ -3217,8 +3216,6 @@ $app->get('/(:slug/)', function ($slug = "") use ($app) {
                 'actualizado' => $seccion->actualizado
             );
             $data['seccion'] = $proseccion;
-#            $seccion->contenido = replace_hashes($seccion->contenido);
-#            $data['seccion'] = $seccion;
         }
     } else {
         $images = glob("img/gallery/{*.jpg,*.gif,*.png}", GLOB_BRACE);
