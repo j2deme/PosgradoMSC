@@ -5,10 +5,26 @@
 
 {% block content %}
 <div class="row">
-	<div class="span8">
-		{% if seccion is defined %}
-		{{ seccion.contenido|raw }}
-		{% endif %}
-	</div>	
+    <div class="span8">
+        {% if seccion is defined %}
+        {% include 'section.twig.html' %}
+        {% else %}
+        <div class="carousel slide" id="myCarousel">
+            <div class="carousel-inner">
+            {% for img in imgs %}
+                <div class="item
+                {% if loop.index == 1 %} 
+                active
+                {% endif %}
+                ">
+                    <img alt="" src="{{ urlFor('home') }}{{ img }}">
+                </div>
+            {% endfor %}
+            </div>
+            <a data-slide="prev" href="#myCarousel" class="left carousel-control">‹</a>
+            <a data-slide="next" href="#myCarousel" class="right carousel-control">›</a>
+        </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

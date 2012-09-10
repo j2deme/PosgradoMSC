@@ -9,7 +9,10 @@ RewriteEngine On
 #RewriteCond %{HTTPS} !on
 #RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 
-RewriteRule ^Drive/?$ /Drive/ [NC,L] # Handle requests for "pet-care"
+#RewriteRule ^Drive/?$ /Drive/ [NC,L] # Handle requests for "pet-care"
+
+#Avoid access to git folder
+RewriteRule "(^|/)\." - [F]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
