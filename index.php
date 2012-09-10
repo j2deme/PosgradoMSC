@@ -27,7 +27,7 @@ $connections = array(
 ActiveRecord\Config::initialize(function ($cfg) use ($connections) {
     $cfg->set_model_directory('models');
     $cfg->set_connections($connections);
-    $cfg->set_default_connection('prod');
+    $cfg->set_default_connection('dev');
 });
 
 TwigView::$twigOptions = array('charset' => 'utf-8','strict_variables' => true);
