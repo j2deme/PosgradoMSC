@@ -309,28 +309,8 @@ class UploadHandler
                         fopen($uploaded_file, 'r'),
                         FILE_APPEND
                     );
-                    #TODO Aqui esta el detalle
-                    $name= "log.txt";
-#                    if(file_exists($name)){
-                        $handle = fopen($name, 'a+');
-                        if(!$handle){
-                        } else {
-                            file_put_contents($handle, "APPEND: $append_file|$file_path|$uploade_file\n\r", FILE_APPEND);
-                        }
-                        fclose($handle);
-#                    }
-                    #XXX
                 } else {
                     move_uploaded_file($uploaded_file, $file_path);
-                    $name="log.txt";
-#                    if(file_exists($name)){
-                        $handle = fopen($name, 'a+');
-                        if(!$handle){
-                        } else {
-                            file_put_contents($handle, "MOVED: $file_path|$uploade_file\n\r", FILE_APPEND);
-                        }
-                        fclose($handle);
-#                    }
                 }
             } else {
                 // Non-multipart uploads (PUT method support)

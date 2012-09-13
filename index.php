@@ -1,5 +1,8 @@
 <?php
 header('Content-Type: text/html; charset=UTF-8');
+ini_set("display_errors",1);
+ini_set("memory_limit","1024M");
+
 require __DIR__ . '/vendor/Slim/Slim.php';
 require __DIR__ . '/views/TwigView.php';
 require __DIR__ . '/vendor/ActiveRecord/ActiveRecord.php';
@@ -519,8 +522,7 @@ $app->get('/download/:file', function($file) use ($app) {
      }
 })->name('file-reader');
 
-$app->map('/uploader/',function() use ($app) {//XXX Uploader
-
+/*$app->map('/uploader/',function() use ($app) {
     $upload_handler = new UploadHandler();
     header('Pragma: no-cache');
     header('Cache-Control: no-store, no-cache, must-revalidate');
@@ -549,18 +551,88 @@ $app->map('/uploader/',function() use ($app) {//XXX Uploader
         default:
             header('HTTP/1.1 405 Method Not Allowed');
     }
-})->via('GET', 'POST','DELETE','HEAD','OPTIONS')->name('uploader');
+})->via('GET', 'POST','DELETE','HEAD','OPTIONS')->name('uploader');*/
 
-#XXX Graficas
+$app->post('/upload/:type/:id', function ($type, $id) use ($app){
+    if($type == 'section'){
+        $post = Seccion::find($id);
+        $upload_path = './files/sections/';
+        $redirectTo = $app->urlFor('editor-seccion',array('slug' => $post->slug)); 
+    } else {
+        $post = Noticia::find($id);
+        $upload_path = './files/news/';
+        $redirectTo = $app->urlFor('editor-seccion',array('slug' => $post->slug));#TODO Cambiar ruta a editor-noticias
+    }
+    $not_allowed_filetypes = array('.exe','.bat','.jar');
+    $max_filesize = 5242880; // 5MB 
+    $num_files = count($_FILES['files']['name']);
+    $file = $_FILES;
+    $ok = $warnings = 0;
+    $msg = "<ul>";
+    
+    $contenido = (array) json_decode($post->contenido);
+    $currentFiles = $contenido['files'];
+            
+    for($i = 0; $i < $num_files; $i++){
+        $name = $file['files']['name'][$i];
+        $ext = substr($name, strpos($name,'.'), strlen($name) - 1);
+        $tmp_name = $file['files']['tmp_name'][$i];
+        $filesize = filesize($tmp_name);
+            
+        if(in_array($ext,$not_allowed_filetypes)){
+            $msg .= "<li>Los archivos de la extensión $ext no estan permitidos.</li>";
+            $warnings++;
+        }
+        if($filesize > $max_filesize){
+            $msg .= "<li>El archivo $name es demasiado grande para subir.</li>";
+            $warnings++;
+        }
+        if(!is_writable($upload_path)){
+            break;
+        }
+        $x = 0;
+        $filename = preg_replace("/[^A-Z0-9._-]/i", "_", $name);
+        $parts = pathinfo($filename);
+        while (file_exists($uploaded_file)) {
+            $x++;
+            $filename = $parts["filename"]."-$x.".$parts["extension"];
+        }
+        $uploaded_file = $upload_path.$filename;
+        if(move_uploaded_file($tmp_name, $uploaded_file)){
+            @chmod($uploaded_file, 0755);
+            $msg .= "<li>El archivo $name se ha subido exitosamente.</li>";
+            $ok++;
+            $currentFiles[] = $filename;
+        } else {
+            $msg .= "<li>Ha habido un problema al subir el archivo $name. Intente nuevamente.</li>";
+            $warnings++;
+        }   
+    }
+    $msg .= "</ul>";
+    $contenido['files'] = $currentFiles;
+    $post->contenido = json_encode($contenido);
+    $post->save();
+    if ($i < $num_files) {
+        $title = "¡Error!";
+        $msg = "<li>Verifique los permisos del directorio $upload_path. (CHMOD 777)</li>";
+        $type = "error";
+        $fade = 0;
+    } elseif ($warnings >= $ok) {
+        $title = "¡Atención!";
+        $type = "";
+        $fade = 0;
+    } else {
+        $title = "OK";
+        $type = "success";
+        $fade = 1;
+    }
+    $flash = array("title" => $title,"msg" => $msg,"type" => $type,"fade" => $fade);
+    $app -> flash("flash", $flash);
+    $app->flashKeep();
+    $app->redirect($redirectTo);
+})->name('upload');
+
 require 'graphs.php';
-/*$app->get('/admin/estadisticas/', function() use ($app) {
-    $data['breadcrumb'] = array(
-        array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Estadísticas", "alias" => "admin-estadisticas")
-    );
-    $data['user'] = isAllowed("Administrador", false);
-    $app->render('statistics.html',$data);
-})->name('admin-estadisticas');*/
 
 $app->get('/admin/secciones/', function() use ($app) {
     $data['breadcrumb'] = array(
@@ -617,13 +689,19 @@ $app->get('/admin/secciones/editor/:slug', function($slug) use ($app) {
         'files' => $contenido['files'],
         'actualizado' => $seccion->actualizado
     );
-    //ladybug_dump($proseccion);
-    $data['seccion'] = $proseccion; 
+    $data['seccion'] = $proseccion;
+    $files = array();
+    $tb = new Toolbox();
+    foreach ($contenido['files'] as $file) {
+        $size = filesize("./files/sections/$file");
+        $files[] = array('name'=>$file, 'size' => $tb->bytes2human($size));
+    }
+    $data['files'] = $files;
 
     $app->render('editor-seccion.html', $data);
 })->name('editor-seccion');
 
-$app->post('/editar-seccion-post/:id/', function($id) use ($app) {//XXX Actualiza Seccion
+$app->post('/editar-seccion-post/:id/', function($id) use ($app) {
     $validator = new GUMP();
     //$_POST = $validator->sanitize($_POST);
     $rules = array(
@@ -644,7 +722,7 @@ $app->post('/editar-seccion-post/:id/', function($id) use ($app) {//XXX Actualiz
         } else {
             $contenido['data'] = $_POST['contenido'];
         }
-        $seccion->contenido = json_encode($contenido);// $_POST['contenido'];
+        $seccion->contenido = json_encode($contenido);
         $seccion->contenedor = $_POST['contenedor'];
         $seccion->actualizado = time();
         $seccion->save();
@@ -732,11 +810,10 @@ $app->get('/publicaciones/', function() use ($app) {
 })->name('productividad-academica');
 
 $app->get('/calendario/', function() use ($app) {
-    //TODO Calendario
+    
 })->name('calendario');
 
 $app->get('/relacion-aceptados/', function() use ($app) {
-    //TODO Relacion Aceptados
     $app->render('relacion-aceptados.html');
 })->name('relacion-aceptados');
 
@@ -961,7 +1038,6 @@ $app->get('/docente/publicaciones/', function() use ($app) {
      $app->render('registroinicial.html');
  })->name('registro-inicio');
 
- #// TODO POS DE REGISTRO INICIAL
  $app->post('/formulario-registro-post/',function() use ($app) {
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
