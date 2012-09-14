@@ -24,8 +24,8 @@
                         </li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane" id="tab1" name="tab1">
-                            <div id="loader" name="loader" class="">
+                        <div class="tab-pane active" id="tab1" name="tab1">
+                            <div id="loader" name="loader" class="hidden">
                                 Cargando Editor <img src="{{ urlFor('home') }}img/loader.gif">
                             </div>
                             <form id="editor" name="editor" method="post" class="form-horizontal hide" action="{{ urlFor('editar-seccion-post', {'id': seccion.id }) }}">
@@ -34,7 +34,7 @@
                                 {{ seccion.contenido|raw }}
                                 {% endif %}
                                 </textarea>
-                                <div class="control-group">
+{#                                <div class="control-group">
                                     <br />
                                     <label for="contenedor" class="control-label">Contenedor</label>
                                     <div class="controls">
@@ -49,7 +49,7 @@
                                             {% endfor %}
                                         </select>
                                     </div>
-                                </div>
+                        </div>#}
                                 <div class="form-actions">
                                     <button class="btn btn-primary" type="submit">
                                         <i class="icon-save"> </i> Guardar Cambios
@@ -58,7 +58,7 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="tab-pane active" id="tab2" name="tab2">
+                        <div class="tab-pane" id="tab2" name="tab2">
                             <h2>Archivos</h2>
                             <ul>
                             <table class="table table-condensed table-striped">
@@ -149,7 +149,7 @@
             $(urlSelect).append('<option value="@registro-aspirante">Registro de Aspirante</option>');
             {% endif %}
 
-            $("#loader").delay(200).fadeOut(300);
+//            $("#loader").delay(200).fadeOut(300);
             $('#editor').delay(500).fadeIn(300);
             $('[data-pretty-file]').prettifyUpload({
                 buttonClass: 'btn btn-info span2',

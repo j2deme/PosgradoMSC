@@ -723,7 +723,7 @@ $app->post('/editar-seccion-post/:id/', function($id) use ($app) {
             $contenido['data'] = $_POST['contenido'];
         }
         $seccion->contenido = json_encode($contenido);
-        $seccion->contenedor = $_POST['contenedor'];
+        $seccion->contenedor = (isset($_POST['contenedor'])) ? $_POST['contenedor'] : 0;
         $seccion->actualizado = time();
         $seccion->save();
         $flash = array(
@@ -824,7 +824,7 @@ $app->get('/publicaciones/', function() use ($app) {
 })->name('publicaciones');
 
 $app->get('/egresados/', function() use ($app) {
-    //TODO Egresados
+    
 })->name('egresados');
 
 $app->get('/estadisticas/matriculacion/', function() use ($app) {
