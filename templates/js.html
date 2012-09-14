@@ -42,7 +42,7 @@ head.ready(function() {
 	$(function(){
 		{% if flash.flash is defined %}
 		$('.top-right').notify({
-    		message: { text: "<h4>{{ flash.flash.title }}</h4>{{ flash.flash.msg|raw }}"},
+    		message: { text: "<h4>{{ flash.flash.title|raw }}</h4>{{ flash.flash.msg|raw }}"},
     		type: '{{ flash.flash.type }}',
     		{% if flash.flash.fade == 0 %}
     		fadeOut: { enabled: false }

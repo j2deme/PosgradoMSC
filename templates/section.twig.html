@@ -1,4 +1,39 @@
 <div class="page-header">
     <h2>{{ seccion.nombre }}</h2>
+</div>  
+<div class="row">
+    {% if (imgs is defined) and (imgs|length > 0) %}
+        {% set spanSize = 6 %}
+    {% else %}
+        {% set spanSize = 8 %}
+    {% endif %}
+    <div class="span{{ spanSize }}">
+      {{ seccion.contenido|raw }}  
+    </div>
+    {% if (imgs is defined) and (imgs|length > 0) %}
+    <div class="span2">
+        <ul class="thumbnails">
+        {% for img in imgs %}
+        <li class="span2">
+        <a href="#" class="thumbnail">
+            <img src="{{ urlFor('home') }}files/sections/{{ img }}" alt="{{ img }}">
+        </a>
+        </li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
 </div>
-{{ seccion.contenido|raw }}
+{% if (files is defined) and (files|length > 0) %}
+<div class="row">
+    <div class="span8">
+        <hr/>
+        <h4>Adjuntos <i class="icon-paper-clip"> </i></h4>
+        <ul>
+            {% for file in files %}
+            <li><a href="{{ urlFor('home') }}files/sections/{{ file }}" target="_blank">{{ file }}</a></li>
+            {% endfor %}
+        </ul>  
+    </div>
+</div>
+{% endif %}

@@ -554,6 +554,7 @@ $app->get('/download/:file', function($file) use ($app) {
 })->via('GET', 'POST','DELETE','HEAD','OPTIONS')->name('uploader');*/
 
 $app->post('/upload/:type/:id', function ($type, $id) use ($app){
+    $tb = new Toolbox();
     if($type == 'section'){
         $post = Seccion::find($id);
         $upload_path = './files/sections/';
@@ -571,8 +572,9 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
     $msg = "<ul>";
     
     $contenido = (array) json_decode($post->contenido);
-    $currentFiles = $contenido['files'];
-            
+    $currentFiles = (array) $contenido['files'];
+//    ladybug_dump($currentFiles);
+    $extraFiles = array();            
     for($i = 0; $i < $num_files; $i++){
         $name = $file['files']['name'][$i];
         $ext = substr($name, strpos($name,'.'), strlen($name) - 1);
@@ -580,7 +582,7 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
         $filesize = filesize($tmp_name);
             
         if(in_array($ext,$not_allowed_filetypes)){
-            $msg .= "<li>Los archivos de la extensión $ext no estan permitidos.</li>";
+            $msg .= "<li>Los archivos de la extensi&oacute;n $ext no estan permitidos.</li>";
             $warnings++;
         }
         if($filesize > $max_filesize){
@@ -590,11 +592,12 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
         if(!is_writable($upload_path)){
             break;
         }
-        $x = 0;
         $filename = preg_replace("/[^A-Z0-9._-]/i", "_", $name);
+        $uploaded_file = $upload_path.$filename;
         $parts = pathinfo($filename);
-        while (file_exists($uploaded_file)) {
-            $x++;
+        $x = count(glob($uploaded_file));
+        $x = ($x == 1) ? $x : $x++;
+        if($x >= 1){
             $filename = $parts["filename"]."-$x.".$parts["extension"];
         }
         $uploaded_file = $upload_path.$filename;
@@ -602,24 +605,33 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
             @chmod($uploaded_file, 0755);
             $msg .= "<li>El archivo $name se ha subido exitosamente.</li>";
             $ok++;
-            $currentFiles[] = $filename;
+            $extraFiles[] = $filename;
         } else {
             $msg .= "<li>Ha habido un problema al subir el archivo $name. Intente nuevamente.</li>";
             $warnings++;
         }   
     }
     $msg .= "</ul>";
-    $contenido['files'] = $currentFiles;
+//    ladybug_dump($extraFiles);
+    $newCurrent = array();
+    foreach ($currentFiles as $file) {
+        $newCurrent[] = $file;
+    }
+    foreach ($extraFiles as $file) {
+        $newCurrent[] = $file;
+    }
+    
+    $contenido['files'] = $newCurrent;
     $post->contenido = json_encode($contenido);
     $post->save();
     if ($i < $num_files) {
-        $title = "¡Error!";
+        $title = "ERROR";
         $msg = "<li>Verifique los permisos del directorio $upload_path. (CHMOD 777)</li>";
         $type = "error";
         $fade = 0;
     } elseif ($warnings >= $ok) {
-        $title = "¡Atención!";
-        $type = "";
+        $title = "ATENCIÓN";
+        $type = "warning";
         $fade = 0;
     } else {
         $title = "OK";
@@ -630,7 +642,51 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
     $app -> flash("flash", $flash);
     $app->flashKeep();
     $app->redirect($redirectTo);
-})->name('upload');
+})->name('upload-file');
+
+$app->get('/delete-file/:type/:id/:name', function($type, $id, $name) use ($app){
+    if($type == 'section'){
+        $post = Seccion::find($id);
+        $upload_path = './files/sections/';
+        $redirectTo = $app->urlFor('editor-seccion',array('slug' => $post->slug)); 
+    } else {
+        $post = Noticia::find($id);
+        $upload_path = './files/news/';
+        $redirectTo = $app->urlFor('editor-seccion',array('slug' => $post->slug));#TODO Cambiar ruta a editor-noticias
+    }
+    $fileToRemove = $upload_path.$name;
+    if (file_exists($fileToRemove)) {
+        if (@unlink($fileToRemove) === true) {
+            $msg = "El archivo $name has sido borrado correctamente.";
+            $ok = true;
+            $contenido = (array) json_decode($post->contenido);
+            $currentFiles = $contenido['files'];
+            $currentFiles = array_diff($currentFiles, array($name));
+            $contenido['files'] = $currentFiles;
+            $post->contenido = json_encode($contenido);
+            $post->save();
+        } else {
+            $msg = "Problemas para borrar el archivo $name.";
+            $ok = false;
+        }
+    } else {
+        $msg = "El archivo $name no existe, por lo tanto no se puede borrar.";
+        $ok = false;
+    }
+    if($ok){
+        $title = "OK";
+        $type = "success";
+        $fade = 1;
+    } else {
+        $title = "¡Atención!";
+        $type = "";
+        $fade = 0;
+    }
+    $flash = array("title" => $title,"msg" => $msg,"type" => $type,"fade" => $fade);
+    $app -> flash("flash", $flash);
+    $app->flashKeep();
+    $app->redirect($redirectTo);
+})->name('delete-file');
 
 require 'graphs.php';
 
@@ -3278,7 +3334,7 @@ $app->get('/borrar-titulacion/:id/', function($id) use ($app) {
 	else {
 		$flash = array(
 			"title" => "OK",
-			"msg" => "La Forma de Tirulación esta relacionado, no se permite la eliminación.",
+			"msg" => "La Forma de Titulación esta relacionado, no se permite la eliminación.",
 			"type" => "info",
 			"fade" => 1
 		);
@@ -3308,6 +3364,20 @@ $app->get('/(:slug/)', function ($slug = "") use ($app) {
                 'actualizado' => $seccion->actualizado
             );
             $data['seccion'] = $proseccion;
+            $files = $contenido['files'];
+            $attchs = $imgs = array();
+            foreach($files as $file){
+                $ext = pathinfo($file, PATHINFO_EXTENSION);
+                $img_exts = array('png','jpg','gif','jpeg','bmp');
+                if(in_array($ext, $img_exts)){
+                    $imgs[] = $file;
+                } else {
+                    $attchs[] = $file;
+                }
+            }
+            $data['imgs'] = $imgs;
+            $data['files'] = $attchs;
+            $data['files'] = $files;
         }
     } else {
         $images = glob("img/gallery/{*.jpg,*.gif,*.png}", GLOB_BRACE);
