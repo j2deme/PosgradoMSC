@@ -573,7 +573,6 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
     
     $contenido = (array) json_decode($post->contenido);
     $currentFiles = (array) $contenido['files'];
-//    ladybug_dump($currentFiles);
     $extraFiles = array();            
     for($i = 0; $i < $num_files; $i++){
         $name = $file['files']['name'][$i];
@@ -612,7 +611,6 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
         }   
     }
     $msg .= "</ul>";
-//    ladybug_dump($extraFiles);
     $newCurrent = array();
     foreach ($currentFiles as $file) {
         $newCurrent[] = $file;
