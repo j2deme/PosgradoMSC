@@ -72,6 +72,18 @@ class Toolbox {
 		return $text;
 	}
 
+    #TODO Detail a little more
+    function weeks_of_month($month, $year){
+            $month = date('m');
+            $year = date('Y');
+            $beg = (int) date('W', strtotime("first day of $year-$month"));
+            $end = (int) date('W', strtotime("last day of $year-$month"));
+//            $weeks = join(', ', range($beg, $end));
+            $weeks = range($beg, $end);
+            
+            return $weeks;        
+    }
+    
 	/**
 	 * Generates a human readable string that will look more close to dictionary words (useful for captchas).
 	 *

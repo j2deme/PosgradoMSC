@@ -1,8 +1,64 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="row">
-	<div class="span8">
-		
-	</div>
+    <div class="span8">
+        <div id="calendar">
+            <div id="calendar_headera" class="alerta alert-blocka">
+            <div class="row">
+                <div class="span2">
+                    <a class="btn btn-info" href="{{ calendar.prev_url }}"><i class="icon-chevron-left"></i></a>
+                </div>
+                <div class="span4">
+                    <h3>{{ calendar.current_month_name }} {{ calendar.current_year}}</h3>
+                </div>
+                <div class="span2">
+                    <a class="btn btn-info" href="{{ calendar.next_url }}"><i class="icon-chevron-right"></i></a>
+                </div>
+            </div>
+            </div>
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    {% for weekday in calendar.weekdays %}
+                    <td>{{ weekday|raw }}</td>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for week in calendar.weeks %}
+                <tr>
+                    {% for day in week.days %}
+                    <td class="calendar-day">
+                        {% if not day.blank %}
+                        <span class="day-number {{ day.today_class }}">
+                            {{ day.day }}
+                        </span>
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor%}
+                </tbody>
+            </table>
+
+            <table id="calendar-event-overlay">
+                {% for week in calendar.weeks %}
+                <tr>
+                    {% for day in week.days %}
+                    <td class="calendar-day">
+                        {# if not day.blank #}
+                        {% for event in day.events %}
+                        <div class="calendar-event {{ event.class_name }}">
+                            {{ event.name|raw }}
+                        </div>
+                        {% endfor %}
+                        {# endif #}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}

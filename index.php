@@ -21,6 +21,7 @@ require __DIR__ . '/vendor/pChart/class/pPie.class.php';
 require __DIR__ . '/vendor/pChart/class/pImage.class.php';
 require __DIR__ . '/vendor/Faker/autoload.php';
 require __DIR__ . '/vendor/ImageWorkshop/src/PHPImageWorkshop/ImageWorkshop.php';
+require __DIR__ . '/vendor/Julian/libraries/julian.php';
 
 
 Ladybug\Autoloader::register();
@@ -187,8 +188,23 @@ $app->get('/publicaciones/', function() use ($app) {
     $app->render('productividadacademica.html');
 })->name('productividad-academica');
 
-$app->get('/calendario/', function() use ($app) {
-    $app->render('calendar.html');
+$app->get('/calendario/(:year/(:month/))', function($year, $month) use ($app) {
+    $year = (is_null($year)) ? date('Y') : $year;
+    $month = (is_null($month)) ? date('m') : $month;
+    $url = $app->urlFor('calendario',array('year' =>'%y', 'month' => '%m'));
+    $calendar = new Julian();
+    $calendar->add_event(strtotime('19-09-2012'), strtotime('21-09-2012'), 'Fucking event');
+    $calendar->calendar(array(
+        'url'           => $url,
+        'current_month' => $month,
+        'current_year'  => $year
+    ));
+    $data['calendar'] = $calendar;
+//    ladybug_dump(strtotime('19-09-2012'));
+//    ladybug_dump(date("d/m/Y",strtotime('19-09-2012')));
+//    ladybug_dump($calendar->get_events('19', '09', '2012'));
+//    ladybug_dump($calendar);
+    $app->render('calendar.html',$data);
 })->name('calendario');
 
 $app->get('/relacion-aceptados/', function() use ($app) {
