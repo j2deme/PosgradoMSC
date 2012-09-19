@@ -14,12 +14,14 @@ require __DIR__ . '/vendor/PHPMailer/class.phpmailer.php';
 require __DIR__ . '/vendor/elFinder/connector.php';
 require __DIR__ . '/vendor/Toolbox.php';
 require __DIR__ . '/vendor/DirectoryLister.php';
-require __DIR__ . '/vendor/upload.class.php';
-require __DIR__ . "/vendor/pChart/class/pData.class.php";
-require __DIR__ . "/vendor/pChart/class/pDraw.class.php";
-require __DIR__ . "/vendor/pChart/class/pPie.class.php";
-require __DIR__ . "/vendor/pChart/class/pImage.class.php";
+#require __DIR__ . '/vendor/upload.class.php';
+require __DIR__ . '/vendor/pChart/class/pData.class.php';
+require __DIR__ . '/vendor/pChart/class/pDraw.class.php';
+require __DIR__ . '/vendor/pChart/class/pPie.class.php';
+require __DIR__ . '/vendor/pChart/class/pImage.class.php';
 require __DIR__ . '/vendor/Faker/autoload.php';
+require __DIR__ . '/vendor/ImageWorkshop/src/PHPImageWorkshop/ImageWorkshop.php';
+
 
 Ladybug\Autoloader::register();
 
@@ -435,8 +437,8 @@ $app->map("/admin/elFinder/", function() use ($app) {
         'roots' => array(
             array(
                 'driver'        => 'LocalFileSystem',   // driver for accessing file system (REQUIRED)
-                'path'          => './Drive/',         // path to files (REQUIRED)
-                'URL'           => $app->urlFor('home'). '/Drive/', // URL to files (REQUIRED)
+                'path'          => './uploads/',         // path to files (REQUIRED)
+                'URL'           => $app->urlFor('home'). '/uploads/', // URL to files (REQUIRED)
                 'accessControl' => 'access'             // disable and hide dot starting files (OPTIONAL)
             )
         )
@@ -447,8 +449,8 @@ $app->map("/admin/elFinder/", function() use ($app) {
 
 $app->get('/explorador-archivos/', function() use ($app) {
     $data['user'] = isAllowed("Verificador",false);
-    $dir = ($dir == "/Drive/") ? $dir : urldecode($dir);
-    $dir = "/Drive/";
+    $dir = ($dir == "/uploads/") ? $dir : urldecode($dir);
+    $dir = "/uploads/";
     $dir = __DIR__.$dir;
     $lister = new DirectoryLister();
     $data['directory'] = $lister->listDirectory($dir);
@@ -522,46 +524,15 @@ $app->get('/download/:file', function($file) use ($app) {
      }
 })->name('file-reader');
 
-/*$app->map('/uploader/',function() use ($app) {
-    $upload_handler = new UploadHandler();
-    header('Pragma: no-cache');
-    header('Cache-Control: no-store, no-cache, must-revalidate');
-    header('Content-Disposition: inline; filename="files.json"');
-    header('X-Content-Type-Options: nosniff');
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: OPTIONS, HEAD, GET, POST, PUT, DELETE');
-    header('Access-Control-Allow-Headers: X-File-Name, X-File-Type, X-File-Size');
-    switch ($_SERVER['REQUEST_METHOD']) {
-        case 'OPTIONS':
-            break;
-        case 'HEAD':
-        case 'GET':
-            $upload_handler->get();
-            break;
-        case 'POST':
-            if (isset($_REQUEST['_method']) && $_REQUEST['_method'] === 'DELETE') {
-                $upload_handler->delete();
-            } else {
-                $upload_handler->post();
-            }
-            break;
-        case 'DELETE':
-            $upload_handler->delete();
-            break;
-        default:
-            header('HTTP/1.1 405 Method Not Allowed');
-    }
-})->via('GET', 'POST','DELETE','HEAD','OPTIONS')->name('uploader');*/
-
 $app->post('/upload/:type/:id', function ($type, $id) use ($app){
     $tb = new Toolbox();
     if($type == 'section'){
         $post = Seccion::find($id);
-        $upload_path = './files/sections/';
+        $upload_path = './uploads/sections/';
         $redirectTo = $app->urlFor('editor-seccion',array('slug' => $post->slug)); 
     } else {
         $post = Noticia::find($id);
-        $upload_path = './files/news/';
+        $upload_path = './uploads/news/';
         $redirectTo = $app->urlFor('editor-seccion',array('slug' => $post->slug));#TODO Cambiar ruta a editor-noticias
     }
     $not_allowed_filetypes = array('.exe','.bat','.jar');
@@ -573,7 +544,6 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
     
     $contenido = (array) json_decode($post->contenido);
     $currentFiles = (array) $contenido['files'];
-//    ladybug_dump($currentFiles);
     $extraFiles = array();            
     for($i = 0; $i < $num_files; $i++){
         $name = $file['files']['name'][$i];
@@ -601,8 +571,17 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
             $filename = $parts["filename"]."-$x.".$parts["extension"];
         }
         $uploaded_file = $upload_path.$filename;
+        $img_exts = array('png','jpg','gif','jpeg','bmp');
+        $isImg = (in_array($ext, $img_exts)) ? true : false;
         if(move_uploaded_file($tmp_name, $uploaded_file)){
-            @chmod($uploaded_file, 0755);
+            @chmod($uploaded_file, 0777);
+            if($isImg){
+                $layer = new PHPImageWorkshop\ImageWorkshop(array('imageFromPath' => $uploaded_file));
+                $layer->cropMaximumInPixel(0, 0, "MM");
+                $layer->resizeInPixel(200, 200);
+                $layer->save($upload_path, "thumb_$filename", true, null, 95);
+                @chmod($upload_path."thumb_$filename", 0777);
+            }
             $msg .= "<li>El archivo $name se ha subido exitosamente.</li>";
             $ok++;
             $extraFiles[] = $filename;
@@ -612,7 +591,6 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
         }   
     }
     $msg .= "</ul>";
-//    ladybug_dump($extraFiles);
     $newCurrent = array();
     foreach ($currentFiles as $file) {
         $newCurrent[] = $file;
@@ -647,16 +625,23 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
 $app->get('/delete-file/:type/:id/:name', function($type, $id, $name) use ($app){
     if($type == 'section'){
         $post = Seccion::find($id);
-        $upload_path = './files/sections/';
+        $upload_path = './uploads/sections/';
         $redirectTo = $app->urlFor('editor-seccion',array('slug' => $post->slug)); 
     } else {
         $post = Noticia::find($id);
-        $upload_path = './files/news/';
+        $upload_path = './uploads/news/';
         $redirectTo = $app->urlFor('editor-seccion',array('slug' => $post->slug));#TODO Cambiar ruta a editor-noticias
     }
     $fileToRemove = $upload_path.$name;
+    $thumb = $upload_path."thumb_$name";
+    $ext = pathinfo($fileToRemove, PATHINFO_EXTENSION);
+    $img_exts = array('png','jpg','gif','jpeg','bmp');
+    $isImg = (in_array($ext, $img_exts)) ? true : false;
     if (file_exists($fileToRemove)) {
         if (@unlink($fileToRemove) === true) {
+            if($isImg){
+                @unlink($thumb);
+            }
             $msg = "El archivo $name has sido borrado correctamente.";
             $ok = true;
             $contenido = (array) json_decode($post->contenido);
@@ -679,7 +664,7 @@ $app->get('/delete-file/:type/:id/:name', function($type, $id, $name) use ($app)
         $fade = 1;
     } else {
         $title = "¡Atención!";
-        $type = "";
+        $type = "warning";
         $fade = 0;
     }
     $flash = array("title" => $title,"msg" => $msg,"type" => $type,"fade" => $fade);
@@ -749,7 +734,7 @@ $app->get('/admin/secciones/editor/:slug', function($slug) use ($app) {
     $files = array();
     $tb = new Toolbox();
     foreach ($contenido['files'] as $file) {
-        $size = filesize("./files/sections/$file");
+        $size = filesize("./uploads/sections/$file");
         $files[] = array('name'=>$file, 'size' => $tb->bytes2human($size));
     }
     $data['files'] = $files;
@@ -3365,19 +3350,16 @@ $app->get('/(:slug/)', function ($slug = "") use ($app) {
                 'actualizado' => $seccion->actualizado
             );
             $data['seccion'] = $proseccion;
-            $files = $contenido['files'];
-            $attchs = $imgs = array();
+            $files = (array) $contenido['files'];
+            $imgs = array();
             foreach($files as $file){
                 $ext = pathinfo($file, PATHINFO_EXTENSION);
                 $img_exts = array('png','jpg','gif','jpeg','bmp');
                 if(in_array($ext, $img_exts)){
                     $imgs[] = $file;
-                } else {
-                    $attchs[] = $file;
                 }
             }
             $data['imgs'] = $imgs;
-            $data['files'] = $attchs;
             $data['files'] = $files;
         }
     } else {
