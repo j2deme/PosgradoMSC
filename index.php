@@ -3351,11 +3351,20 @@ $app->get('/(:slug/)', function ($slug = "") use ($app) {
             $data['seccion'] = $proseccion;
             $files = (array) $contenido['files'];
             $imgs = array();
+            $upload_path = "./uploads/sections/";
             foreach($files as $file){
                 $ext = pathinfo($file, PATHINFO_EXTENSION);
+                $filename = pathinfo($file, PATHINFO_BASENAME);
                 $img_exts = array('png','jpg','gif','jpeg','bmp');
                 if(in_array($ext, $img_exts)){
                     $imgs[] = $file;
+                    if(!file_exists($upload_path."thumb_$filename")){
+                        $layer = new PHPImageWorkshop\ImageWorkshop(array('imageFromPath' => $upload_path.$file));
+                        $layer->cropMaximumInPixel(0, 0, "MM");
+                        $layer->resizeInPixel(200, 200);
+                        $layer->save($upload_path, "thumb_$filename", true, null, 95);
+                        @chmod($upload_path."thumb_$filename", 0777);
+                    }
                 }
             }
             $data['imgs'] = $imgs;
