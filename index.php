@@ -1144,9 +1144,8 @@ $app->get('/docente/tesistas/', function() use ($app) {
 
     $data['user'] = isAllowed("Docente",FALSE);
     $rolalumno=Rol::find_by_nombre('Alumno');
-
+	
     $idss=UsuariosRoles::find_all_by_rol_id($rolalumno->id);
-
     $idalumnos=array();
     foreach ($idss as $u) {
         $idalumnos[] = $u -> usuario_id;
@@ -1162,13 +1161,14 @@ $app->get('/docente/tesistas/', function() use ($app) {
     }
     $data['alumnos']=$alumnos;
 
-    $pos=$data['posgrados']=Posgrado::find_all_by_asesor(2);
-
-    $idtesistas = array();
+    $pos=Posgrado::find_all_by_asesor($data['user']->id);
+	if (count($pos)>=1) {
+	
+		  $idtesistas = array();
     foreach ($pos as $u) {
         $idtesistas[] = $u -> usuario_id;
     }
-    $tesistas = array();
+	$tesistas = array();
     $datostesista = Usuario::find_all_by_id($idtesistas, array('include' => array('personal')));
     foreach ($datostesista as $u) {
         $dato = new Generic;
@@ -1177,13 +1177,14 @@ $app->get('/docente/tesistas/', function() use ($app) {
         $tesistas[] = $dato;
         unset($dato);
     }
-    $data['datostesistas']=$tesistas;
-
+	$data['datostesistas']=$tesistas;
+		
+	}
     $data['lineas']= LineaInvestigacion::all();
-    /*ladybug_dump($data);
+    
     /*ladybug_dump($data['lineas'][0]);
    /* ladybug_dump($data['datostesistas'][0]);*/
-    $app->render('gestTesista02.html',$data);
+   $app->render('gestTesista02.html',$data);
 })->name('docente-tesistas');
 
 $app->get('/docente/eventos/', function() use ($app) {

@@ -1,262 +1,331 @@
-{% extends 'base.html' %}
+{% extends 'admin-base.html' %}
 {% block content %}
-<h3 align="center">Gestor de Tesistas</h3>
-
-<button class="btn-primary" style="width: 100px; height: 35px" data-toggle="modal" href="#modTesista">
-	Nuevo tesista
-</button>
-<br />
-<br />
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th align="center" >#</th>
-			<th align="center" >Nombre Tesista</th>
-			<th align="center" >Titulo de Tesis</th>
-			<th align="center" >Generacion</th>
-			<th align="center" >Opciones</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for  posgrado in posgrados %}
-		<tr>
-			<td>{% if posgrado.id is defined %}{{ posgrado.id }}{% endif %}</td>
-			<td>{% if posgrado.usuario_id is defined %}{% for datostesista in datostesistas %}{% if  datostesista.id==posgrado.usuario_id %}{{ datostesista.nombrecompleto|trim }}{% endif %}{% endfor %}{% endif %}</td>
-			<td>{% if posgrado.nombre %} {{ posgrado.nombre }} {% endif %}</td>
-			<td>{% if posgrado.generacion %}{{ posgrado.generacion }}{% endif %}</td>
-			<td>
-				<a data-toggle="modal" href="#modInfTesista{{ posgrado.usuario_id }}">Ver</a> 
-				<a data-toggle="modal" href="#modEditTesista{{ posgrado.usuario_id }}">Editar</a>
-				<a data-toggle="modal" href="#modDocTesis{{ posgrado.usuario_id }}">Adjuntar</a>
-				<a href="{{ urlFor('nuevo-tesista-post') }}">Borrar</a>
-			</td>
-		</tr>
-	</tbody>
-</table>
-
-<!-- Editar TESISTA -->
-<div class="modal hide fade" id="modEditTesista{{ posgrado.usuario_id }}">
-    <div class="modal-header">
-    	<h3>Editar Tesista</h3>
-    </div>
-    <div class="modal-body">
-    		<form class="form-horizontal" method="post" action="{{ urlFor('nuevo-tesista-post') }}">
-<!--LINEA DE INVESTIGACION-->    			
-    		<div class="row">
-    			<div class="span2 offset1"><label for="lineaInv">Linea de investigacion</label> 
-    				<select id="lineaInv" name="lineaInv" class="chzn-select">
-    					<option></option>
-    					{% for linea in lineas %}
-    					<option  {% if posgrado.linea is defined %}{% if posgrado.linea== linea.id %} selected="" value="{{ linea.id }}"{% endif %}{% endif %}>{{ linea.nombre }}</option>
-    					{% endfor %}
-    				</select>  		
-    			</div>
-    		</div>
-<!--TESISTA-->    		
-    		<div class="row">
-    			<div class="span2 offset1"><label for="tesista"> Tesista</label>
-    				<input disabled="" id="tesista" name="tesista" value="{% if posgrado.usuario_id is defined %}{% for datostesista in datostesistas %}{% if  datostesista.id==posgrado.usuario_id %}{{ datostesista.nombrecompleto|trim }}{% endif %}{% endfor %}{% endif %}" 
-				type="text"/>
-    			</div>
-    		</div>
-    		  		
-
-<!--TITULO DE TESIS-->
-    		<div class="row">
-    			<div class="span2 offset1"><label for="nombreTesis">Titulo de tesis </label>
-    				<input id="nameTesis" name="nameTesis" class="span2" size="50" type="text" value="{{ posgrado.nombre }}">
-    			</div>
-    		</div>
-
-<!--FECHA DE ASIGNACION-->    		
-    		<div class="row">
-    			<div class="span4 offset1">
-    			<label for="ingreso">Fecha de Asignacion:</label>
-    				<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-    					<input id="ingreso" name="ingreso" class="span2 datepicker" size="16" type="text" value="{{ posgrado.asignacion }}">
-    					<span class="add-on"><i class="icon-calendar"></i></span>
-    				</div>
-           		</div>
-    		</div> 
-    		
-<!--FECHA DE FIN DE CURSO-->
-    		<div class="row">
-    			<div class="span4 offset1">
-    			<label for="finCur">Fecha de Finalizacion Curso:</label>
-    				<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-    					<input id="finCur" name="finCur" class="span2 datepicker" size="16" type="text" value="{{ posgrado.fin }}">
-    					<span class="add-on"><i class="icon-calendar"></i></span>
-    				</div>
-           		</div>
-    		</div> 
-    		
-    		<!--FECHA DE TITULACION-->
-    		<div class="row">
-    			<div class="span4 offset1">
-    			<label for="ftitulacion">Fecha de Titulacion:</label>
-    				<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-    					<input id="ftitulacion" name="ftitulacion" class="span2 datepicker" size="16" type="text" value="{{ posgrado.titulacion }}">
-    					<span class="add-on"><i class="icon-calendar"></i></span>
-    				</div>
-           		</div>
-    		</div> 
-    	</form>    		  		   		    		      	    		
-    </div>
-    <div class="modal-footer">
-    	<button class="btn" type="reset" data-dismiss="modal">Cancelar</button>
-    	<button class=" btn btn-primary" type="submit">Guardar</button>
-    </div>
-  
+<div class="row">
+	
+	<h3 align="center">Gestor de Tesistas</h3>
+	
+	<div class="row">
+		<div class="span12 offset1">
+			<a class="btn btn-primary" data-toggle="modal" href="#modTesista">Nuevo tesista</a>
+		</div>
+		
+	</div>
+	<div class="row">
+		<div class="span12 offset1">
+			<br />
+			<br />
+			(% if posgrado is defined%)
+			<table class="table table-striped">
+		<thead>
+			<tr>
+				<th align="center" >#</th>
+				<th align="center" >Nombre Tesista</th>
+				<th align="center" >Titulo de Tesis</th>
+				<th align="center" >Generacion</th>
+				<th align="center" >Opciones</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for  posgrado in posgrados %}
+			<tr>
+				<td>
+					{% if posgrado.id is defined %}
+						{{ posgrado.id }}
+					{% endif %}
+				</td>
+				<td>
+					{% if posgrado.usuario_id is defined %}
+						{% for datostesista in datostesistas %}
+							{% if  datostesista.id==posgrado.usuario_id %}
+								{{ datostesista.nombrecompleto|trim }}
+							{% endif %}
+						{% endfor %}
+					{% endif %}
+				</td>
+				<td>
+					{% if posgrado.nombre %}
+						{{ posgrado.nombre }}
+					{% endif %}
+				</td>
+				<td>
+					{% if posgrado.generacion %}
+						{{ posgrado.generacion }}
+					{% endif %}
+				</td>
+				<td>
+					<a data-toggle="modal" href="#modInfTesista{{ posgrado.usuario_id }}">Ver</a>
+					<a data-toggle="modal" href="#modEditTesista{{ posgrado.usuario_id }}">Editar</a>
+					<a data-toggle="modal" href="#modDocTesis{{ posgrado.usuario_id }}">Adjuntar</a>
+					<a href="{{ urlFor('nuevo-tesista-post') }}">Borrar</a>
+				</td>
+			</tr>
+			{% endfor%}
+			{% endif %}
+		</tbody>
+	</table>
+		</div>
+	</div>
 </div>
 
+<!-----------------------------------------Modales-----------------------------------------------------------------------------------_>
+	{% for  posgrado in posgrados %}
+	<!-- Editar TESISTA -->
+	<div class="modal hide fade" id="modEditTesista{{ posgrado.usuario_id }}">
+		<div class="modal-header">
+			<h3>Editar Tesista</h3>
+		</div>
+		<div class="modal-body">
+			<form class="form-horizontal" method="post" action="{{ urlFor('nuevo-tesista-post') }}">
+				<!--LINEA DE INVESTIGACION-->
+				<div class="row">
+					<div class="span2 offset1">
+						<label for="lineaInv">Linea de investigacion</label>
+						<select id="lineaInv" name="lineaInv" class="chzn-select">
+							<option></option>
+							{% for linea in lineas %}
+							<option  {% if posgrado.linea is defined %}{% if posgrado.linea== linea.id %} selected="" value="{{ linea.id }}"{% endif %}{% endif %}>{{ linea.nombre }}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<!--TESISTA-->
+				<div class="row">
+					<div class="span2 offset1">
+						<label for="tesista"> Tesista</label>
+						<input disabled="" id="tesista" name="tesista" value="{% if posgrado.usuario_id is defined %}{% for datostesista in datostesistas %}{% if  datostesista.id==posgrado.usuario_id %}{{ datostesista.nombrecompleto|trim }}{% endif %}{% endfor %}{% endif %}"
+						type="text"/>
+					</div>
+				</div>
 
-<!-- VER INFORMACION DE TESISTA agregar a la tabla campos que faltan y kitar ver-->
+				<!--TITULO DE TESIS-->
+				<div class="row">
+					<div class="span2 offset1">
+						<label for="nombreTesis">Titulo de tesis </label>
+						<input id="nameTesis" name="nameTesis" class="span2" size="50" type="text" value="{{ posgrado.nombre }}">
+					</div>
+				</div>
 
-<div class="modal hide fade" id="modInfTesista{{ posgrado.usuario_id }}">
-    <div class="modal-header">
-    	<h3>Informacion Tesista</h3>
-    </div>
-    <div class="modal-body">
-    	<p>
-    		<dl class="dl-horizontal">
-    	<dt title="Linea de Investigacion" rel="tooltip">Linea:</dt>
-    	<dd>{% if posgrado.linea is defined %}{% if posgrado.linea==1 %} Ingenieria de Software {% endif %}{% if posgrado.linea==2 %} Inteligencia Artificial {% endif %}{% endif %}</dd>
-    	<dt>Tesista:</dt>
-    	<dd>{% if posgrado.usuario_id is defined %}{% for datostesista in datostesistas %}{% if  datostesista.id==posgrado.usuario_id %}{{ datostesista.nombrecompleto }}{% endif %}{% endfor %}{% endif %}</dd>
-    	<dt >Tesis:</dt>
-    	<dd>{% if posgrado.nombre is defined %} {{ posgrado.nombre }} {% endif %}</dd>
-    	<dt title="Fecha de Asignacion de Tema de Tesis" rel="tooltip">Asignacion:</dt>
-    	<dd>{% if posgrado.asignacion is defined %} {{ posgrado.asignacion }} {% endif %}</dd>
-    	<dt title="Fecha de Terminacion de Curso" rel="tooltip">Terminacion:</dt>
-    	<dd>{% if posgrado.fin is defined %} {{ posgrado.fin }} {% endif %}</dd>
-    	<dt title="Fecha de Titulacion" rel="tooltip">Titulacion:</dt>
-    	<dd>{% if posgrado.titulacion is defined %} {{ posgrado.titulacion }} {% endif %}</dd>
-    	<dt>Generacion:</dt>
-    	<dd>{% if posgrado.generacion is defined %} {{ posgrado.generacion }} {% endif %}</dd>
-    	</dl>
-    	</p>
-    </div>
-    <div class="modal-footer">
-    	<a href="#" class="btn" data-dismiss="modal" type="">Cerrar</a>
-<!--    	<a href="#" class="btn btn-primary">Guardar</a>  -->
-    </div>
-</div>
+				<!--FECHA DE ASIGNACION-->
+				<div class="row">
+					<div class="span4 offset1">
+						<label for="ingreso">Fecha de Asignacion:</label>
+						<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+							<input id="ingreso" name="ingreso" class="span2 datepicker" size="16" type="text" value="{{ posgrado.asignacion }}">
+							<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+				</div>
 
+				<!--FECHA DE FIN DE CURSO-->
+				<div class="row">
+					<div class="span4 offset1">
+						<label for="finCur">Fecha de Finalizacion Curso:</label>
+						<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+							<input id="finCur" name="finCur" class="span2 datepicker" size="16" type="text" value="{{ posgrado.fin }}">
+							<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+				</div>
 
-<!-- AGREGAR DOCUMENTOS DE TESIS-->
-<div class="modal hide fade" id="modDocTesis{{ posgrado.usuario_id }}">
-    <div class="modal-header">
-    	<h3>Documento de tesis</h3>
-    </div>
-    <div class="modal-body">
-    	<p>
-    		<form class="form-horizontal" method="post" action="{{ urlFor('nuevo-tesista-post') }}">
-    		<div class="row">
-    			<div class="span2 offset1"><label>Documento de tesis</label> 
-    				 
-    
-      						<input name="doctesis" type="file" id="doctesis" />       						
-    				
-    				
-    			</div>
-    		</div>   		
-    		
-    		<div class="row">
-    			<div class="span2 offset1"><label>Exposicion de tesis</label> 
-    			
-      						<input name="docpresentacion" type="file" id="presentacion" />       						
-  
-    			</div>
-    		</div> 
-    		
-            </form>
-    	</p>
-    </div>
-    <div class="modal-footer">
-    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
-    	<input name="boton" class="btn btn-primary span1" id="boton" value="Adjuntar" />
-    </div>
-</div>
-{% endfor %}
-<!-- NUEVA TESISTA-->
+				<!--FECHA DE TITULACION-->
+				<div class="row">
+					<div class="span4 offset1">
+						<label for="ftitulacion">Fecha de Titulacion:</label>
+						<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+							<input id="ftitulacion" name="ftitulacion" class="span2 datepicker" size="16" type="text" value="{{ posgrado.titulacion }}">
+							<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" type="reset" data-dismiss="modal">
+				Cancelar
+			</button>
+			<button class=" btn btn-primary" type="submit">
+				Guardar
+			</button>
+		</div>
 
-<div class="modal hide fade" id="modTesista">
-    <div class="modal-header">
-    	<h3>Nuevo Tesista</h3>
-    </div>
-    <div class="modal-body">
-    		<form class="" method="post" action="{{ urlFor('nuevo-tesista-post') }}">
-    		<div class="row">
-    			<div class="span2 offset1"><label for="lineaInv">Linea de investigacion</label> 
-    				<select id="lineainv" name="lineainv" data-placeholder="Seleccione Linea de Investigacion " class="chzn-select" >
-    					<option></option>
-    					{% for linea in lineas %}
-    						<option value="{{ linea.id }}">{{ linea.nombre }}</option>
-    					{% endfor %}
-    				</select>  		
-    			</div>
-    		</div>
-    		
-    		<div class="row">
-    			<div class="span2 offset1"><label for="tesista">Tesista:</label>
-    				<select id="tesista" name="tesista" class="chzn-select" data-placeholder="Selecciona Tesista" >
-    					<option> </option>
-    					{% for alumno in alumnos %}
-    					<option value="{{ alumno.id }}" >{{ alumno.nombrecompleto|default('') }}</option>
-    					{% endfor %}
-    				</select>
-    				
-    			</div>
-    		</div>
+	</div>
 
-    		<div class="row">
-    			<div class="span2 offset1"><label for="nameTesis">Titulo de tesis </label>
-    				<input id="nameTesis" name="nameTesis" class="span2" size="50" type="text"
-    				placeholder="Titulo de Tesis">
-    			</div>
-    		</div>
+	<!-- VER INFORMACION DE TESISTA agregar a la tabla campos que faltan y kitar ver-->
 
-    		
-    		<div class="row">
-    			<div class="span4 offset1">
-    			<label for="ingreso">Fecha de Ingreso:</label>
-    			<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-    				<input id="ingreso" name="ingreso" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
-    				<span class="add-on"><i class="icon-calendar"></i></span>
-    			</div>
-           </div>
+	<div class="modal hide fade" id="modInfTesista{{ posgrado.usuario_id }}">
+		<div class="modal-header">
+			<h3>Informacion Tesista</h3>
+		</div>
+		<div class="modal-body">
+			<p>
+				<dl class="dl-horizontal">
+					<dt title="Linea de Investigacion" rel="tooltip">
+						Linea:
+					</dt>
+					<dd>
+						{% if posgrado.linea is defined %}{% if posgrado.linea==1 %} Ingenieria de Software {% endif %}{% if posgrado.linea==2 %} Inteligencia Artificial {% endif %}{% endif %}
+					</dd>
+					<dt>
+						Tesista:
+					</dt>
+					<dd>
+						{% if posgrado.usuario_id is defined %}{% for datostesista in datostesistas %}{% if  datostesista.id==posgrado.usuario_id %}{{ datostesista.nombrecompleto }}{% endif %}{% endfor %}{% endif %}
+					</dd>
+					<dt >
+						Tesis:
+					</dt>
+					<dd>
+						{% if posgrado.nombre is defined %} {{ posgrado.nombre }} {% endif %}
+					</dd>
+					<dt title="Fecha de Asignacion de Tema de Tesis" rel="tooltip">
+						Asignacion:
+					</dt>
+					<dd>
+						{% if posgrado.asignacion is defined %} {{ posgrado.asignacion }} {% endif %}
+					</dd>
+					<dt title="Fecha de Terminacion de Curso" rel="tooltip">
+						Terminacion:
+					</dt>
+					<dd>
+						{% if posgrado.fin is defined %} {{ posgrado.fin }} {% endif %}
+					</dd>
+					<dt title="Fecha de Titulacion" rel="tooltip">
+						Titulacion:
+					</dt>
+					<dd>
+						{% if posgrado.titulacion is defined %} {{ posgrado.titulacion }} {% endif %}
+					</dd>
+					<dt>
+						Generacion:
+					</dt>
+					<dd>
+						{% if posgrado.generacion is defined %} {{ posgrado.generacion }} {% endif %}
+					</dd>
+				</dl>
+			</p>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal" type="">Cerrar</a>
+			<!--    	<a href="#" class="btn btn-primary">Guardar</a>  -->
+		</div>
+	</div>
 
-    		</div>
-    		
-    		<!--FECHA DE FIN DE CURSO-->
-    		<div class="row">
-    			<div class="span4 offset1">
-    			<label for="finCur">Fecha de Finalizacion Curso:</label>
-    				<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy" >
-    					<input id="finCur" name="finCur" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
-    					<span class="add-on"><i class="icon-calendar"></i></span>
-    				</div>
-           		</div>
-    		</div>   
-    		
-    		<!--FECHA DE TITULACION-->
-    		<div class="row">
-    			<div class="span4 offset1">
-    			<label for="ftitulacion">Fecha de Titulacion:</label>
-    				<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-    					<input id="ftitulacion" name="ftitulacion" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
-    					<span class="add-on"><i class="icon-calendar"></i></span>
-    				</div>
-           		</div>
-    		</div> 		
-    		
-            </form>
-    </div>
-    <div class="modal-footer">
-    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
-    	<button class="btn btn-primary" > Guardar</button>
-    </div>
-</div>
+	<!-- AGREGAR DOCUMENTOS DE TESIS-->
+	<div class="modal hide fade" id="modDocTesis{{ posgrado.usuario_id }}">
+		<div class="modal-header">
+			<h3>Documento de tesis</h3>
+		</div>
+		<div class="modal-body">
+			<p>
+				<form class="form-horizontal" method="post" action="{{ urlFor('nuevo-tesista-post') }}">
+					<div class="row">
+						<div class="span2 offset1">
+							<label>Documento de tesis</label>
 
-</div>
+							<input name="doctesis" type="file" id="doctesis" />
+
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="span2 offset1">
+							<label>Exposicion de tesis</label>
+
+							<input name="docpresentacion" type="file" id="presentacion" />
+
+						</div>
+					</div>
+
+				</form>
+			</p>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">Cancelar</a><!---->
+			<input name="boton" class="btn btn-primary span1" id="boton" value="Adjuntar" />
+		</div>
+	</div>
+	{% endfor %}
+	<!-- NUEVA TESISTA-->
+
+	<div class="modal hide fade" id="modTesista">
+		<div class="modal-header">
+			<h3>Nuevo Tesista</h3>
+		</div>
+		<div class="modal-body">
+			<form class="" method="post" action="{{ urlFor('nuevo-tesista-post') }}">
+				<div class="row">
+					<div class="span2 offset1">
+						<label for="lineaInv">Linea de investigacion</label>
+						<select id="lineainv" name="lineainv" data-placeholder="Seleccione Linea de Investigacion " class="chzn-select" >
+							<option></option>
+							{% for linea in lineas %}
+							<option value="{{ linea.id }}">{{ linea.nombre }}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="span2 offset1">
+						<label for="tesista">Tesista:</label>
+						<select id="tesista" name="tesista" class="chzn-select" data-placeholder="Selecciona Tesista" >
+							<option></option>
+							{% for alumno in alumnos %}
+							<option value="{{ alumno.id }}" >{{ alumno.nombrecompleto|default('') }}</option>
+							{% endfor %}
+						</select>
+
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="span2 offset1">
+						<label for="nameTesis">Titulo de tesis </label>
+						<input id="nameTesis" name="nameTesis" class="span2" size="50" type="text"
+						placeholder="Titulo de Tesis">
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="span4 offset1">
+						<label for="ingreso">Fecha de Ingreso:</label>
+						<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+							<input id="ingreso" name="ingreso" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
+							<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+
+				</div>
+
+				<!--FECHA DE FIN DE CURSO-->
+				<div class="row">
+					<div class="span4 offset1">
+						<label for="finCur">Fecha de Finalizacion Curso:</label>
+						<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy" >
+							<input id="finCur" name="finCur" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
+							<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+				</div>
+
+				<!--FECHA DE TITULACION-->
+				<div class="row">
+					<div class="span4 offset1">
+						<label for="ftitulacion">Fecha de Titulacion:</label>
+						<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+							<input id="ftitulacion" name="ftitulacion" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
+							<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+				</div>
+
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">Cancelar</a><!---->
+			<button class="btn btn-primary" >
+				Guardar
+			</button>
+		</div>
+	</div>
 {% endblock %}
