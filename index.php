@@ -1163,7 +1163,7 @@ $app->get('/docente/tesistas/', function() use ($app) {
 
     $pos=Posgrado::find_all_by_asesor($data['user']->id);
 	if (count($pos)>=1) {
-	
+		$data['posgrados']=$pos;
 		  $idtesistas = array();
     foreach ($pos as $u) {
         $idtesistas[] = $u -> usuario_id;
@@ -1182,10 +1182,38 @@ $app->get('/docente/tesistas/', function() use ($app) {
 	}
     $data['lineas']= LineaInvestigacion::all();
     
-    /*ladybug_dump($data['lineas'][0]);
-   /* ladybug_dump($data['datostesistas'][0]);*/
+    //ladybug_dump($data['lineas'][0]);
+    //ladybug_dump($data['posgrados'][0]);
    $app->render('gestTesista02.html',$data);
 })->name('docente-tesistas');
+
+$app->get('/docente/tesistas/:id', function($id) use ($app) {
+    $posgrado=Posgrado::find_by_id($id);
+	if (count($posgrado)==0) {
+	
+		$flash = array(
+            "title" => "ERROR",
+            "msg" => "Se ha borrado el tesista exitosamente.",
+            "type" => "error",
+            "fade" => 0
+          );
+		
+	} else {
+		$posgrado->delete();	
+		$flash = array(
+            "title" => "OK",
+            "msg" => "Se ha borrado el tesista exitosamente.",
+            "type" => "success",
+            "fade" => 1
+          );
+		
+	}
+	
+		   $app -> flash("flash", $flash);
+          $app->flashKeep();
+          $app->redirect($app->urlFor('docente-tesistas'));
+
+})->name('borrar-tesista');
 
 $app->get('/docente/eventos/', function() use ($app) {
     $user ['usuarios'] = Usuario::find_by_id('1');
@@ -1197,11 +1225,11 @@ $app->post('/nuevo-tesista/',function() use ($app) {
     $data['user'] = isAllowed("Docente",FALSE);
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
+	//ladybug_dump($_POST);
     $rules = array(
-        'lineaInv'    => 'required|alpha',
-        'tesista'    => 'required|alpha',
-        'nombreTesista' => 'required|alpha',
-        'ingreso' => 'required',
+        'lineainv'    => 'required|numeric',
+        'tesista'    => 'required|numeric',
+        'nombreTesis' => 'required',
     );
     $filters = array(
         'nombreTesista' => 'trim',
@@ -1209,7 +1237,35 @@ $app->post('/nuevo-tesista/',function() use ($app) {
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
-           $posgrado= new Posgrado;
+    	if (isset($_POST['proc'])) {
+				
+			$posgrado=Posgrado::find_by_usuario_id($_POST['tesista']);
+			$posgrado->nombre=$_POST['nombreTesis'];
+           $posgrado->asesor=$data['user']->id;
+           if (isset($_POST['ingreso'])) {
+               $posgrado->asignacion=$_POST['ingreso'];
+           }
+           if (isset($_POST['finCur'])) {
+               $posgrado->fin=$_POST['finCur'];
+           }
+           if (isset($_POST['ftitulacion'])) {
+               $posgrado->titulacion=$_POST['ftitulacion'];
+           }
+           if (isset($_POST['lineainv'])) {
+               $posgrado->linea=$_POST['lineainv'];
+           }
+		   $posgrado->save();
+			
+			$flash = array(
+            "title" => "OK",
+            "msg" => "Se ha actualizado el tesista exitosamente.",
+            "type" => "success",
+            "fade" => 1
+          );
+			
+		} else {
+		
+		   $posgrado= new Posgrado;
            $posgrado->usuario_id=$_POST['tesista'];
            $posgrado->nombre=$_POST['nombreTesis'];
            $posgrado->asesor=$data['user']->id;
@@ -1217,18 +1273,37 @@ $app->post('/nuevo-tesista/',function() use ($app) {
                $posgrado->asignacion=$_POST['ingreso'];
            }
            if (isset($_POST['finCur'])) {
-               $posgrado->asignacion=$_POST['finCur'];
+               $posgrado->fin=$_POST['finCur'];
            }
            if (isset($_POST['ftitulacion'])) {
-               $posgrado->asignacion=$_POST['ftitulacion'];
+               $posgrado->titulacion=$_POST['ftitulacion'];
            }
-           if (isset($_POST['lineaInv'])) {
-               $posgrado->asignacion=$_POST['lineaInv'];
-           }
-           $posgrado->save();
+           if (isset($_POST['lineainv'])) {
+               $posgrado->linea=$_POST['lineainv'];
+           }      
+			$posgrado->save();
+		    $flash = array(
+            "title" => "OK",
+            "msg" => "Se ha agregado el tesista exitosamente.",
+            "type" => "success",
+            "fade" => 1
+          );
+			
+		}
     } else {
 
+		  $msgs = humanize_gump($validated);
+      //   ladybug_dump($msgs);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+		    "fade" => 0
+		);
     }
+	 $app -> flash("flash", $flash);
+          $app->flashKeep();
+          $app->redirect($app->urlFor('docente-tesistas'));
 }) -> name('nuevo-tesista-post');
 
 $app->post('/nuevo-documentotesista/',function() use ($app) {
