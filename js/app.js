@@ -11,17 +11,8 @@ $(function(){
 	});
 	$('.carousel').carousel();
 	$('.timepicker').timepicker();
-//	$('.wysihtml5').wysihtml5();
     $(".chzn-select").chosen();
     $('[rel=tooltip]').tooltip();
-/*    $('#fileupload').fileupload({
-        dataType: 'json',
-        done: function (e, data) {
-            $.each(data.result, function (index, file) {
-                $('<p/>').text(file.name).appendTo(document.body);
-            });
-        }
-    });*/
     
 	var fullDate = new Date();
 	//convert month to 2 digits
