@@ -11,11 +11,11 @@
 		
 	</div>
 	<div class="row">
-		<div class="span12 offset1">
+		<div class="span10 offset1">
 			<br />
 			<br />
-			(% if posgrado is defined%)
-			<table class="table table-striped">
+			
+			<table class="table table-striped table-bordered" >
 		<thead>
 			<tr>
 				<th align="center" >#</th>
@@ -25,13 +25,12 @@
 				<th align="center" >Opciones</th>
 			</tr>
 		</thead>
+		{% if posgrados is defined%}
 		<tbody>
 			{% for  posgrado in posgrados %}
 			<tr>
 				<td>
-					{% if posgrado.id is defined %}
-						{{ posgrado.id }}
-					{% endif %}
+					{{ loop.index }}
 				</td>
 				<td>
 					{% if posgrado.usuario_id is defined %}
@@ -56,18 +55,31 @@
 					<a data-toggle="modal" href="#modInfTesista{{ posgrado.usuario_id }}">Ver</a>
 					<a data-toggle="modal" href="#modEditTesista{{ posgrado.usuario_id }}">Editar</a>
 					<a data-toggle="modal" href="#modDocTesis{{ posgrado.usuario_id }}">Adjuntar</a>
-					<a href="{{ urlFor('nuevo-tesista-post') }}">Borrar</a>
+					<a href="{{ urlFor('borrar-tesista',{'id': posgrado.id}) }}">Borrar</a>
 				</td>
 			</tr>
 			{% endfor%}
-			{% endif %}
+			
 		</tbody>
+		{% else %}
+
+		<tbody>
+			<tr>
+				<td colspan="5">
+					No tiene tesistas registrados
+				</td>
+				
+			</tr>
+			
+		</tbody>	
+	{% endif %}
 	</table>
 		</div>
 	</div>
 </div>
 
 <!-----------------------------------------Modales-----------------------------------------------------------------------------------_>
+	{% if posgrados is defined %}
 	{% for  posgrado in posgrados %}
 	<!-- Editar TESISTA -->
 	<div class="modal hide fade" id="modEditTesista{{ posgrado.usuario_id }}">
@@ -78,12 +90,15 @@
 			<form class="form-horizontal" method="post" action="{{ urlFor('nuevo-tesista-post') }}">
 				<!--LINEA DE INVESTIGACION-->
 				<div class="row">
+					<input id="proc" name="proc" type="hidden" value="1" />
 					<div class="span2 offset1">
-						<label for="lineaInv">Linea de investigacion</label>
-						<select id="lineaInv" name="lineaInv" class="chzn-select">
+						<label for="lineainv">Linea de investigacion</label>
+						<select id="lineainv" name="lineainv" class="chzn-select">
 							<option></option>
 							{% for linea in lineas %}
-							<option  {% if posgrado.linea is defined %}{% if posgrado.linea== linea.id %} selected="" value="{{ linea.id }}"{% endif %}{% endif %}>{{ linea.nombre }}</option>
+							{% for  posgradon in posgrados %}
+							<option  {% if posgradon.linea== linea.id %} selected=""{% endif %} value="{{ linea.id }}" > {{ linea.nombre }} </option>
+							{% endfor %}
 							{% endfor %}
 						</select>
 					</div>
@@ -92,8 +107,10 @@
 				<div class="row">
 					<div class="span2 offset1">
 						<label for="tesista"> Tesista</label>
-						<input disabled="" id="tesista" name="tesista" value="{% if posgrado.usuario_id is defined %}{% for datostesista in datostesistas %}{% if  datostesista.id==posgrado.usuario_id %}{{ datostesista.nombrecompleto|trim }}{% endif %}{% endfor %}{% endif %}"
+						<input disabled="" id="tesist" name="tesist" value="{% if posgrado.usuario_id is defined %}{% for datostesista in datostesistas %}{% if  datostesista.id==posgrado.usuario_id %}{{ datostesista.nombrecompleto|trim }}{% endif %}{% endfor %}{% endif %}" 
 						type="text"/>
+						<input id="tesista" name="tesista" value="{% if posgrado.usuario_id is defined %}{% for datostesista in datostesistas %}{% if  datostesista.id==posgrado.usuario_id %}{{ posgrado.usuario_id }}{% endif %}{% endfor %}{% endif %}"
+						type="hidden"/>
 					</div>
 				</div>
 
@@ -101,7 +118,7 @@
 				<div class="row">
 					<div class="span2 offset1">
 						<label for="nombreTesis">Titulo de tesis </label>
-						<input id="nameTesis" name="nameTesis" class="span2" size="50" type="text" value="{{ posgrado.nombre }}">
+						<input id="nombreTesis" name="nombreTesis" class="span2" size="50" type="text" value="{{ posgrado.nombre }}">
 					</div>
 				</div>
 
@@ -137,7 +154,6 @@
 						</div>
 					</div>
 				</div>
-			</form>
 		</div>
 		<div class="modal-footer">
 			<button class="btn" type="reset" data-dismiss="modal">
@@ -147,6 +163,7 @@
 				Guardar
 			</button>
 		</div>
+		</form>
 
 	</div>
 
@@ -245,6 +262,7 @@
 		</div>
 	</div>
 	{% endfor %}
+	{% endif %}
 	<!-- NUEVA TESISTA-->
 
 	<div class="modal hide fade" id="modTesista">
@@ -255,7 +273,7 @@
 			<form class="" method="post" action="{{ urlFor('nuevo-tesista-post') }}">
 				<div class="row">
 					<div class="span2 offset1">
-						<label for="lineaInv">Linea de investigacion</label>
+						<label for="lineainv">Linea de investigacion</label>
 						<select id="lineainv" name="lineainv" data-placeholder="Seleccione Linea de Investigacion " class="chzn-select" >
 							<option></option>
 							{% for linea in lineas %}
@@ -280,8 +298,8 @@
 
 				<div class="row">
 					<div class="span2 offset1">
-						<label for="nameTesis">Titulo de tesis </label>
-						<input id="nameTesis" name="nameTesis" class="span2" size="50" type="text"
+						<label for="nombreTesis">Titulo de tesis </label>
+						<input id="nombreTesis" name="nombreTesis" class="span2" size="50" type="text"
 						placeholder="Titulo de Tesis">
 					</div>
 				</div>
@@ -318,14 +336,14 @@
 						</div>
 					</div>
 				</div>
-
-			</form>
 		</div>
 		<div class="modal-footer">
 			<a href="#" class="btn" data-dismiss="modal">Cancelar</a><!---->
-			<button class="btn btn-primary" >
+			<button class="btn btn-primary" type="submit" >
 				Guardar
 			</button>
 		</div>
+		</form>
 	</div>
+	
 {% endblock %}

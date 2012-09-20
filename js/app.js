@@ -1,7 +1,7 @@
 $(function(){
 	$('.datepicker').datepicker({
 		'language': 'es',
-		'autoclose': true,
+		'autoclose':true,
 //		'startDate': 'd'
 	});
 	$("a[rel=popover]")

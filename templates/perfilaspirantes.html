@@ -473,7 +473,8 @@
 									<select id="plataformas" name="plataformas[]" class="chzn-select" multiple="" data-placeholder="Selecciona Plataformas" >
 										<option></option>
 										{% for plataforma in plataformas %}
-										{% for plataformausuario in plataformasusuario %} <option {% if plataformausuario.plataforma_id==plataforma.id %} selected="" {% endif %} value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
+										{% for plataformausuario in plataformasusuario %} 
+										<option {% if plataformausuario.plataforma_id==plataforma.id %} selected="" {% endif %} value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
 										{% endfor %}
 										{% endfor %}
 									</select>
