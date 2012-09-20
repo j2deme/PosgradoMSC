@@ -52,10 +52,22 @@
 					{% endif %}
 				</td>
 				<td>
-					<a data-toggle="modal" href="#modInfTesista{{ posgrado.usuario_id }}">Ver</a>
-					<a data-toggle="modal" href="#modEditTesista{{ posgrado.usuario_id }}">Editar</a>
-					<a data-toggle="modal" href="#modDocTesis{{ posgrado.usuario_id }}">Adjuntar</a>
-					<a href="{{ urlFor('borrar-tesista',{'id': posgrado.id}) }}">Borrar</a>
+					<div class="btn-group">
+						
+						<a class="btn btn-primary" data-toggle="modal" href="#modInfTesista{{ posgrado.usuario_id }}" rel="tooltip" title="Ver">
+						<i class="icon-eye-open"></i></a>
+					
+					<a class="btn btn-success" data-toggle="modal" href="#modEditTesista{{ posgrado.usuario_id }}" rel="tooltip" title="Editar">
+					<i class="icon-edit"></i></a>
+					
+					<a class="btn" data-toggle="modal" href="#modDocTesis{{ posgrado.usuario_id }}" rel="tooltip" title="Adjuntar">
+					<i class="icon-paper-clip"></i>	
+					</a>
+					
+					<a class="btn btn-danger" data-toggle="modal" href="#modconfirmacion{{ posgrado.usuario_id }}" rel="tooltip" title="Borrar">
+						
+					<i class="icon-trash"></i></a>						
+					</div>
 				</td>
 			</tr>
 			{% endfor%}
@@ -259,6 +271,22 @@
 		<div class="modal-footer">
 			<a href="#" class="btn" data-dismiss="modal">Cancelar</a><!---->
 			<input name="boton" class="btn btn-primary span1" id="boton" value="Adjuntar" />
+		</div>
+	</div>
+	
+	<!-- Confirmacion de borrado-->
+	<div class="modal hide fade" id="modconfirmacion{{ posgrado.usuario_id }}">
+		<div class="modal-header">
+			<h3>Confirmacion de Borrado</h3>
+		</div>
+		<div class="modal-body">
+			{% for datostesista in datostesistas %}
+			<h4>Esta seguro que desea al tesista {% if datostesista.id==posgrado.usuario_id %} {{ datostesista.nombrecompleto }} {% endif %} </h4>
+			{% endfor %}
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">No</a><!---->
+			<a class="btn btn-primary" href="{{ urlFor('borrar-tesista',{'id': posgrado.id}) }}">Si</a>
 		</div>
 	</div>
 	{% endfor %}
