@@ -321,8 +321,10 @@ $app->get('/admin/secciones/', function() use ($app) {
     }
 */
     foreach ($sections as $seccion) {
-        $data['sections'][$seccion->id] = replace_hashes($seccion->contenido);
+        $contenido = (array) json_decode($seccion->contenido);
+        $data['sections'][$seccion->id] = replace_hashes($contenido['data']);
     }
+    $data['seccion'] = $proseccion;
     $app->render('secciones.html', $data);
 })->name('admin-secciones');
 

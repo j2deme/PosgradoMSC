@@ -195,6 +195,7 @@ $app->get('/publicaciones/', function() use ($app) {
 })->name('productividad-academica');
 
 $app->get('/calendario/(:year/(:month/))', function($year, $month) use ($app) {
+    $data['user'] = isAllowed("Administrador", false);
     $year = (is_null($year)) ? date('Y') : $year;
     $month = (is_null($month)) ? date('m') : $month;
     $url = $app->urlFor('calendario',array('year' =>'%y', 'month' => '%m'));
