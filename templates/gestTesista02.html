@@ -281,7 +281,7 @@
 		</div>
 		<div class="modal-body">
 			{% for datostesista in datostesistas %}
-			<h4>Esta seguro que desea al tesista {% if datostesista.id==posgrado.usuario_id %} {{ datostesista.nombrecompleto }} {% endif %} </h4>
+			<label>¿Esta seguro que desea al tesista {% if datostesista.id==posgrado.usuario_id %} {{ datostesista.nombrecompleto }}? {% endif %} </label>
 			{% endfor %}
 		</div>
 		<div class="modal-footer">

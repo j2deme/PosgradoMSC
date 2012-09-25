@@ -667,10 +667,18 @@ $app -> get('/borrar-rol/:id/', function($id) use ($app) {
 }) -> name('borrar-rol');
 
 #XXX Eventos
-$app -> get('/catalogos/eventos/', function() use ($app) {
+
+$app->get('/docente/eventos/', function() use ($app) {
+    $user ['usuarios'] = Usuario::find_by_id('1');
+    $data['eventos'] = Evento::find_all_by_autor($user['usuarios']->id);
+    $app->render('eventosDoc.html',$data);
+})->name('eventosDoc');
+
+$app -> get('/nuevo-evento/', function() use ($app) {
+   $data['user']=isAllowed('Docente',FALSE);
     $data['eventos'] = Evento::all();
     $app -> render('nuevoevento.html', $data);
-}) -> name('CatEvento');
+}) -> name('nuevo-evento');
 
 $app -> post('/nuevo-evento/', function() use ($app) {
     $validator = new GUMP();

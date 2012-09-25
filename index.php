@@ -655,6 +655,7 @@ $app->get('/estadisticas/matriculacion/', function() use ($app) {
  * =======================*/
 
 $app->get('/docente/', function() use ($app) {
+	$data['user']=isAllowed('Docente',FALSE);
      $app->render('docente.html');
 })->name('docente');
 
@@ -993,11 +994,7 @@ $app->get('/docente/tesistas/:id', function($id) use ($app) {
 
 })->name('borrar-tesista');
 
-$app->get('/docente/eventos/', function() use ($app) {
-    $user ['usuarios'] = Usuario::find_by_id('1');
-    $data['eventos'] = Evento::find_all_by_autor($user['usuarios']->id);
-    $app->render('eventosDoc.html',$data);
-})->name('eventosDoc');
+
 
 $app->post('/nuevo-tesista/',function() use ($app) {
     $data['user'] = isAllowed("Docente",FALSE);
