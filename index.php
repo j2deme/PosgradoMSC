@@ -153,6 +153,7 @@ require 'catalogues.php';
  * ======= PUBLICO =======
  * =======================*/
 $app->get('/estructura-plan-estudios/', function() use ($app) {
+    $data['user'] = isAllowed("Administrador", false);
     $data['optativas'] = Materia::find_by_tipo(0);
     $data['tesis'] = Materia::find_by_nombre('Tesis');
     $data['bd'] = Materia::find_by_nombre('Base de Datos');
@@ -164,6 +165,7 @@ $app->get('/estructura-plan-estudios/', function() use ($app) {
 })->name('plan-estudios');
 
 $app->get('/estadisticas/nucleo-academico/', function() use ($app) {
+    $data['user'] = isAllowed("Administrador", false);
     $data['rol'] = Rol::find_by_nombre('Docente');
     $rolus = UsuariosRoles::find_by_rol_id($data['rol']->id);
     $data['usuarios'] = Usuario::find_all_by_id($rolus->usuario_id,array('include'=> array('personal','docente')));
@@ -215,20 +217,23 @@ $app->get('/calendario/(:year/(:month/))', function($year, $month) use ($app) {
 })->name('calendario');
 
 $app->get('/relacion-aceptados/', function() use ($app) {
+    $data['user'] = isAllowed("Administrador", false);
     $app->render('relacion-aceptados.html');
 })->name('relacion-aceptados');
 
 $app->get('/publicaciones/', function() use ($app) {
+    $data['user'] = isAllowed("Administrador", false);
     $user['usuarios'] = Usuario::find_by_id('1');
     $data['publicaciones']= Publicacion::find_all_by_usuario_id($user['usuarios']->id);
     $app->render('publicaciones.html',$data);
 })->name('publicaciones');
 
 $app->get('/egresados/', function() use ($app) {
-    
+    $data['user'] = isAllowed("Administrador", false);
 })->name('egresados');
 
 $app->get('/estadisticas/matriculacion/', function() use ($app) {
+    $data['user'] = isAllowed("Administrador", false);
     $app->render('EstadisticaMatriculacion.html');
 })->name('matriculacion');
 
@@ -436,6 +441,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
  })->name('publicaciones-post');
 
  $app->get('/registro-aspirantes/',function() use ($app) {
+     $data['user'] = isAllowed("Administrador", false);
      $app->render('registroinicial.html');
  })->name('registro-inicio');
 
