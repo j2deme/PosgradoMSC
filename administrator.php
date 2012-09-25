@@ -329,13 +329,14 @@ $app->get('/admin/secciones/', function() use ($app) {
 })->name('admin-secciones');
 
 $app->get('/admin/secciones/editor/:slug', function($slug) use ($app) {
+    $data['secciones'] = Seccion::find('all', array('order' => 'nombre asc'));
+    $seccion = Seccion::find_by_slug($slug);
+    $name = $seccion->nombre;
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
         array("name" => "Gestor de Secciones", "alias" => "admin-secciones"),
-        array("name" => "Editor", "alias" => "editor-seccion")
+        array("name" => "Editor: $name", "alias" => "editor-seccion")
     );
-    $data['secciones'] = Seccion::find('all', array('order' => 'nombre asc'));
-    $seccion = Seccion::find_by_slug($slug);
     $contenido = (array) json_decode($seccion->contenido);
     $proseccion = array(
         'id' => $seccion->id,
