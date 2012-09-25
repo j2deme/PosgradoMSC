@@ -242,8 +242,8 @@ $app->get('/estadisticas/matriculacion/', function() use ($app) {
  * =======================*/
 
 $app->get('/docente/', function() use ($app) {
-	$data['user']=isAllowed('Docente',FALSE);
-     $app->render('docente.html');
+	$data['user'] = isAllowed('Docente',FALSE);
+    $app->render('docente.html', $data);
 })->name('docente');
 
 $app->get('/docente/publicaciones/', function() use ($app) {
