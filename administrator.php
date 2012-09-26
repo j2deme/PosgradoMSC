@@ -284,7 +284,7 @@ $app->get('/procesar-aspirante/:action/:id/', function($action,$id) use ($app) {
 $app->get('/admin/archivos/', function() use ($app) {
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Gestor de Archivos", "alias" => "admin-archivos")
+        array("name" => "Archivos", "alias" => "admin-archivos")
     );
     $data['user'] = isAllowed("Administrador",false);
     $app->render('filemanager.html', $data);
@@ -293,7 +293,7 @@ $app->get('/admin/archivos/', function() use ($app) {
 $app->get('/admin/secciones/', function() use ($app) {
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Gestor de Secciones", "alias" => "admin-secciones")
+        array("name" => "Secciones", "alias" => "admin-secciones")
     );
     $data['user'] = isAllowed("Administrador", false);
     $data['secciones'] = $sections = Seccion::find('all', array('order' => 'nombre asc'));
@@ -329,14 +329,13 @@ $app->get('/admin/secciones/', function() use ($app) {
 })->name('admin-secciones');
 
 $app->get('/admin/secciones/editor/:slug', function($slug) use ($app) {
-    $data['secciones'] = Seccion::find('all', array('order' => 'nombre asc'));
-    $seccion = Seccion::find_by_slug($slug);
-    $name = $seccion->nombre;
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Gestor de Secciones", "alias" => "admin-secciones"),
-        array("name" => "Editor: $name", "alias" => "editor-seccion")
+        array("name" => "Secciones", "alias" => "admin-secciones"),
+        array("name" => "Editor", "alias" => "editor-seccion")
     );
+    $data['secciones'] = Seccion::find('all', array('order' => 'nombre asc'));
+    $seccion = Seccion::find_by_slug($slug);
     $contenido = (array) json_decode($seccion->contenido);
     $proseccion = array(
         'id' => $seccion->id,
@@ -406,13 +405,147 @@ $app->post('/editar-seccion-post/:id/', function($id) use ($app) {
     $app->redirect($app->urlFor('admin-secciones'));
 })->name('editar-seccion-post');
 
+//XXX Noticias
 $app->get('/admin/noticias/', function() use ($app) {
+    $data['user'] = isAllowed("Administrador", false);
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Gestor de Noticias", "alias" => "admin-noticias")
+        array("name" => "Noticias", "alias" => "admin-noticias")
     );
-    $data['user'] = isAllowed("Administrador", false);
+    
+    $data['noticias'] = $news = Noticia::find('all', array('order' => 'creado desc'));
+    foreach ($news as $new) {
+        $contenido = (array) json_decode($new->contenido);
+        $data['news'][$new->id] = replace_hashes($contenido['data']);
+    }
+    $app->render('noticias.html', $data);
 })->name('admin-noticias');
+
+$app->post('/nueva-noticia/', function() use ($app){
+    $validator = new GUMP();
+    $_POST = $validator->sanitize($_POST);
+    $rules = array(
+        'titulo' => 'required'
+    );
+
+    $filters = array(
+        'titulo' => 'trim|sanitize_string'
+    );
+    $post = $_POST = $validator->filter($_POST, $filters);
+    $validated = $validator->validate($_POST, $rules);
+    if ($validated === true) {
+        $noticia = new Noticia();
+        $notica->titulo = $_POST['titulo'];
+        $contenido = array();
+        $contenido['data'] = $_POST['contenido'];
+        $contenido['files'] = array();
+        $contenido = (array) json_decode($seccion->contenido);
+        if(!array_key_exists('data', $contenido)){
+            $contenido = array(
+                'data' => $_POST['contenido'],
+                'files' => array()
+            );
+        } else {
+            $contenido['data'] = $_POST['contenido'];
+        }
+        $seccion->contenido = json_encode($contenido);
+        $seccion->creado = time();
+        $seccion->save();
+        $flash = array(
+            "title" => "OK",
+            "msg" => "La seccion se ha actualizado con éxito.",
+            "type" => "success",
+            "fade" => 1
+        );
+        $app -> flash("flash", $flash);
+    } else {
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+            "fade" => 0
+        );
+        $app -> flash("flash", $flash);
+    }
+    $app->flashKeep();
+    $app->redirect($app->urlFor('admin-secciones'));
+})->name('nueva-noticia-post');
+
+$app->get('/admin/noticias/editor/:id', function($id) use ($app) {    
+    $data['breadcrumb'] = array(
+        array("name" => "Panel de Control","alias" => "admin"),
+        array("name" => "Noticias", "alias" => "admin-secciones"),
+        array("name" => "Editor", "alias" => "editor-seccion")
+    );
+    $data['noticias'] = Noticia::find('all', array('order' => 'creado desc'));
+    $noticia = Noticia::find($id);
+    $contenido = (array) json_decode($noticia->contenido);
+    $pronoticia = array(
+        'id' => $noticia->id,
+        'titulo' => $noticia->titulo,
+        'slug' => $noticia->slug,
+        'contenido' => $contenido['data'],
+        'files' => $contenido['files'],
+        'creado' => $noticia->creado
+    );
+    $data['noticia'] = $pronoticia;
+    $files = array();
+    $tb = new Toolbox();
+    foreach ($contenido['files'] as $file) {
+        $size = filesize("./uploads/news/$file");
+        $files[] = array('name'=>$file, 'size' => $tb->bytes2human($size));
+    }
+    $data['files'] = $files;
+
+    $app->render('editor-noticia.html', $data);
+})->name('editor-noticia');
+
+$app->post('/editar-noticia-post/:id/', function($id) use ($app) {
+    $validator = new GUMP();
+    //$_POST = $validator->sanitize($_POST);
+    $rules = array(
+    );
+
+    $filters = array(
+    );
+    $post = $_POST = $validator->filter($_POST, $filters);
+    $validated = $validator->validate($_POST, $rules);
+    if ($validated === true) {
+        $seccion = Seccion::find($id);
+        $contenido = (array) json_decode($seccion->contenido);
+        if(!array_key_exists('data', $contenido)){
+            $contenido = array(
+                'data' => $_POST['contenido'],
+                'files' => array()
+            );
+        } else {
+            $contenido['data'] = $_POST['contenido'];
+        }
+        $seccion->contenido = json_encode($contenido);
+        $seccion->contenedor = (isset($_POST['contenedor'])) ? $_POST['contenedor'] : 0;
+        $seccion->actualizado = time();
+        $seccion->save();
+        $flash = array(
+            "title" => "OK",
+            "msg" => "La seccion se ha actualizado con éxito.",
+            "type" => "success",
+            "fade" => 1
+        );
+        $app -> flash("flash", $flash);
+    } else {
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+            "fade" => 0
+        );
+        $app -> flash("flash", $flash);
+    }
+    $app->flashKeep();
+    $app->redirect($app->urlFor('admin-secciones'));
+})->name('editar-noticia-post');
 
 $app->get('/admin/catalogos/', function() use ($app) {
     $data['breadcrumb'] = array(
