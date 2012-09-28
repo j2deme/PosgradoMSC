@@ -176,14 +176,14 @@ $app->post('/actualiza-usuario/:id/', function($id) use ($app) {
 /*TODO Enviar el correo al usuario con los datos de acceso actualizados*/
             $flash = array(
                 "title" => "OK",
-                "msg" => "El usuario se ha actualizado con éxito.",
+                "msg" => "Usuario Actualizado.",
                 "type" => "success",
                 "fade" => 1
             );
         } else {
             $flash = array(
                 "title" => "ERROR",
-                "msg" => "Ha sucedido un error inesperado, intente nuevamente.",
+                "msg" => "Ha sucedido un error inesperado, intenta nuevamente.",
                 "type" => "error",
                 "fade" => 0
             );
@@ -218,7 +218,7 @@ $app->get('/cambiar-status-usuario/:id/', function($id) use ($app) {
 
     $flash = array(
         "title" => "OK",
-        "msg" => "El usuario ha sido $verb correctamente.",
+        "msg" => "El usuario ha sido $verb.",
         "type" => "info",
         "fade" => 1
     );
@@ -227,23 +227,24 @@ $app->get('/cambiar-status-usuario/:id/', function($id) use ($app) {
     $app->redirect($app->urlFor('admin-usuarios'));
 })->name('cambiar-status-usuario');
 
+#XXX NOT USED
 $app->get('/admin/roles/', function() use ($app) {
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Gestor de Roles", "alias" => "admin-roles")
+        array("name" => "Roles", "alias" => "admin-roles")
     );
     $data['user'] = isAllowed("Administrador",false);
 })->name('admin-roles');
 
-#XXX NOT USED
 $app->get('/admin/permisos/', function() use ($app) {
     $data['user'] = isAllowed("Administrador",false);
 })->name('admin-permisos');
+#XXX NOT USED
 
 $app->get('/admin/aspirantes/', function() use ($app) {
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Gestor de Aspirantes", "alias" => "admin-aspirantes")
+        array("name" => "Aspirantes", "alias" => "admin-aspirantes")
     );
     $data['user'] = isAllowed("Administrador",false);
     $rolAspirante = Rol::find_by_nombre("Aspirante");
@@ -257,11 +258,11 @@ $app->get('/admin/aspirantes/', function() use ($app) {
     $app->render('aspirantes.html', $data);
 })->name('admin-aspirantes');
 
+#TODO Agregar interaccion para modificar estadistica de matriculacion y genero
 $app->get('/procesar-aspirante/:action/:id/', function($action,$id) use ($app) {
     $rolAlumno = Rol::find_by_nombre("Alumno");
     $rolNoAceptado = Rol::find_by_nombre("No aceptado");
     $ur = UsuariosRoles::find_by_usuario_id($id);
-//TODO Agregar interaccion para modificar estadistica de matriculacion y genero
     if ($action == "aceptar") {
         $ur->rol_id = $rolAlumno->id;
         $verb = "aceptado";
@@ -284,7 +285,7 @@ $app->get('/procesar-aspirante/:action/:id/', function($action,$id) use ($app) {
 $app->get('/admin/archivos/', function() use ($app) {
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Gestor de Archivos", "alias" => "admin-archivos")
+        array("name" => "Archivos", "alias" => "admin-archivos")
     );
     $data['user'] = isAllowed("Administrador",false);
     $app->render('filemanager.html', $data);
@@ -293,7 +294,7 @@ $app->get('/admin/archivos/', function() use ($app) {
 $app->get('/admin/secciones/', function() use ($app) {
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Gestor de Secciones", "alias" => "admin-secciones")
+        array("name" => "Secciones", "alias" => "admin-secciones")
     );
     $data['user'] = isAllowed("Administrador", false);
     $data['secciones'] = $sections = Seccion::find('all', array('order' => 'nombre asc'));
@@ -329,14 +330,13 @@ $app->get('/admin/secciones/', function() use ($app) {
 })->name('admin-secciones');
 
 $app->get('/admin/secciones/editor/:slug', function($slug) use ($app) {
-    $data['secciones'] = Seccion::find('all', array('order' => 'nombre asc'));
-    $seccion = Seccion::find_by_slug($slug);
-    $name = $seccion->nombre;
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Gestor de Secciones", "alias" => "admin-secciones"),
-        array("name" => "Editor: $name", "alias" => "editor-seccion")
+        array("name" => "Secciones", "alias" => "admin-secciones"),
+        array("name" => "Editor", "alias" => "editor-seccion")
     );
+    $data['secciones'] = Seccion::find('all', array('order' => 'nombre asc'));
+    $seccion = Seccion::find_by_slug($slug);
     $contenido = (array) json_decode($seccion->contenido);
     $proseccion = array(
         'id' => $seccion->id,
@@ -363,11 +363,8 @@ $app->get('/admin/secciones/editor/:slug', function($slug) use ($app) {
 $app->post('/editar-seccion-post/:id/', function($id) use ($app) {
     $validator = new GUMP();
     //$_POST = $validator->sanitize($_POST);
-    $rules = array(
-    );
-
-    $filters = array(
-    );
+    $rules = array();
+    $filters = array();
     $post = $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
@@ -387,7 +384,7 @@ $app->post('/editar-seccion-post/:id/', function($id) use ($app) {
         $seccion->save();
         $flash = array(
             "title" => "OK",
-            "msg" => "La seccion se ha actualizado con éxito.",
+            "msg" => "Sección Actualizada.",
             "type" => "success",
             "fade" => 1
         );
@@ -406,13 +403,132 @@ $app->post('/editar-seccion-post/:id/', function($id) use ($app) {
     $app->redirect($app->urlFor('admin-secciones'));
 })->name('editar-seccion-post');
 
+//XXX Noticias
 $app->get('/admin/noticias/', function() use ($app) {
+    $data['user'] = isAllowed("Administrador", false);
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Gestor de Noticias", "alias" => "admin-noticias")
+        array("name" => "Noticias", "alias" => "admin-noticias")
     );
-    $data['user'] = isAllowed("Administrador", false);
+    
+    $data['noticias'] = $news = Noticia::find('all', array('order' => 'creado desc'));
+    foreach ($news as $new) {
+        $contenido = (array) json_decode($new->contenido);
+        $data['news'][$new->id] = replace_hashes($contenido['data']);
+    }
+    $app->render('noticias.html', $data);
 })->name('admin-noticias');
+
+$app->post('/nueva-noticia/', function() use ($app){
+    $validator = new GUMP();
+    $_POST = $validator->sanitize($_POST);
+    $rules = array('titulo' => 'required');
+    $filters = array('titulo' => 'trim|sanitize_string');
+    $post = $_POST = $validator->filter($_POST, $filters);
+    $validated = $validator->validate($_POST, $rules);
+    if ($validated === true) {
+        $noticia = new Noticia();
+        $notica->titulo = $_POST['titulo'];
+        $contenido = array();
+        $contenido['data'] = $_POST['contenido'];
+        $contenido['files'] = array();
+        $noticia->contenido = json_encode($contenido);
+        $noticia->creado = time();
+        $noticia->actualizado = time();
+        $noticia->save();
+        $flash = array(
+            "title" => "OK",
+            "msg" => "Noticia Creada.",
+            "type" => "success",
+            "fade" => 1
+        );
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('editor-noticia',array('id'=> $noticia->id)));
+    } else {
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+            "fade" => 0
+        );
+        $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('admin-noticias'));
+    }
+})->name('nueva-noticia-post');
+
+$app->get('/admin/noticias/editor/:id', function($id) use ($app) {    
+    $data['breadcrumb'] = array(
+        array("name" => "Panel de Control","alias" => "admin"),
+        array("name" => "Noticias", "alias" => "admin-secciones"),
+        array("name" => "Editor", "alias" => "editor-seccion")
+    );
+    $data['noticias'] = Noticia::find('all', array('order' => 'creado desc'));
+    $noticia = Noticia::find($id);
+    $contenido = (array) json_decode($noticia->contenido);
+    $pronoticia = array(
+        'id' => $noticia->id,
+        'titulo' => $noticia->titulo,
+        'slug' => $noticia->slug,
+        'contenido' => $contenido['data'],
+        'files' => $contenido['files'],
+        'creado' => $noticia->creado,
+        'actualizado' => $noticia->actualizado
+    );
+    $data['noticia'] = $pronoticia;
+    $files = array();
+    $tb = new Toolbox();
+    foreach ($contenido['files'] as $file) {
+        $size = filesize("./uploads/news/$file");
+        $files[] = array('name'=>$file, 'size' => $tb->bytes2human($size));
+    }
+    $data['files'] = $files;
+
+    $app->render('editor-noticia.html', $data);
+})->name('editor-noticia');
+
+$app->post('/editar-noticia-post/:id/', function($id) use ($app) {
+    $validator = new GUMP();
+    $_POST = $validator->sanitize($_POST);
+    $rules = array(
+        'titulo' => 'required'
+    );
+
+    $filters = array(
+        'titulo' => 'trim|sanitize_string'
+    );
+    $post = $_POST = $validator->filter($_POST, $filters);
+    $validated = $validator->validate($_POST, $rules);
+    if ($validated === true) {
+        $noticia = Noticia::find($id);
+        $contenido = (array) json_decode($noticia->contenido);
+        $contenido['data'] = $_POST['contenido'];
+        $noticia->contenido = json_encode($contenido);
+        $noticia->titulo = $_POST['titulo'];
+        $noticia->actualizado = time();
+        $noticia->save();
+        $flash = array(
+            "title" => "OK",
+            "msg" => "Noticia Actualizada.",
+            "type" => "success",
+            "fade" => 1
+        );
+        $app -> flash("flash", $flash);
+    } else {
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+            "fade" => 0
+        );
+        $app -> flash("flash", $flash);
+    }
+    $app->flashKeep();
+    $app->redirect($app->urlFor('admin-noticias'));
+})->name('editar-noticia-post');
 
 $app->get('/admin/catalogos/', function() use ($app) {
     $data['breadcrumb'] = array(

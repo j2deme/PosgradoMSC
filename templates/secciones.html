@@ -28,7 +28,7 @@
 							<td>{{ loop.index }}</td>
 							<td>{{ seccion.nombre }}</td>
 							<td class="hidden-phone">
-								{{ sections[seccion.id]|trim|striptags|slice(0,80)|raw }}{% if seccion.contenido|length > 80 %}&hellip;{% endif %}
+								{{ sections[seccion.id]|trim|striptags|slice(0,80)|raw }}
 							</td>
 {#							<td class="hidden-tablet hidden-phone">
 								{% set contenedor = ['General','Aspirantes','Alumnos','Posgrado'] %}
