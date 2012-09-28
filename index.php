@@ -1135,7 +1135,6 @@ $app->post('/nuevo-datos-docente/',function() use ($app) {
 }) -> name('nuevo-datosdocente-post');
 
 $app->post('/nuevo-conocimiento/',function() use ($app) {
-
     $data['user'] = isAllowed(array("Docente","Alumno"),FALSE);
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
@@ -1150,7 +1149,7 @@ $app->post('/nuevo-conocimiento/',function() use ($app) {
         if (isset($_POST['area'])) {
             foreach ($_POST['area'] as $area) {
              $areainteres=new UsuariosAreas;
-             $areainteres->usuario_id=1;
+             $areainteres->usuario_id=$data['user'] -> id;
              $areainteres->area_id=$_POST['area'];
              $areainteres->save();
             }
@@ -1158,7 +1157,7 @@ $app->post('/nuevo-conocimiento/',function() use ($app) {
         if (isset($_POST['lenguaje'])) {
             foreach ($_POST['lenguaje'] as $lenguaje) {
                 $lenguajes=new UsuariosLenguajes;
-                $lenguajes->usuario_id=1/*$data['user']->id*/;
+                $lenguajes->usuario_id=$data['user'] -> id;
                 $lenguajes->lenguaje_id=$lenguaje;
                 $lenguajes->save();
             }
@@ -1177,14 +1176,72 @@ $app->post('/nuevo-conocimiento/',function() use ($app) {
         }
         if (isset($_POST['plataformas'])) {
             foreach ($_POST['plataformas'] as $plataformas) {
-                $plataforma=new UsuariosPlataformas;
-                $plataforma->usuario_id=1;
-                $plataforma->plataforma_id=$plataformas;
-                $plataforma->save();
-            }
+                $plat = Plataforma::find_by_id($plataformas);
+                 if (is_null($plat)) {
+                     $plataforma = new UsuariosPlataformas;
+                     $plataforma -> usuario_id = $data['user'] -> id;
+                     $plataforma -> plataforma_id = $plataformas;
+                     $plataforma -> save();
+                 }
+             }
+         }
+        
+         $flash = array("title" => "OK", "msg" => "Conocimiento de Herramientas,plataformas y lenguajes se agregó satisfactoriamente .", "type" => "success", "fade" => 1);
+ 
+         $app -> flash("flash", $flash);
+         $app -> flashKeep();
+         if ($_POST['perfil'] == 1) {
+             $app -> redirect($app -> urlFor('perfil'));
+         } else {
+             $app -> redirect($app -> urlFor('perfil-docente'));
+         }
+} else {
+         $msgs = humanize_gump($validated);
+         $flash = array("title" => "ERROR", "msg" => $msgs, "type" => "error", "fade" => 0);
+         $app -> flash("flash", $flash);
+         $app -> flashKeep();
+         if ($_POST['perfil'] == 1) {
+             $app -> redirect($app -> urlFor('perfil'));
+         } else {
+             $app -> redirect($app -> urlFor('perfil-docente'));
+         }
+     }
+}) -> name('nuevo-conocimiento-post');
 
+$app -> post('/nuevo-idioma-usuario/', function() use ($app) {
+     $data['user'] = isAllowed(array("Docente", "Alumno", "Aspirante"), FALSE);
+     $validator = new GUMP();
+     $_POST = $validator -> sanitize($_POST);
+     $rules = array('idioma' => 'required', 'lee' => 'required', 'escribe' => 'required', 'habla' => 'required', 'entiende' => 'required', );
+     $filters = array();
+     $_POST = $validator -> filter($_POST, $filters);
+     $validated = $validator -> validate($_POST, $rules);
+     if ($validated === TRUE) {
+         $iu = UsuariosIdiomas::find_by_usuario_id($data['user'] -> id);
+         foreach ($iu as $idioma) {
+             if ($idioma -> idioma_id == $_POST['idioma']) {
+                 $flash = array("title" => "ERROR", "msg" => "El Idioma que esta tratando de guardar ya existe en su perfil .", "type" => "error", "fade" => 0);
+ 
+                 $app -> flash("flash", $flash);
+                 $app -> flashKeep();
+                 if ($_POST['perfil'] == 1) {
+                     $app -> redirect($app -> urlFor('perfil'));
+                 } else {
+                     $app -> redirect($app -> urlFor('perfil-docente'));
+                 }
+ 
+             } else {
+                 $ui = new UsuariosIdiomas;
+                 $ui -> usuario_id = $data['user'] -> id;
+                 $ui -> idioma_id = $_POST['idioma'];
+                 $ui -> lee = $_POST['lee'];
+                 $ui -> escribe = $_POST['escribe'];
+                 $ui -> habla = $_POST['habla'];
+                 $ui -> entiende = $_POST['entiende'];
+                 $ui -> save();
+             }
         }
-
+         
         $flash = array("title" => "OK", "msg" => "El idioma se ha guardado correctamente.", "type" => "success", "fade" => 1);
 
         $app -> flash("flash", $flash);
@@ -1194,11 +1251,70 @@ $app->post('/nuevo-conocimiento/',function() use ($app) {
         } else {
             $app -> redirect($app -> urlFor('perfil-docente'));
         }
-        /*ladybug_dump($_POST);*/
-    } else {
-
-    }
+} else {
+        $msgs = humanize_gump($validated);
+         $flash = array("title" => "ERROR", "msg" => $msgs, "type" => "error", "fade" => 0);
+         $app -> flash("flash", $flash);
+         $app -> flashKeep();
+         if ($_POST['perfil'] == 1) {
+             $app -> redirect($app -> urlFor('perfil'));
+         } else {
+             $app -> redirect($app -> urlFor('perfil-docente'));
+         }
+     }
 }) -> name('nuevo-idioma-usuario-post');
+
+$app -> post('/actualizar-idioma-usuario/', function() use ($app) {
+     $data['user'] = isAllowed(array("Docente", "Alumno", "Aspirante"), FALSE);
+     $validator = new GUMP();
+     $_POST = $validator -> sanitize($_POST);
+     $rules = array('idioma' => 'required', 'lee' => 'required', 'escribe' => 'required', 'habla' => 'required', 'entiende' => 'required', );
+     $filters = array();
+     $_POST = $validator -> filter($_POST, $filters);
+     $validated = $validator -> validate($_POST, $rules);
+     if ($validated === TRUE) {
+         $iu = UsuariosIdiomas::all(array('conditions' => array('usuario_id =' . $data['user'] -> id . 'AND idioma_id =' . $_POST['idioma'])));
+         $iu -> lee = $_POST['lee'];
+         $iu -> eescribe = $_POST['escribe'];
+         $iu -> habla = $_POST['habla'];
+         $iu -> entiende = $_POST['entiende'];
+         $iu -> save();
+         $flash = array("title" => "OK", "msg" => "El idioma se ha actualizado correctamente.", "type" => "success", "fade" => 1);
+ 
+         $app -> flash("flash", $flash);
+         $app -> flashKeep();
+         if ($_POST['perfil'] == 1) {
+             $app -> redirect($app -> urlFor('perfil'));
+         } else {
+             $app -> redirect($app -> urlFor('perfil-docente'));
+         }
+      } else {
+         $msgs = humanize_gump($validated);
+         $flash = array("title" => "ERROR", "msg" => $msgs, "type" => "error", "fade" => 0);
+         $app -> flash("flash", $flash);
+         $app -> flashKeep();
+         if ($_POST['perfil'] == 1) {
+             $app -> redirect($app -> urlFor('perfil'));
+         } else {
+             $app -> redirect($app -> urlFor('perfil-docente'));
+         }
+     }
+}) -> name('actualizar-idioma-usuario-post');
+
+$app -> get('/borrar-idioma-usuario/:id/:perfil/', function($id, $perfil) use ($app) {
+     $data['user'] = isAllowed(array("Docente", "Alumno", "Aspirante"), FALSE);  
+     $iu = UsuariosIdiomas::find($id);
+     $iu -> delete(); 
+     $flash = array("title" => "OK", "msg" => "El idioma se ha borrado correctamente.", "type" => "success", "fade" => 1);
+ 
+     $app -> flash("flash", $flash);
+     $app -> flashKeep();
+     if ($perfil == 1) {
+         $app -> redirect($app -> urlFor('perfil'));
+     } else {
+         $app -> redirect($app -> urlFor('perfil-docente'));
+      } 
+}) -> name('borrar-idioma-usuario-post');
 
 /* =======================
  * ====== PRINCIPAL ======
