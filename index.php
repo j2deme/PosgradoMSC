@@ -661,7 +661,6 @@ $app->get('/docente/publicaciones/', function() use ($app) {
  })->name('publicaciones-post');
 
  $app->get('/registro-aspirantes/',function() use ($app) {
-     $data['user'] = isAllowed("Administrador", false);
      $app->render('registroinicial.html');
  })->name('registro-inicio');
 
@@ -674,16 +673,23 @@ $app->get('/docente/publicaciones/', function() use ($app) {
         'am' => 'alpha',
         'email'=>'required|valid_email',
         'usuario' => 'required|alpha',
-        'pass'=>'required|alpha',
-        'confirmacion'=>'required|alpha',
+        'pass'=>'required',
+        'confirmacion'=>'required',
     );
     $filters = array(
 
     );
     $_POST = $validator->filter($_POST, $filters);
+	
     $validated = $validator->validate($_POST, $rules);
+    
     if ($validated === TRUE) {
-      if ($_POST['pass']==$_POST['confirmacion']) {
+    	
+    	$usuario=Usuario::find_by_usuario($_POST['usuario']);
+    	
+      if (count($usuario)==0) {
+      	ladybug_dump_die($_POST);
+          if ($_POST['pass']==$_POST['confirmacion']) {
           $personal= new Personal;
           $us=new Usuario;
           $contacto=new Contacto;
@@ -710,19 +716,44 @@ $app->get('/docente/publicaciones/', function() use ($app) {
           );
           $app -> flash("flash", $flash);
           $app->flashKeep();
-          $app->redirect($app->urlFor('registro-aspirantes'));
+          $app->redirect($app->urlFor('home'));
 
       } else {
            $flash = array(
-        "title" => "OK",
+        "title" => "ERROR",
         "msg" => "Los Campos de Confimacion y contraseña deben ser identicos.",
         "type" => "error",
         "fade" => 1
       );
       $app -> flash("flash", $flash);
      $app->flashKeep();
-     $app->redirect($app->urlFor('registro-aspirantes'));
+     $app->redirect($app->urlFor('registro-inicio'));
      }
+      } else {
+           $flash = array(
+        "title" => "ERROR",
+        "msg" => "El nombre de usuario ".$_POST['Usuarios']." ya se encuentra registrado actualmente.",
+        "type" => "error",
+        "fade" => 1
+      );
+      $app -> flash("flash", $flash);
+     $app->flashKeep();
+     $app->redirect($app->urlFor('registro-inicio'));
+      }
+      
+    }else {
+
+		  $msgs = humanize_gump($validated);
+      //   ladybug_dump($msgs);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+		    "fade" => 0
+		);
+		 $app -> flash("flash", $flash);
+     $app->flashKeep();
+     $app->redirect($app->urlFor('registro-inicio'));
     }
  })->name('registro-aspirante-post');
 
