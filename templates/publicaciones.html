@@ -1,227 +1,772 @@
-{% extends 'base.html' %}
+{% extends 'admin-base.html' %}
 {% block content %}
+<br />
 
+<legend align="center"" ">
+	<strong> Gestor de Publicaciones</strong>
+</legend>
 
+<div class="row">
+
+	<div class="span6">
+
+		<a class="btn btn-primary" data-toggle="modal" href="#modNuevoLibro"><i class="icon-plus-sign"></i> Libro</a>
+		<a class="btn btn-primary" data-toggle="modal" href="#modNuevoTrabajo"><i class="icon-plus-sign"></i> Trabajos</a>
+		<a class="btn btn-primary" data-toggle="modal" href="#modNuevaMemoria"><i class="icon-plus-sign"></i> Memorias</a>
+		<a class="btn btn-primary" data-toggle="modal" href="#modNuevaRevista"><i class="icon-plus-sign"></i> Revistas</a>
+
+	</div>
+
+</div>
+<br />
 <!-- AGREGAR PUBLICACIONES -->
 <ul class="nav nav-tabs" id="myTab">
-<li class="active"><a  href="#libros" data-toggle="tab">Libros</a></li>
-<li><a href="#trabajos" data-toggle="tab">Trabajos</a></li>
-<li><a href="#memoria" data-toggle="tab">Memorias</a></li>
-<li><a href="#revista" data-toggle="tab">Revistas</a></li>
+	<li class="active">
+		<a  href="#libro" data-toggle="tab">Libros</a>
+	</li>
+	<li>
+		<a href="#trabajo" data-toggle="tab">Trabajos</a>
+	</li>
+	<li>
+		<a href="#memoria" data-toggle="tab">Memorias</a>
+	</li>
+	<li>
+		<a href="#revista" data-toggle="tab">Revistas</a>
+	</li>
 
 </ul>
- 
- 
- 
- 
- 
+
 <div class="tab-content">
+	<br />
 	<!-- TAB MEMORIAS -->
-<div class="tab-pane fade" id="memoria" >
-	<form method="post" action="{{ urlFor('publicaciones-post') }}">
-          
-    <div class="span3"><label for="mautor">Coautor/s: </label>
-		<input id="mautor" name="mautor" class="span3"  type="text">
-    </div>  
-    
-    <div class="span3"><label for="mtitulo">Titulo de memoria: </label>
-		<input id="mtitulo" name="mtitulo" class="span3" type="text">
-    </div>  
-    
-    <div class="span3"><label for="mpublicacion">Lugar de publicacion: </label>
-		<input id="mpublicacion" name="mpublicacion" class="span3"  type="text">
-    </div>
-    
-	<div class="span3">
- 		<label for="mfechapublicacion">Fecha de publicación:</label>
- 		<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
- 			<input id="mfechapublicacion" name="mfechapublicacion" class="span1 add-on datepicker" size="16" type="text" value="12-02-2012">
- 			<span ><i class="icon-calendar"></i></span>
- 			<input id="tipo" name="tipo" type="hidden" value="1" />
-    	</div>
-   	</div>
-</form>
+	<div class="tab-pane fade" id="memoria" >
+
+		<div class="row">
+			<div class="span11">
+
+				<table class="table table-bordered table-condensed table-striped" id="memorias" >
+					<thead>
+						<tr>
+							<th class="ziseTable">#</th>
+							<th class="ziseTable">Titulo</th>
+							<th class="ziseTable">Coautor/s</th>
+							<th class="ziseTable">Lugar de Publicacion</th>
+							<th class="ziseTable">Fecha de publicación</th>
+							<th class="ziseTable">Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if publicaciones is defined %}
+						{% if publicaciones|length > 0  %}
+						{% for publicacion in publicaciones %}
+						{% if publicacion.tipo=="Memoria" %}
+						<tr>
+							<td align="center">{{ loop.index }}</td>
+							<td align="center">{{ publicacion.nombre}}</td>
+							<td align="center">{{ publicacion.coautores }}</td>
+							<td align="center">{{ publicacion.evento }}</td>
+							<td align="center">{{ publicacion.fecha_publicacion }}</td>
+							<td align="center">
+								<div class="btn-group">
+									<a class="btn btn-success" rel="tooltip" title="Editar" data-toggle="modal" href="#modEditPublicacion{{ publicacion.id }}">
+										<i class="icon-edit"></i>
+									</a>
+									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ publicacion.id }}">
+										<i class="icon-trash"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+						{% endif %}
+						{% endfor %}
+						{% else %}
+						<tr>
+							<td></td>
+							<td colspan="4" align="center">No se encontraron resultados</td>
+							<td></td>
+						</tr>
+						{% endif %}
+						{% endif %}
+					</tbody>
+
+				</table>
+
+			</div>
+		</div>
+
+		<script>
+			head.ready(function() {
+				$(function() {
+					//$('#waiting').addClass('hide').fadeOut(2500);
+					$('#results').removeClass('hide').fadeIn(1500);
+					var usersTable = $('#memorias').dataTable({
+						"oLanguage" : {
+							"sUrl" : "{{ urlFor('home')}}js/dataTables.spanish.txt"
+						},
+						"fnDrawCallback" : function() {
+						},
+						"sDom" : "<'row'<'span8'lf>r>t<'row'<'span3'i><'span4'p>>",
+						"sPaginationType" : "bootstrap"
+					});
+				});
+			});
+		</script>
+
+	</div>
+
+	<!-- TAB REVISTAS -->
+	<div class="tab-pane fade" id="revista" >
+		<div class="row">
+			<div class="span11">
+
+				<table class="table table-bordered table-condensed table-striped" id="revistas" >
+					<thead>
+						<tr>
+							<th class="ziseTable">#</th>
+							<th class="ziseTable">Titulo</th>
+							<th class="ziseTable">Coautor/s</th>
+							<th class="ziseTable">Revista de Publicacion</th>
+							<th class="ziseTable">Tipo de Revista</th>
+							<th class="ziseTable">Fecha de publicación</th>
+							<th class="ziseTable">Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if publicaciones is defined %}
+						{% if publicaciones|length > 0  %}
+						{% for publicacion in publicaciones %}
+						{% if publicacion.tipo=="Revista" %}
+						<tr>
+							<td align="center">{{ loop.index }}</td>
+							<td align="center">{{ publicacion.nombre}}</td>
+							<td align="center">{{ publicacion.coautores }}</td>
+							<td align="center">{{ publicacion.evento }}</td>
+							<td align="center">{{ publicacion.tipo_trabajo }}</td>
+							<td align="center">{{ publicacion.fecha_publicacion }}</td>
+							<td align="center">
+								<div class="btn-group">
+									<a class="btn btn-success" rel="tooltip" title="Editar" data-toggle="modal" href="#modEditPublicacion{{ publicacion.id }}">
+										<i class="icon-edit"></i>
+									</a>
+									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ publicacion.id }}">
+										<i class="icon-trash"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+						{% endif %}
+						{% endfor %}
+						{% else %}
+						<tr>
+							<td></td>
+							<td colspan="4" align="center">No se encontraron resultados</td>
+							<td></td>
+						</tr>
+						{% endif %}
+						{% endif %}
+					</tbody>
+
+				</table>
+
+			</div>
+		</div>
+
+		<script>
+			head.ready(function() {
+				$(function() {
+					//$('#waiting').addClass('hide').fadeOut(2500);
+					$('#results').removeClass('hide').fadeIn(1500);
+					var usersTable = $('#revistas').dataTable({
+						"oLanguage" : {
+							"sUrl" : "{{ urlFor('home')}}js/dataTables.spanish.txt"
+						},
+						"fnDrawCallback" : function() {
+						},
+						"sDom" : "<'row'<'span8'lf>r>t<'row'<'span3'i><'span4'p>>",
+						"sPaginationType" : "bootstrap"
+					});
+				});
+			});
+		</script>
+	</div>
+
+	<!-- TAB Libros-->
+	<div class="tab-pane fade active in" id="libro" >
+		<div class="row">
+			<div class="span11">
+
+				<table class="table table-bordered table-condensed table-striped" id="libros" >
+					<thead>
+						<tr>
+							<th class="ziseTable">#</th>
+							<th class="ziseTable">Titulo</th>
+							<th class="ziseTable">Coautor/s</th>
+							<th class="ziseTable">Editorial</th>
+							<th class="ziseTable">ISBN</th>
+							<th class="ziseTable">Fecha de publicación</th>
+							<th class="ziseTable">Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if publicaciones is defined %}
+						{% if publicaciones|length > 0  %}
+						{% for publicacion in publicaciones %}
+						{% if publicacion.tipo=="Libro" %}
+						<tr>
+							<td align="center">{{ loop.index }}</td>
+							<td align="center">{{ publicacion.nombre}}</td>
+							<td align="center">{{ publicacion.coautores }}</td>
+							<td align="center">{{ publicacion.editorial }}</td>
+							<td align="center">{{ publicacion.isbn }}</td>
+							<td align="center">{{ publicacion.fecha_publicacion }}</td>
+							<td align="center">
+								<div class="btn-group">
+									<a class="btn btn-success" rel="tooltip" title="Editar" data-toggle="modal" href="#modEditPublicacion{{ publicacion.id }}">
+										<i class="icon-edit"></i>
+									</a>
+									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ publicacion.id }}">
+										<i class="icon-trash"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+						{% endif %}
+						{% endfor %}
+						{% else %}
+						<tr>
+							<td></td>
+							<td colspan="4" align="center">No se encontraron resultados</td>
+							<td></td>
+						</tr>
+						{% endif %}
+						{% endif %}
+					</tbody>
+
+				</table>
+
+			</div>
+		</div>
+
+		<script>
+			head.ready(function() {
+				$(function() {
+					//$('#waiting').addClass('hide').fadeOut(2500);
+					$('#results').removeClass('hide').fadeIn(1500);
+					var usersTable = $('#libros').dataTable({
+						"oLanguage" : {
+							"sUrl" : "{{ urlFor('home')}}js/dataTables.spanish.txt"
+						},
+						"fnDrawCallback" : function() {
+						},
+						"sDom" : "<'row'<'span8'lf>r>t<'row'<'span3'i><'span4'p>>",
+						"sPaginationType" : "bootstrap"
+					});
+				});
+			});
+		</script>
+	</div>
+
+	<!-- TAB trabajos-->
+	<div class="tab-pane fade" id="trabajo" >
+		<div class="row">
+			<div class="span11">
+
+				<table class="table table-bordered table-condensed table-striped" id="trabajos" >
+					<thead>
+						<tr>
+							<th class="ziseTable">#</th>
+							<th class="ziseTable">Titulo</th>
+							<th class="ziseTable">Coautor/s</th>
+							<th class="ziseTable">Nacionalidad</th>
+							<th class="ziseTable">Tipo de Trabajo</th>
+							<th class="ziseTable">Fecha de publicación</th>
+							<th class="ziseTable">Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if publicaciones is defined %}
+						{% if publicaciones|length > 0  %}
+						{% for publicacion in publicaciones %}
+						{% if publicacion.tipo=="Trabajo" %}
+						<tr>
+							<td align="center">{{ loop.index }}</td>
+							<td align="center">{{ publicacion.nombre}}</td>
+							<td align="center">{{ publicacion.coautores }}</td>
+							<td align="center">{{ publicacion.nacionalidad }}</td>
+							<td align="center">{{ publicacion.tipo_trabajo }}</td>
+							<td align="center">{{ publicacion.fecha_publicacion }}</td>
+							<td align="center">
+								<div class="btn-group">
+									<a class="btn btn-success" rel="tooltip" title="Editar" data-toggle="modal" href="#modEditPublicacion{{ publicacion.id }}">
+										<i class="icon-edit"></i>
+									</a>
+									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ publicacion.id }}">
+										<i class="icon-trash"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+						{% endif %}
+						{% endfor %}
+						{% else %}
+						<tr>
+							<td></td>
+							<td colspan="4" align="center">No se encontraron resultados</td>
+							<td></td>
+						</tr>
+						{% endif %}
+						{% endif %}
+					</tbody>
+
+				</table>
+
+			</div>
+		</div>
+
+		<script>
+			head.ready(function() {
+				$(function() {
+					//$('#waiting').addClass('hide').fadeOut(2500);
+					$('#results').removeClass('hide').fadeIn(1500);
+					var usersTable = $('#trabajos').dataTable({
+						"oLanguage" : {
+							"sUrl" : "{{ urlFor('home')}}js/dataTables.spanish.txt"
+						},
+						"fnDrawCallback" : function() {
+						},
+						"sDom" : "<'row'<'span8'lf>r>t<'row'<'span3'i><'span4'p>>",
+						"sPaginationType" : "bootstrap"
+					});
+				});
+			});
+		</script>
+	</div>
+	<br />
+</div>
+<!-------------------------------------------Modales-------------------------------------------------------------------------->
+
+<div class="modal hide fade" id="modNuevaMemoria">
+	<div class="modal-header">
+		<h3>Nueva Memoria</h3>
+	</div>
+	<form class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
+		<div class="modal-body">
+			<div class="control-group">
+				<label class="control-label" for="mautor">Coautor/s: </label>
+				<div class="controls">
+					<input id="mautor" name="mautor" class="span3"  type="text">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="mtitulo">Titulo: </label>
+				<div class="controls">
+					<input id="mtitulo" name="mtitulo" class="span3" type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="mpublicacion">Lugar de publicacion: </label>
+				<div class="controls">
+					<input id="mpublicacion" name="mpublicacion" class="span3"  type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="mfechapublicacion">Fecha de publicación:</label>
+				<div class="controls">
+					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+						<input id="mfechapublicacion" name="mfechapublicacion" class=" span2 datepicker" size="16" type="text" value="12-02-2012">
+						<span class="add-on" ><i class="icon-calendar"></i></span>
+					</div>
+					<input id="tipo" name="tipo" type="hidden" value="1" />
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" type="submit" >
+				<i class="icon-save"></i>
+				Guardar
+			</button>
+		</div>
+	</form>
 </div>
 
-<!-- TAB REVISTAS -->
-<div class="tab-pane fade" id="revista" >
-	<form method="post" action="{{ urlFor('publicaciones-post') }}">
-          
-    <div class="span3"><label for="rautor">Coautor/s: </label>
-		<input id="rautor" name="rautor" class="span3"  type="text">
-    </div>  
-    
-    <div class="span3"><label for="rtitulo">Titulo de publicacion: </label>
-		<input id="rtitulo" name="rtitulo" class="span3" type="text">
-    </div>  
-    
-    <div class="span3"><label for="revista">Revista en donde se publico: </label>
-		<input id="revista" name="revista" class="span3"  type="text">
-    </div>
-    
-    <div class="span3"><label for="rtipo">Tipo de revista:</label> 
-   		<select id="rtipo" name="rtipo">Tipo
-   			<option>Arbitradas</option>
-   			<option>Indizadas </option>
-    	</select>  		
-    </div>
-    
-	<div class="span3">
- 		<label for="rfechapublicacion">Fecha de publicación:</label>
- 		<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
- 			<input id="rfechapublicacion" name="rfechapublicacion" class="span1 add-on datepicker" size="16" type="text" value="12-02-2012">
- 			<span ><i class="icon-calendar"></i></span>
- 			<input id="tipo" name="tipo" type="hidden" value="2" />
-    	</div>
-   	</div>
-</form>
+<div class="modal hide fade" id="modNuevoLibro">
+	<div class="modal-header">
+		<h3>Nuevo Libro</h3>
+	</div>
+	<form class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
+		<div class="modal-body">
+			<div class="control-group">
+				<label class="control-label" for="lautor">Coautor/s: </label>
+				<div class="controls">
+					<input id="lautor" name="lautor" class="span3"  type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="ltitulo">Titulo: </label>
+				<div class="controls">
+					<input id="ltitulo" name="ltitulo" class="span3" type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="editorial">Editorial: </label>
+				<div class="controls">
+					<input id="editorial" name="editorial" class="span3"  type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="isbn">ISBN: </label>
+				<div class="controls">
+					<input id="isbn" name="isbn" class="span3"  type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="lfechapublicacion">Fecha de publicación:</label>
+				<div class="controls">
+					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+						<input id="lfechapublicacion" name="lfechapublicacion" class="span2 datepicker" size="16" type="text" value="12-02-2012">
+						<span class="add-on" ><i class="icon-calendar"></i></span>
+						<input id="tipo" name="tipo" type="hidden" value="3" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" type="submit" >
+				<i class="icon-save"></i>
+				Guardar
+			</button>
+		</div>
+	</form>
 </div>
 
-<!-- TAB Libros-->
-<div class="tab-pane fade active in" id="libros" >
-	<form method="post" action="{{ urlFor('publicaciones-post') }}">
-          
-    <div class="span3"><label for="lautor">Coautor/s: </label>
-		<input id="lautor" name="lautor" class="span3"  type="text">
-    </div>  
-    
-    <div class="span3"><label for="ltitulo">Titulo de libro: </label>
-		<input id="ltitulo" name="ltitulo" class="span3" type="text">
-    </div>  
-    
-    <div class="span3"><label for="editorial">Editorial: </label>
-		<input id="editorial" name="editorial" class="span3"  type="text">
-    </div>
-   	
-   	<div class="span3"><label for="isbn">ISBN: </label>
-		<input id="isbn" name="isbn" class="span3"  type="text">
-    </div>
-    
-    <div class="span3">
- 		<label for="lfechapublicacion">Fecha de publicación:</label>
- 		<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
- 			<input id="lfechapublicacion" name="lfechapublicacion" class="span1 add-on datepicker" size="16" type="text" value="12-02-2012">
- 			<span ><i class="icon-calendar"></i></span>
- 			<input id="tipo" name="tipo" type="hidden" value="3" />
-    	</div>
-   	</div>
-</form>
+<div class="modal hide fade" id="modNuevoTrabajo">
+	<div class="modal-header">
+		<h3>Nuevo Trabajo</h3>
+	</div>
+	<form class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
+		<div class="modal-body">
+			<div class="control-group">
+				<label class="control-label" for="tautor">Coautor/s: </label>
+				<div class="controls">
+					<input id="tautor" name="tautor" class="span3"  type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="ttitulo">Titulo: </label>
+				<div class="controls">
+					<input id="ttitulo" name="ttitulo" class="span3" type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nacionalidad">Nacionalidad: </label>
+				<div class="controls">
+					<input id="nacionalidad" name="nacionalidad" class="span3" type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="ttipo">Tipo de trabajo:</label>
+				<div class="controls">
+					<select id="ttipo" name="ttipo">
+						<option value="">Tipo Trabajo</option>
+						<option value="Nacional">Nacional</option>
+						<option value="Internacional">Internacional</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="tfechapublicacion">Fecha de publicación:</label>
+				<div class="controls">
+					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+						<input id="tfechapublicacion" name="tfechapublicacion" class="span2 datepicker" size="16" type="text" value="12-02-2012">
+						<span class="add-on" ><i class="icon-calendar"></i></span>
+						<input id="tipo" name="tipo" type="hidden" value="4" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" type="submit" >
+				<i class="icon-save"></i>
+				Guardar
+			</button>
+		</div>
+	</form>
 </div>
 
-<!-- TAB trabajos-->
-<div class="tab-pane fade" id="trabajos" >
-	<form method="post" action="{{ urlFor('publicaciones-post') }}">
-          
-    <div class="span3"><label for="tautor">Coautor/s: </label>
-		<input id="tautor" name="tautor" class="span3"  type="text">
-    </div>  
-    
-    <div class="span3"><label for="ttitulo">Titulo de trabajo: </label>
-		<input id="ttitulo" name="ttitulo" class="span3" type="text">
-    </div>  
-    
-    <div class="span3"><label for="nacionalidad">Nacionalidad: </label>
-		<input id="nacionalidad" name="nacionalidad" class="span3" type="text">
-    </div> 
-    
-    <div class="span3"><label for="ttipo">Tipo de trabajo:</label> 
-   		<select id="ttipo" name="ttipo">Tipo
-   			<option>Nacional</option>
-   			<option>Internacional</option>
-    	</select>  		
-    </div>
-    
-    <div class="span3">
- 		<label for="tfechapublicacion">Fecha de publicación:</label>
- 		<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
- 			<input id="tfechapublicacion" name="tfechapublicacion" class="span1 add-on datepicker" size="16" type="text" value="12-02-2012">
- 			<span ><i class="icon-calendar"></i></span>
- 			<input id="tipo" name="tipo" type="hidden" value="4" />
-    	</div>
-   	</div>
-</form>
+<div class="modal hide fade" id="modNuevaRevista">
+	<div class="modal-header">
+		<h3>Nueva Revista</h3>
+	</div>
+	<form class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
+		<div class="modal-body">
+			<div class="control-group">
+				<label class="control-label" for="rautor">Coautor/s: </label>
+				<div class="controls">
+					<input id="rautor" name="rautor" class="span3"  type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="rtitulo">Titulo: </label>
+				<div class="controls">
+					<input id="rtitulo" name="rtitulo" class="span3" type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="revista">Revista: </label>
+				<div class="controls">
+					<input id="revista" name="revista" class="span3"  type="text">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="rtipo">Tipo de revista:</label>
+				<div class="controls">
+					<select id="rtipo" name="rtipo">
+						<option value="">Tipo Revista</option>
+						<option value="Arbitrada">Arbitradas</option>
+						<option value="Indizada">Indizadas </option>
+					</select>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="rfechapublicacion">Fecha de publicación:</label>
+				<div class="controls">
+					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+						<input id="rfechapublicacion" name="rfechapublicacion" class="span2 datepicker" size="16" type="text" value="12-02-2012">
+						<span class="add-on" ><i class="icon-calendar"></i></span>
+
+					</div>
+					<input id="tipo" name="tipo" type="hidden" value="2" />
+				</div>
+			</div>
+
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" type="submit" >
+				<i class="icon-save"></i>
+				Guardar
+			</button>
+		</div>
+	</form>
 </div>
+
+{% for publicacion in publicaciones %}
+
+<div class="modal hide fade" id="modEditPublicacion{{ publicacion.id }}">
+	<div class="modal-header">
+		<h3>Editar Publicacion</h3>
+	</div>
+	<form class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
+		<div class="modal-body">
+			{% if publicacion.tipo=="Memoria" %}
+			<div class="control-group">
+				<label class="control-label" for="mautor">Coautor/s: </label>
+				<div class="controls">
+					<input id="mautor" name="mautor" class="span3"  type="text" value="{{ publicacion.coautores|default() }}">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="mtitulo">Titulo de memoria: </label>
+				<div class="controls">
+					<input id="mtitulo" name="mtitulo" class="span3" type="text" value="{{ publicacion.nombre|default() }}" >
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="mpublicacion">Lugar de publicacion: </label>
+				<div class="controls">
+					<input id="mpublicacion" name="mpublicacion" class="span3"  type="text" value="{{ publicacion.evento|default() }}">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="mfechapublicacion">Fecha de publicación:</label>
+				<div class="controls">
+					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+						<input id="mfechapublicacion" name="mfechapublicacion" class=" span2 datepicker" size="16" type="text" value="{{ publicacion.fecha_publicacion|default() }}">
+						<span class="add-on" ><i class="icon-calendar"></i></span>
+					</div>
+					<input id="tipo" name="tipo" type="hidden" value="1" />
+				</div>
+			</div>
+			{% endif %}
+
+			{% if publicacion.tipo=="Libro" %}
+			<div class="control-group">
+				<label class="control-label" for="lautor">Coautor/s: </label>
+				<div class="controls">
+					<input id="lautor" name="lautor" class="span3"  type="text" value="{{ publicacion.coautores|default() }}">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="ltitulo">Titulo: </label>
+				<div class="controls">
+					<input id="ltitulo" name="ltitulo" class="span3" type="text" value="{{ publicacion.nombre|default() }}">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="editorial">Editorial: </label>
+				<div class="controls">
+					<input id="editorial" name="editorial" class="span3"  type="text" value="{{ publicacion.editorial|default() }}">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="isbn">ISBN: </label>
+				<div class="controls">
+					<input id="isbn" name="isbn" class="span3"  type="text" value="{{ publicacion.isbn|default() }}">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="lfechapublicacion">Fecha de publicación:</label>
+				<div class="controls">
+					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+						<input id="lfechapublicacion" name="lfechapublicacion" class="span2 datepicker" size="16" type="text" value="{{ publicacion.fecha_publicacion|default() }}">
+						<span class="add-on" ><i class="icon-calendar"></i></span>
+						<input id="tipo" name="tipo" type="hidden" value="3" />
+					</div>
+				</div>
+			</div>
+			{% endif %}
+
+			{% if publicacion.tipo=="Trabajo" %}
+			<div class="control-group">
+				<label class="control-label" for="tautor">Coautor/s: </label>
+				<div class="controls">
+					<input id="tautor" name="tautor" class="span3"  type="text" value="{{ publicacion.coautores|default() }}">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="ttitulo">Titulo: </label>
+				<div class="controls">
+					<input id="ttitulo" name="ttitulo" class="span3" type="text" value="{{ publicacion.nombre|default() }}">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nacionalidad">Nacionalidad: </label>
+				<div class="controls">
+					<input id="nacionalidad" name="nacionalidad" class="span3" type="text" value="{{ publicacion.nacionalidad|default() }}">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="ttipo">Tipo de trabajo:</label>
+				<div class="controls">
+					<select id="ttipo" name="ttipo">
+						<option value="">Tipo Trabajo</option>
+						<option {% if publicacion.tipo_trabajo=="Nacional" %} selected="" {% endif %} value="Nacional">Nacional</option>
+						<option {% if publicacion.tipo_trabajo=="Internacional" %} selected=""  {% endif %} value="Internacional">Internacional</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="tfechapublicacion">Fecha de publicación:</label>
+				<div class="controls">
+					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+						<input id="tfechapublicacion" name="tfechapublicacion" class="span2 datepicker" size="16" type="text" value="{{ publicacion.fecha_publicacion|default() }}">
+						<span class="add-on" ><i class="icon-calendar"></i></span>
+						<input id="tipo" name="tipo" type="hidden" value="4" />
+					</div>
+				</div>
+			</div>
+			{% endif %}
+
+			{% if publicacion.tipo=="Revista" %}
+			<div class="control-group">
+				<label class="control-label" for="rautor">Coautor/s: </label>
+				<div class="controls">
+					<input id="rautor" name="rautor" class="span3"  type="text" value="{{ publicacion.coautores|default() }}">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="rtitulo">Titulo: </label>
+				<div class="controls">
+					<input id="rtitulo" name="rtitulo" class="span3" type="text" value="{{ publicacion.nombre|default() }}">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="revista">Revista: </label>
+				<div class="control-label">
+					<input id="revista" name="revista" class="span3"  type="text" value="{{ publicacion.evento|default() }}">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="rtipo">Tipo de revista:</label>
+				<div class="controls">
+					<select id="rtipo" name="rtipo">
+						<option value=""></option>
+						<option {% if publicacion.tipo_trabajo=="Arbitrada" %} selected="" {% endif %} value="Arbitradas">Arbitrada</option>
+						<option {% if publicacion.tipo_trabajo=="Indizada" %} selected="" {% endif %} value="Indizadas">Indizadas</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="rfechapublicacion">Fecha de publicación:</label>
+				<div class="controls">
+					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+						<input id="rfechapublicacion" name="rfechapublicacion" class="span2 datepicker" size="16" type="text" value="{{ publicacion.fecha_publicacion|default() }}">
+						<span class="add-on" ><i class="icon-calendar"></i></span>
+
+					</div>
+					<input id="tipo" name="tipo" type="hidden" value="2" />
+				</div>
+			</div>
+			{% endif %}
+			<input id="id" name="id" type="hidden" value="{{ publicacion.id }}" />
+			<input id="modif" name="modif" type="hidden" value="1" />
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" type="submit" >
+				<i class="icon-save"></i>
+				Guardar
+			</button>
+		</div>
+	</form>
 </div>
-<br />
-<br />
-<!--TABLA DE RESULTADOS-->
-<h3 align="center">Publicaciones registradas.</h3>
-<br/>
-<hr>
-<br/> 
 
-<table class="table table-bordered table-condensed table-striped" id="publicaciones" >
-	<thead>
-		<tr>
-			<th class="ziseTable">Fecha de publicación</th>
-			<th class="ziseTable">Autor</th>
-			<th class="ziseTable">Titulo</th>		
-		</tr>
-	</thead>
-	<tbody>
-	{% if publicaciones is defined %}
-	{% if publicaciones|length > 0  %}
-	{% for publicacion in publicaciones %}
-		<tr>
-			<td align="center">{{ publicacion.fecha_publicacion }}</td>
-			<td align="center">{{ publicacion.autor }}</td>
-			<td align="center">{{ publicacion.nombre}}</td>
-		</tr>
-	{% endfor %}
-	{% else %}
-			<tr>
-				<td> </td>
-				<td colspan="4" align="center">No se encontraron resultados</td>
-				<td> </td>			
-			</tr>
-	{% endif %}
-	{% endif %}
-	</tbody>
-	{##}
-	
-</table>
+<!-- Confirmacion de borrado-->
 
-<script>
-head.ready(function(){
-	$(function(){
-		//$('#waiting').addClass('hide').fadeOut(2500);
-		$('#results').removeClass('hide').fadeIn(1500);
-		var usersTable = $('#publicaciones').dataTable({
-			"oLanguage": {
-			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
-			},
-			"fnDrawCallback": function () {
-			},
-			"sDom": "<'row'<'span8'lf>r>t<'row'<'span3'i><'span4'p>>",
-			"sPaginationType": "bootstrap"
-		});
-		
-		$('#newUserForm').isHappy({
-			fields: {
-				'#usuario':{
-					required: true,
-					message: 'Alias de acceso necesario'
-				},
-				'#email':{
-					required: true,
-					message: 'Email válido necesario',
-					test: happy.email
-				},
-				'#rol':{
-					required: true,
-					message: 'Especifica un rol',
-					arg: 0,
-					test: happy.nequal
-				}
-			}
-		});
-		
-	});
-});
-</script>
-
-<br>
-<br>
-
-
+	<div class="modal hide fade" id="modconfirmacion{{ publicacion.id }}">
+		<div class="modal-header">
+			<h3>Confirmacion de Borrado</h3>
+		</div>
+		<div class="modal-body">
+			<label>¿Esta seguro que desea borrar {% if publicacion.tipo=="Libro" or publicacion.tipo=="Trabajo" %} el {% else %} la {% endif %} {{ publicacion.tipo~" "~ publicacion.nombre }} </label>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">
+				<i class="icon-remove-sign"></i>
+				No
+				</a><!---->
+			<a class="btn btn-primary" href="{{ urlFor('borrar-publicacion',{'id': publicacion.id}) }}">
+				<i class="icon-trash"></i>
+				Si
+				</a>
+		</div>
+	</div>
+{% endfor %}
 {% endblock %}

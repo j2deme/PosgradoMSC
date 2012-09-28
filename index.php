@@ -221,13 +221,6 @@ $app->get('/relacion-aceptados/', function() use ($app) {
     $app->render('relacion-aceptados.html');
 })->name('relacion-aceptados');
 
-$app->get('/publicaciones/', function() use ($app) {
-    $data['user'] = isAllowed("Administrador", false);
-    $user['usuarios'] = Usuario::find_by_id('1');
-    $data['publicaciones']= Publicacion::find_all_by_usuario_id($user['usuarios']->id);
-    $app->render('publicaciones.html',$data);
-})->name('publicaciones');
-
 $app->get('/egresados/', function() use ($app) {
     $data['user'] = isAllowed("Administrador", false);
 })->name('egresados');
@@ -243,25 +236,236 @@ $app->get('/estadisticas/matriculacion/', function() use ($app) {
 
 $app->get('/docente/', function() use ($app) {
 	$data['user']=isAllowed('Docente',FALSE);
-     $app->render('docente.html');
+     $app->render('docente.html',$data);
 })->name('docente');
 
+$app -> get('/docente/borrar-publicacion/:id/', function($id) use ($app) {
+
+    	
+        $publicacion = Publicacion::find($id);
+        $publicacion -> delete();
+		
+        $flash = array("title" => "OK", "msg" => "La publicacion ha sido borrada correctamente.", "type" => "info", "fade" => 1);
+        $app -> flash("flash", $flash);
+        $app -> flashKeep();
+        $app -> redirect($app -> urlFor('docente-publicaciones'));
+		
+}) -> name('borrar-publicacion');
+
 $app->get('/docente/publicaciones/', function() use ($app) {
-    $user ['usuarios']= Usuario::find_by_id('1');
-    $data['publicaciones']= Publicacion::find_all_by_usuario_id($user['usuarios']->id);
-    #ladybug_dump($data);
-     $app->render('publicaciones.html');
+    $data['user']=isAllowed('Docente',FALSE);	
+    $data['usuario']=Usuario::find_by_id($data['user']->id,array('include'=> array('personal','publicaciones')));
+	$data['publicaciones']=$data['usuario']->publicaciones;
+	$data['personal']=$data['usuario']->personal;
+    //ladybug_dump_die($data['personal']);
+     $app->render('publicaciones.html',$data);
  })->name('docente-publicaciones');
 
- $app->get('/docente/publicaciones-post',function() use ($app) {
-        $userid=isAllowed('Docente');
+ $app->post('/docente/publicaciones-post',function() use ($app) {
+	    $userid=isAllowed('Docente',FALSE);
        $validator= new GUMP;
        $_POST=$validator->sanitize($_POST);
-        if ($_POST['tipo']==1) {
+      if (isset($_POST['modif'])) {
+                 
+			 if ($_POST['tipo']==1) {
              $rules=array(
-            'mautor'=>'required|alpha',
-            'mtitulo'=>'required|alpha',
-            'mpublicacion'=>'required|alpha',
+            'mtitulo'=>'required',
+            'mpublicacion'=>'required',
+            'mfechapublicacion'=>'required',
+            );
+            $filters=array(
+
+            );
+            $_POST = $validator->filter($_POST, $filters);
+            $validated = $validator->validate($_POST, $rules);
+            if ($validated === TRUE) {
+                $pub=Publicacion::find_by_id($_POST['id']);
+                $pub->nombre=$_POST['mtitulo'];
+                $pub->usuario_id=$userid->id;
+                $pub->coautores=$_POST['mautor'];
+                $pub->evento=$_POST['mpublicacion'];
+                $pub->fecha_publicacion=$_POST['mfechapublicacion'];
+                $pub->tipo="Memoria";
+                $pub->save();
+
+            $flash = array(
+            "title" => "OK",
+            "msg" => "Se ha actualizado la memoria.",
+            "type" => "success",
+            "fade" => 1
+             );
+            $app -> flash("flash", $flash);
+            $app->flashKeep();
+            $app->redirect($app->urlFor('docente-publicaciones'));
+
+        } else {
+           
+		  $msgs = humanize_gump($validated);
+      //   ladybug_dump($msgs);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+		    "fade" => 0
+		);
+        $app -> flash("flash", $flash);
+         $app->flashKeep();
+        $app->redirect($app->urlFor('docente-publicaciones'));
+        }
+        } else {
+           if ($_POST['tipo']==2) {
+             $rules=array(
+            'rtitulo'=>'required',
+            'revista'=>'required',
+            'rtipo'=>'required',
+            'rfechapublicacion'=>'required'
+            );
+            $filters=array(
+
+            );
+            $_POST = $validator->filter($_POST, $filters);
+            $validated = $validator->validate($_POST, $rules);
+            if ($validated === TRUE) {
+                $pub=Publicacion::find_by_id($_POST['id']);
+                $pub->nombre=$_POST['rtitulo'];
+                $pub->usuario_id=$userid->id;
+				 $pub->coautores=$_POST['rautor'];
+                $pub->evento=$_POST['revista'];
+                $pub->tipo_trabajo=$_POST['rtipo'];
+                $pub->fecha_publicacion=$_POST['rfechapublicacion'];
+                $pub->tipo="Revista";
+                $pub->save();
+
+            $flash = array(
+            "title" => "OK",
+            "msg" => "Se ha actualizado la revista.",
+            "type" => "success",
+            "fade" => 1
+             );
+            $app -> flash("flash", $flash);
+            $app->flashKeep();
+            $app->redirect($app->urlFor('docente-publicaciones'));
+
+        } else {
+           
+		  $msgs = humanize_gump($validated);
+      //   ladybug_dump($msgs);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+		    "fade" => 0
+		);
+        $app -> flash("flash", $flash);
+         $app->flashKeep();
+        $app->redirect($app->urlFor('docente-publicaciones'));
+        }
+        } else {
+          if ($_POST['tipo']==3) {
+             $rules=array(
+            'ltitulo'=>'required',
+            'editorial'=>'required',
+            'isbn'=>'required',
+            'lfechapublicacion'=>'required',
+
+            );
+            $filters=array(
+
+            );
+            $_POST = $validator->filter($_POST, $filters);
+            $validated = $validator->validate($_POST, $rules);
+            if ($validated === TRUE) {
+                $pub=Publicacion::find_by_id($_POST['id']);
+                $pub->nombre=$_POST['ltitulo'];
+                $pub->usuario_id=$userid->id;
+				$pub->coautores=$_POST['lautor'];
+                $pub->editorial=$_POST['editorial'];
+                $pub->isbn=$_POST['isbn'];
+                $pub->fecha_publicacion=$_POST['lfechapublicacion'];
+                $pub->tipo="Libro";
+                $pub->save();
+
+            $flash = array(
+            "title" => "OK",
+            "msg" => "Se ha actualizado el libro.",
+            "type" => "success",
+            "fade" => 1
+             );
+            $app -> flash("flash", $flash);
+            $app->flashKeep();
+            $app->redirect($app->urlFor('docente-publicaciones'));
+
+        } else {
+          
+		  $msgs = humanize_gump($validated);
+      //   ladybug_dump($msgs);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+		    "fade" => 0
+		);
+        $app -> flash("flash", $flash);
+         $app->flashKeep();
+        $app->redirect($app->urlFor('docente-publicaciones'));
+        }
+        } else {
+           if ($_POST['tipo']==4) {
+             $rules=array(
+            'ttitulo'=>'required',
+            'nacionalidad'=>'required',
+            'ttipo'=>'required',
+            'tfechapublicacion'=>'required',
+            );
+            $filters=array(
+
+            );
+            $_POST = $validator->filter($_POST, $filters);
+            $validated = $validator->validate($_POST, $rules);
+            if ($validated === TRUE) {
+                $pub=Publicacion::find_by_id($_POST['id']);
+                $pub->nombre=$_POST['ttitulo'];
+                $pub->usuario_id=$userid->id;
+				 $pub->coautores=$_POST['tautor'];
+                $pub->nacionalidad=$_POST['nacionalidad'];
+				$pub->fecha_publicacion=$_POST['tfechapublicacion'];
+                $pub->tipo_trabajo=$_POST['ttipo'];
+                $pub->tipo="Trabajo";
+                $pub->save();
+
+            $flash = array(
+            "title" => "OK",
+            "msg" => "Se ha actualizado el trabajo.",
+            "type" => "success",
+            "fade" => 1
+             );
+            $app -> flash("flash", $flash);
+            $app->flashKeep();
+            $app->redirect($app->urlFor('docente-publicaciones'));
+
+        } else {
+           
+		  $msgs = humanize_gump($validated);
+      //   ladybug_dump($msgs);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
+            "type" => "error",
+		    "fade" => 0
+		);
+        $app -> flash("flash", $flash);
+         $app->flashKeep();
+        $app->redirect($app->urlFor('docente-publicaciones'));
+        }
+        }
+        }
+        }
+        }
+      }else{
+	  	    if ($_POST['tipo']==1) {
+             $rules=array(
+            'mtitulo'=>'required',
+            'mpublicacion'=>'required',
             'mfechapublicacion'=>'required',
             );
             $filters=array(
@@ -272,11 +476,11 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             if ($validated === TRUE) {
                 $pub=new Publicacion;
                 $pub->nombre=$_POST['mtitulo'];
-                $pub->usuario_id=$userid;
+                $pub->usuario_id=$userid->id;
                 $pub->coautores=$_POST['mautor'];
                 $pub->evento=$_POST['mpublicacion'];
                 $pub->fecha_publicacion=$_POST['mfechapublicacion'];
-                $pub->tipo_publicacion="Memoria";
+                $pub->tipo="Memoria";
                 $pub->save();
 
             $flash = array(
@@ -290,12 +494,15 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           $flash = array(
-            "title" => "OK",
-            "msg" => "ha ocurrido un problema. Vuelva a intenrar.",
+           
+		  $msgs = humanize_gump($validated);
+      //   ladybug_dump($msgs);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
             "type" => "error",
-            "fade" => 1
-        );
+		    "fade" => 0
+		);
         $app -> flash("flash", $flash);
          $app->flashKeep();
         $app->redirect($app->urlFor('docente-publicaciones'));
@@ -303,9 +510,8 @@ $app->get('/docente/publicaciones/', function() use ($app) {
         } else {
            if ($_POST['tipo']==2) {
              $rules=array(
-            'rautor'=>'required|alpha',
-            'rtitulo'=>'required|alpha',
-            'revista'=>'required|alpha',
+            'rtitulo'=>'required',
+            'revista'=>'required',
             'rtipo'=>'required',
             'rfechapublicacion'=>'required'
             );
@@ -317,11 +523,12 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             if ($validated === TRUE) {
                 $pub=new Publicacion;
                 $pub->nombre=$_POST['rtitulo'];
-                $pub->usuario_id=$userid;
-                $pub->revista=$_POST['revista'];
-                $pub->tipo=$_POST['rtipo'];
-                $pub->fecha_publicacion=$_POST['rfrchapublicacion'];
-                $pub->tipo_publicacion="Revista";
+                $pub->usuario_id=$userid->id;
+				 $pub->coautores=$_POST['rautor'];
+                $pub->evento=$_POST['revista'];
+                $pub->tipo_trabajo=$_POST['rtipo'];
+                $pub->fecha_publicacion=$_POST['rfechapublicacion'];
+                $pub->tipo="Revista";
                 $pub->save();
 
             $flash = array(
@@ -335,12 +542,15 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           $flash = array(
-            "title" => "OK",
-            "msg" => "ha ocurrido un problema. Vuelva a intenrar.",
+           
+		  $msgs = humanize_gump($validated);
+      //   ladybug_dump($msgs);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
             "type" => "error",
-            "fade" => 1
-        );
+		    "fade" => 0
+		);
         $app -> flash("flash", $flash);
          $app->flashKeep();
         $app->redirect($app->urlFor('docente-publicaciones'));
@@ -348,10 +558,9 @@ $app->get('/docente/publicaciones/', function() use ($app) {
         } else {
           if ($_POST['tipo']==3) {
              $rules=array(
-            'lautor'=>'required|alpha',
-            'ltitulo'=>'required|alpha',
-            'editorial'=>'required|alpha',
-            'isbn'=>'required|numeric',
+            'ltitulo'=>'required',
+            'editorial'=>'required',
+            'isbn'=>'required',
             'lfechapublicacion'=>'required',
 
             );
@@ -363,10 +572,12 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             if ($validated === TRUE) {
                 $pub=new Publicacion;
                 $pub->nombre=$_POST['ltitulo'];
-                $pub->usuario_id=$userid;
+                $pub->usuario_id=$userid->id;
+				$pub->coautores=$_POST['lautor'];
                 $pub->editorial=$_POST['editorial'];
+                $pub->isbn=$_POST['isbn'];
                 $pub->fecha_publicacion=$_POST['lfechapublicacion'];
-                $pub->tipo_publicacion="Libro";
+                $pub->tipo="Libro";
                 $pub->save();
 
             $flash = array(
@@ -380,12 +591,15 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           $flash = array(
-            "title" => "OK",
-            "msg" => "ha ocurrido un problema. Vuelva a intenrar.",
+          
+		  $msgs = humanize_gump($validated);
+      //   ladybug_dump($msgs);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
             "type" => "error",
-            "fade" => 1
-        );
+		    "fade" => 0
+		);
         $app -> flash("flash", $flash);
          $app->flashKeep();
         $app->redirect($app->urlFor('docente-publicaciones'));
@@ -393,9 +607,8 @@ $app->get('/docente/publicaciones/', function() use ($app) {
         } else {
            if ($_POST['tipo']==4) {
              $rules=array(
-            'tautor'=>'required|alpha',
-            'ttitulo'=>'required|alpha',
-            'nacionalidad'=>'required|alpha',
+            'ttitulo'=>'required',
+            'nacionalidad'=>'required',
             'ttipo'=>'required',
             'tfechapublicacion'=>'required',
             );
@@ -407,10 +620,12 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             if ($validated === TRUE) {
                 $pub=new Publicacion;
                 $pub->nombre=$_POST['ttitulo'];
-                $pub->usuario_id=$userid;
+                $pub->usuario_id=$userid->id;
+				 $pub->coautores=$_POST['tautor'];
                 $pub->nacionalidad=$_POST['nacionalidad'];
-                $pub->tipo=$_POST['ttipo'];
-                $pub->tipo_publicacion="Trabajo";
+				$pub->fecha_publicacion=$_POST['tfechapublicacion'];
+                $pub->tipo_trabajo=$_POST['ttipo'];
+                $pub->tipo="Trabajo";
                 $pub->save();
 
             $flash = array(
@@ -424,16 +639,20 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           $flash = array(
-            "title" => "OK",
-            "msg" => "ha ocurrido un problema. Vuelva a intenrar.",
+           
+		  $msgs = humanize_gump($validated);
+      //   ladybug_dump($msgs);
+        $flash = array(
+            "title" => "ERROR",
+            "msg" => $msgs,
             "type" => "error",
-            "fade" => 1
-        );
+		    "fade" => 0
+		);
         $app -> flash("flash", $flash);
          $app->flashKeep();
         $app->redirect($app->urlFor('docente-publicaciones'));
         }
+	  }
         }
        }
        }
