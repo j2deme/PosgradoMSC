@@ -2,7 +2,7 @@
 {% block content %}
 <div class="row">
 	<div class="span8">
-				<h1 align="">Creacion de Cuenta</h1>
+				<legend align="center"><strong>Creación de Cuenta</strong></legend>
 				<br />
 				<form id="registro" name="registro" method="post" action="{{ urlFor('registro-aspirante-post') }}" class="form-horizontal">
 					<div class="control-group">
@@ -64,8 +64,14 @@
 			<br />
 			
 			<div class="form-actions">
-				<button class=" btn" type="reset">Cancelar</button>
-				<button class=" btn btn-primary" type="submit">Crear</button>
+				<button class=" btn" type="reset">
+					<i class="icon-remove-sign"></i>
+					Cancelar
+				</button>
+				<button class=" btn btn-primary" type="submit">
+					<i class="icon-save"></i>	
+					Crear
+				</button>
 			</div>
 			
 		</form>

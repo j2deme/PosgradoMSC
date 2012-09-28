@@ -677,6 +677,7 @@ $app->get('/docente/eventos/', function() use ($app) {
 $app -> get('/nuevo-evento/', function() use ($app) {
    $data['user']=isAllowed('Docente',FALSE);
     $data['eventos'] = Evento::all();
+	$data['usuarios']=Usuario::find('all',array('include' => array('personal')));
     $app -> render('nuevoevento.html', $data);
 }) -> name('nuevo-evento');
 

@@ -4,14 +4,14 @@
 {% set fontSize = 40 %}
 <div class="row">
 		<div class="offset3 span2">
-		<a href="#" class="btn btn-primary square">
+		<a href="{{ urlFor('perfil-docente') }}" class="btn btn-primary square">
 			<br />
 			<i class="icon-user" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Editar perfil</strong>
 		</a>
 	</div>
 		<div class="span2">
-		<a href="urlFor('perfil-docente')" class="btn btn-primary square">
+		<a href="{{ urlFor('docente-publicaciones') }}" class="btn btn-primary square">
 			<br />
 			<i class="icon-book" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Gestor de Publicaciones</strong>
@@ -29,13 +29,21 @@
 <div class="row">
 	
 	<div class="offset3 span2">
+		<a href="{{ urlFor('calendario') }}" class="btn btn-primary square">
+			<br />
+			<i class="icon-calendar" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Calendario</strong>
+		</a>
+	</div>
+	<div class="span2">
 		<a href="{{ urlFor('nuevo-evento') }}" class="btn btn-primary square">
 			<br />
 			<i class="icon-plus-sign" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Crear Eventos</strong>
 		</a>
 	</div>
-	<div class="offset2 span2">
+	
+	<div class="span2">
 		<a href="{{ urlFor('eventosDoc') }}" class="btn btn-primary square">
 			<br />
 			<i class="icon-list" style="font-size: {{ fontSize }}px;"> </i>

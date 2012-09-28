@@ -74,6 +74,13 @@
 					</div>
 				</div>
 			</div>
+			<div >
+				<select id="principal" name="principal" multiple="" class="multiselect">
+					<option value="1">Hola</option>
+				</select>
+				<select id="selecciones" name="selecciones[]" multiple="" class="multiselect TakeOver"></select>
+				<script> $(".multiselect").twosidedmultiselect();</script>
+			</div>
 			
 			<div class="form-actions">
 				{% if user is defined %}
