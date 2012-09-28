@@ -176,14 +176,14 @@ $app->post('/actualiza-usuario/:id/', function($id) use ($app) {
 /*TODO Enviar el correo al usuario con los datos de acceso actualizados*/
             $flash = array(
                 "title" => "OK",
-                "msg" => "El usuario se ha actualizado con éxito.",
+                "msg" => "Usuario Actualizado.",
                 "type" => "success",
                 "fade" => 1
             );
         } else {
             $flash = array(
                 "title" => "ERROR",
-                "msg" => "Ha sucedido un error inesperado, intente nuevamente.",
+                "msg" => "Ha sucedido un error inesperado, intenta nuevamente.",
                 "type" => "error",
                 "fade" => 0
             );
@@ -218,7 +218,7 @@ $app->get('/cambiar-status-usuario/:id/', function($id) use ($app) {
 
     $flash = array(
         "title" => "OK",
-        "msg" => "El usuario ha sido $verb correctamente.",
+        "msg" => "El usuario ha sido $verb.",
         "type" => "info",
         "fade" => 1
     );
@@ -227,23 +227,24 @@ $app->get('/cambiar-status-usuario/:id/', function($id) use ($app) {
     $app->redirect($app->urlFor('admin-usuarios'));
 })->name('cambiar-status-usuario');
 
+#XXX NOT USED
 $app->get('/admin/roles/', function() use ($app) {
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Gestor de Roles", "alias" => "admin-roles")
+        array("name" => "Roles", "alias" => "admin-roles")
     );
     $data['user'] = isAllowed("Administrador",false);
 })->name('admin-roles');
 
-#XXX NOT USED
 $app->get('/admin/permisos/', function() use ($app) {
     $data['user'] = isAllowed("Administrador",false);
 })->name('admin-permisos');
+#XXX NOT USED
 
 $app->get('/admin/aspirantes/', function() use ($app) {
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
-        array("name" => "Gestor de Aspirantes", "alias" => "admin-aspirantes")
+        array("name" => "Aspirantes", "alias" => "admin-aspirantes")
     );
     $data['user'] = isAllowed("Administrador",false);
     $rolAspirante = Rol::find_by_nombre("Aspirante");
@@ -257,11 +258,11 @@ $app->get('/admin/aspirantes/', function() use ($app) {
     $app->render('aspirantes.html', $data);
 })->name('admin-aspirantes');
 
+#TODO Agregar interaccion para modificar estadistica de matriculacion y genero
 $app->get('/procesar-aspirante/:action/:id/', function($action,$id) use ($app) {
     $rolAlumno = Rol::find_by_nombre("Alumno");
     $rolNoAceptado = Rol::find_by_nombre("No aceptado");
     $ur = UsuariosRoles::find_by_usuario_id($id);
-//TODO Agregar interaccion para modificar estadistica de matriculacion y genero
     if ($action == "aceptar") {
         $ur->rol_id = $rolAlumno->id;
         $verb = "aceptado";
@@ -362,11 +363,8 @@ $app->get('/admin/secciones/editor/:slug', function($slug) use ($app) {
 $app->post('/editar-seccion-post/:id/', function($id) use ($app) {
     $validator = new GUMP();
     //$_POST = $validator->sanitize($_POST);
-    $rules = array(
-    );
-
-    $filters = array(
-    );
+    $rules = array();
+    $filters = array();
     $post = $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
@@ -386,7 +384,7 @@ $app->post('/editar-seccion-post/:id/', function($id) use ($app) {
         $seccion->save();
         $flash = array(
             "title" => "OK",
-            "msg" => "La seccion se ha actualizado con éxito.",
+            "msg" => "Sección Actualizada.",
             "type" => "success",
             "fade" => 1
         );
@@ -424,13 +422,8 @@ $app->get('/admin/noticias/', function() use ($app) {
 $app->post('/nueva-noticia/', function() use ($app){
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
-    $rules = array(
-        'titulo' => 'required'
-    );
-
-    $filters = array(
-        'titulo' => 'trim|sanitize_string'
-    );
+    $rules = array('titulo' => 'required');
+    $filters = array('titulo' => 'trim|sanitize_string');
     $post = $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
@@ -439,25 +432,19 @@ $app->post('/nueva-noticia/', function() use ($app){
         $contenido = array();
         $contenido['data'] = $_POST['contenido'];
         $contenido['files'] = array();
-        $contenido = (array) json_decode($seccion->contenido);
-        if(!array_key_exists('data', $contenido)){
-            $contenido = array(
-                'data' => $_POST['contenido'],
-                'files' => array()
-            );
-        } else {
-            $contenido['data'] = $_POST['contenido'];
-        }
-        $seccion->contenido = json_encode($contenido);
-        $seccion->creado = time();
-        $seccion->save();
+        $noticia->contenido = json_encode($contenido);
+        $noticia->creado = time();
+        $noticia->actualizado = time();
+        $noticia->save();
         $flash = array(
             "title" => "OK",
-            "msg" => "La seccion se ha actualizado con éxito.",
+            "msg" => "Noticia Creada.",
             "type" => "success",
             "fade" => 1
         );
         $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('editor-noticia',array('id'=> $noticia->id)));
     } else {
         $msgs = humanize_gump($validated);
         $flash = array(
@@ -467,9 +454,9 @@ $app->post('/nueva-noticia/', function() use ($app){
             "fade" => 0
         );
         $app -> flash("flash", $flash);
+        $app->flashKeep();
+        $app->redirect($app->urlFor('admin-noticias'));
     }
-    $app->flashKeep();
-    $app->redirect($app->urlFor('admin-secciones'));
 })->name('nueva-noticia-post');
 
 $app->get('/admin/noticias/editor/:id', function($id) use ($app) {    
@@ -487,7 +474,8 @@ $app->get('/admin/noticias/editor/:id', function($id) use ($app) {
         'slug' => $noticia->slug,
         'contenido' => $contenido['data'],
         'files' => $contenido['files'],
-        'creado' => $noticia->creado
+        'creado' => $noticia->creado,
+        'actualizado' => $noticia->actualizado
     );
     $data['noticia'] = $pronoticia;
     $files = array();
@@ -503,32 +491,27 @@ $app->get('/admin/noticias/editor/:id', function($id) use ($app) {
 
 $app->post('/editar-noticia-post/:id/', function($id) use ($app) {
     $validator = new GUMP();
-    //$_POST = $validator->sanitize($_POST);
+    $_POST = $validator->sanitize($_POST);
     $rules = array(
+        'titulo' => 'required'
     );
 
     $filters = array(
+        'titulo' => 'trim|sanitize_string'
     );
     $post = $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
-        $seccion = Seccion::find($id);
-        $contenido = (array) json_decode($seccion->contenido);
-        if(!array_key_exists('data', $contenido)){
-            $contenido = array(
-                'data' => $_POST['contenido'],
-                'files' => array()
-            );
-        } else {
-            $contenido['data'] = $_POST['contenido'];
-        }
-        $seccion->contenido = json_encode($contenido);
-        $seccion->contenedor = (isset($_POST['contenedor'])) ? $_POST['contenedor'] : 0;
-        $seccion->actualizado = time();
-        $seccion->save();
+        $noticia = Noticia::find($id);
+        $contenido = (array) json_decode($noticia->contenido);
+        $contenido['data'] = $_POST['contenido'];
+        $noticia->contenido = json_encode($contenido);
+        $noticia->titulo = $_POST['titulo'];
+        $noticia->actualizado = time();
+        $noticia->save();
         $flash = array(
             "title" => "OK",
-            "msg" => "La seccion se ha actualizado con éxito.",
+            "msg" => "Noticia Actualizada.",
             "type" => "success",
             "fade" => 1
         );
@@ -544,7 +527,7 @@ $app->post('/editar-noticia-post/:id/', function($id) use ($app) {
         $app -> flash("flash", $flash);
     }
     $app->flashKeep();
-    $app->redirect($app->urlFor('admin-secciones'));
+    $app->redirect($app->urlFor('admin-noticias'));
 })->name('editar-noticia-post');
 
 $app->get('/admin/catalogos/', function() use ($app) {

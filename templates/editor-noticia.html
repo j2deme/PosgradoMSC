@@ -5,13 +5,13 @@
         <div class="row">
             <div class="span11">
                 <div class="page-header">
-                    <h3>Editor de Noticia<small>{{ noticia.id }}</small></h3>
+                    <h3>Editor de Noticia <small>{{ noticia.titulo }}</small></h3>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="span11">
-                <div class="tabbable">
+                <div class="tabbable tabs-left">
                     <ul class="nav nav-tabs">
                         <li class="active">
                             <a href="#tab1" data-toggle="tab">Editor</a>
@@ -28,33 +28,24 @@
                             <div id="loader" name="loader" class="hidden">
                                 Cargando Editor <img src="{{ urlFor('home') }}img/loader.gif">
                             </div>
-                            <form id="editor" name="editor" method="post" class="form-horizontal hide" action="{{ urlFor('editar-seccion-post', {'id': seccion.id }) }}">
-                                <textarea id="contenido" name="contenido" class="wysihtml5 span10" style="height: 300px">
-                                {% if seccion is defined %}
-                                {{ seccion.contenido|raw }}
-                                {% endif %}
-                                </textarea>
-{#                                <div class="control-group">
-                                    <br />
-                                    <label for="contenedor" class="control-label">Contenedor</label>
+                            <form id="editor" method="post" class="form-horizontal hide" action="{{ urlFor('editar-noticia-post', {'id': noticia.id }) }}">
+                                <div class="control-group">
+                                    <label class="control-label" for="titulo">Título</label>
                                     <div class="controls">
-                                        {% set headers = ['General','Aspirantes','Alumnos','Posgrado'] %}
-                                        <select id="contenedor" name="contenedor">
-                                            {% for i in 0..3 %}
-                                            <option value="{{ i }}"
-                                            {% if seccion.contenedor == i %}
-                                            selected
-                                            {% endif %}
-                                            >{{ headers[i] }}</option>
-                                            {% endfor %}
-                                        </select>
+                                        <input type="text" id="titulo" name="titulo" class="span7" value="{{ noticia.titulo|default('') }}"/>
                                     </div>
-                        </div>#}
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="contenido">Contenido</label>
+                                    <div class="controls">
+                                        <textarea id="contenido" name="contenido" class="wysihtml5 span7" style="height: 220px">{% if noticia is defined %}{{ noticia.contenido|raw }}{% endif %}</textarea>
+                                    </div>
+                                </div>
                                 <div class="form-actions">
+                                    <a href="{{ urlFor('admin-noticias') }}" class="btn"><i class="icon-circle-arrow-left"> </i> Atrás</a>
                                     <button class="btn btn-primary" type="submit">
-                                        <i class="icon-save"> </i> Guardar Cambios
+                                        <i class="icon-save"> </i> Guardar
                                     </button>
-                                    <a href="{{ urlFor('admin-secciones') }}" class="btn"><i class="icon-remove-sign"> </i> Cancelar</a>
                                 </div>
                             </form>
                         </div>
@@ -79,8 +70,8 @@
                                         <td>{{ file.size }}</td>
                                         <td>
                                             <div class="btn-group">
-                                            <a class="btn btn-danger" rel="tooltip" title="Eliminar" href="{{ urlFor('delete-file',{'type':'section', 'id': seccion.id, 'name': file.name}) }}"><i class="icon-trash"> </i></a>
-                                            <a class="btn btn-info" rel="tooltip" title="Descargar" href="{{ urlFor('home') }}files/sections/{{ file.name }}" target="_blank"><i class="icon-download"> </i></a>
+                                            <a class="btn btn-danger" rel="tooltip" title="Eliminar" href="{{ urlFor('delete-file',{'type':'news', 'id': noticia.id, 'name': file.name}) }}"><i class="icon-trash"> </i></a>
+                                            <a class="btn btn-info" rel="tooltip" title="Descargar" href="{{ urlFor('home') }}files/news/{{ file.name }}" target="_blank"><i class="icon-download"> </i></a>
                                             </div>
                                         </td>
                                     </tr>
@@ -96,7 +87,7 @@
                         </div>
                         <div class="tab-pane" id="tab3" name="tab3">
                             <h2>Adjuntar Archivos</h2>
-                            <form action="{{ urlFor('upload-file',{'type':'section','id': seccion.id })}}" method="post" enctype="multipart/form-data">
+                            <form action="{{ urlFor('upload-file',{'type':'news','id': noticia.id })}}" method="post" enctype="multipart/form-data">
                                 <input type="file" id="files" name="files[]" data-pretty-file="" multiple="multiple">
                                 <div class="form-actions">
                                     <button class="btn btn-primary" type="submit">
@@ -118,17 +109,6 @@
             {wysihtml5 : "{{ urlFor('home') }}js/wysihtml5-0.3.0.js"},
             {bwysihtml5 : "{{ urlFor('home') }}js/bootstrap-wysihtml5.js"},
             {pretty_upload: "{{ urlFor('home') }}js/jquery.prettify-upload.js"}
-/*            {jqueryuiw : "{{ urlFor('home') }}js/jquery-file-upload/jquery.ui.widget.js"},
-            "{{ urlFor('home') }}js/jquery-file-upload/tmpl.min.js",
-            "{{ urlFor('home') }}js/jquery-file-upload/load-image.min.js",
-            "{{ urlFor('home') }}js/jquery-file-upload/canvas-to-blob.min.js",
-            "{{ urlFor('home') }}js/jquery-file-upload/jquery.iframe-transport.js",
-            "{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload.js",
-            {underscore : "{{ urlFor('home') }}js/underscore-min.js"},
-            {bootstrap_gallery : "{{ urlFor('home') }}js/bootstrap-image-gallery.min.js"},
-            "{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload-fp.js",
-            "{{ urlFor('home') }}js/jquery-file-upload/jquery.fileupload-ui.js",
-            "{{ urlFor('home') }}js/jquery-file-upload/locale.js"*/
             );
         $(function() {
             $('.wysihtml5').wysihtml5();
@@ -148,8 +128,6 @@
             $(urlSelect).append('<option value="@nucleo-basico-academico">Núcleo Básico Académico</option>');
             $(urlSelect).append('<option value="@registro-aspirante">Registro de Aspirante</option>');
             {% endif %}
-
-//            $("#loader").delay(200).fadeOut(300);
             $('#editor').delay(500).fadeIn(300);
             $('[data-pretty-file]').prettifyUpload({
                 buttonClass: 'btn btn-info span2',
@@ -157,23 +135,6 @@
                 text: ' Examinar archivos',
                 wrapperWidth: '200px'
             });
-            
-{#            $('#fileupload').fileupload({
-                url : '{{ urlFor("uploader") }}',
-                maxFileSize : 50000000, //50MB
-                //acceptFileTypes: /(\.|\/)(zip|pdf|gif|jpe?g|png)$/i,
-                process : [{
-                    action : 'load',
-                    fileTypes : /^image\/(gif|jpeg|png)$/,
-                    maxFileSize : 20000000 // 20MB
-                }, {
-                    action : 'resize',
-                    maxWidth : 1440,
-                    maxHeight : 900
-                }, {
-                    action : 'save'
-                }]
-            });#}
         });
     }); 
 </script>

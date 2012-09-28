@@ -157,7 +157,7 @@ function replace_hashes($content){
 		'<a href="'.$app->urlFor('productividad-academica').'" >Productividad Académica</a>',
 		'<a href="'.$app->urlFor('nucleo-academico').'" >Núcleo Básico Académico</a>',
 		'<a href="'.$app->urlFor('calendario').'" >Calendario</a>',
-		'<a href="'.$app->urlFor('registro-inicio').'" >Registro Aspirantes</a>',
+		'<a href="'.$app->urlFor('registro').'" >Registro Aspirantes</a>',
 	);
 	$newContent = str_replace($hashes, $urls, $content);
 	return $newContent;

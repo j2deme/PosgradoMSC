@@ -444,7 +444,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
  $app->get('/registro-aspirantes/',function() use ($app) {
      $data['user'] = isAllowed("Administrador", false);
      $app->render('registroinicial.html');
- })->name('registro-inicio');
+ })->name('registro');
 
  $app->post('/formulario-registro-post/',function() use ($app) {
     $validator = new GUMP();

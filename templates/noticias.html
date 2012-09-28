@@ -24,6 +24,7 @@
 							<th>#</th>
 							<th>Encabezado</th>
 							<th class="hidden-phone">Contenido</th>
+							<th class="hidden-phone hidden-tablet">Creado</th>
 							<th class="hidden-phone">Actualizado</th>
 							<th>Opciones</th>
 						</tr>
@@ -35,14 +36,22 @@
 							<td>{{ loop.index }}</td>
 							<td>{{ noticia.titulo }}</td>
 							<td class="hidden-phone">
-								{{ news[noticia.id]|trim|striptags|slice(0,80)|raw }}
-							</td>
-							<td class="hidden-phone ago">{{ noticia.creado|date("d/m/Y H:i") }}</td>
+								{{ news[noticia.id]|trim|striptags|slice(0,80)|raw }}...
+                            </td>
+							<td class="hidden-phone hidden-tablet ago">{{ noticia.creado|date("d/m/Y H:i") }}</td>
+							<td class="hidden-phone ago">{{ noticia.actualizado|date("d/m/Y H:i") }}</td>
 							<td>
 								<div class="btn-group">
 									<a class="btn btn-primary" href="{{ urlFor('editor-noticia',{'id': noticia.id}) }}" rel="tooltip" data-original-title="Editar">
 										<i class="icon-edit"> </i>
 									</a>
+									<a class="btn" href="#" rel="tooltip" data-original-title="Ver">
+										<i class="icon-eye-open"> </i>
+									</a>
+									<a class="btn btn-danger" href="#" rel="tooltip" data-original-title="Borrar">
+										<i class="icon-trash"> </i>
+									</a>
+									
 								</div>
 								
 							</td>
@@ -74,9 +83,9 @@
     <div class="modal-body">
         <p>Ingresa los datos básicos para una nueva noticia, enseguida seras redireccionado a la interfaz de edición.</p>
         <div class="control-group">
-            <label class="control-label" for="usuario">Título</label>
+            <label class="control-label" for="titulo">Título</label>
             <div class="controls">
-                <input type="text" class="input-xlarge" id="titulo" name="titulo" value="">
+                <input type="text" class="input-xlarge" id="titulo" name="titulo">
             </div>
         </div>
         <div class="control-group">

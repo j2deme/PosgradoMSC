@@ -100,7 +100,7 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
     } else {
         $post = Noticia::find($id);
         $upload_path = './uploads/news/';
-        $redirectTo = $app->urlFor('editor-seccion',array('slug' => $post->slug));#TODO Cambiar ruta a editor-noticias
+        $redirectTo = $app->urlFor('editor-noticia',array('id' => $post->id));
     }
     $not_allowed_filetypes = array('.exe','.bat','.jar');
     $max_filesize = 5242880; // 5MB 
@@ -119,11 +119,11 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
         $filesize = filesize($tmp_name);
             
         if(in_array($ext,$not_allowed_filetypes)){
-            $msg .= "<li>Los archivos de la extensi&oacute;n $ext no estan permitidos.</li>";
+            $msg .= "<li>No se permiten archivos tipo $ext.</li>";
             $warnings++;
         }
         if($filesize > $max_filesize){
-            $msg .= "<li>El archivo $name es demasiado grande para subir.</li>";
+            $msg .= "<li>El archivo $name es demasiado grande.</li>";
             $warnings++;
         }
         if(!is_writable($upload_path)){
@@ -149,11 +149,11 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
                 $layer->save($upload_path, "thumb_$filename", true, null, 95);
                 @chmod($upload_path."thumb_$filename", 0777);
             }
-            $msg .= "<li>El archivo $name se ha subido exitosamente.</li>";
+            $msg .= "<li>Archivo $name subido.</li>";
             $ok++;
             $extraFiles[] = $filename;
         } else {
-            $msg .= "<li>Ha habido un problema al subir el archivo $name. Intente nuevamente.</li>";
+            $msg .= "<li>Ha sucedido algo inesperado. Intentalo nuevamente.</li>";
             $warnings++;
         }   
     }
@@ -171,7 +171,7 @@ $app->post('/upload/:type/:id', function ($type, $id) use ($app){
     $post->save();
     if ($i < $num_files) {
         $title = "ERROR";
-        $msg = "<li>Verifique los permisos del directorio $upload_path. (CHMOD 777)</li>";
+        $msg = "<li>Verifica los permisos del directorio $upload_path. (CHMOD 777)</li>";
         $type = "error";
         $fade = 0;
     } elseif ($warnings >= $ok) {
@@ -197,7 +197,7 @@ $app->get('/delete-file/:type/:id/:name', function($type, $id, $name) use ($app)
     } else {
         $post = Noticia::find($id);
         $upload_path = './uploads/news/';
-        $redirectTo = $app->urlFor('editor-seccion',array('slug' => $post->slug));#TODO Cambiar ruta a editor-noticias
+        $redirectTo = $app->urlFor('editor-noticia',array('id' => $post->id));
     }
     $fileToRemove = $upload_path.$name;
     $thumb = $upload_path."thumb_$name";
@@ -209,7 +209,7 @@ $app->get('/delete-file/:type/:id/:name', function($type, $id, $name) use ($app)
             if($isImg){
                 @unlink($thumb);
             }
-            $msg = "El archivo $name has sido borrado correctamente.";
+            $msg = "Archivo $name borrado.";
             $ok = true;
             $contenido = (array) json_decode($post->contenido);
             $currentFiles = $contenido['files'];
@@ -218,11 +218,13 @@ $app->get('/delete-file/:type/:id/:name', function($type, $id, $name) use ($app)
             $post->contenido = json_encode($contenido);
             $post->save();
         } else {
-            $msg = "Problemas para borrar el archivo $name.";
+            $msg = "No se pudo borrar el archivo $name.";
             $ok = false;
         }
     } else {
-        $msg = "El archivo $name no existe, por lo tanto no se puede borrar.";
+        //En esta situación,no es necesario informar que hubo un problema.
+        //$msg = "El archivo $name no existe, por lo tanto no se puede borrar.";
+        $msg = "Archivo $name borrado.";
         $ok = false;
     }
     if($ok){
