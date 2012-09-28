@@ -171,30 +171,21 @@ $app->get('/estadisticas/nucleo-academico/', function() use ($app) {
     $data['usuarios'] = Usuario::find_all_by_id($rolus->usuario_id,array('include'=> array('personal','docente')));
     $app->render('nucleoacademico.html',$data);
 })->name('nucleo-academico');
-#TODO Verificar publicaciones VS productividad academica
-//$app->get('/estadisticas/productividad-academica/', function() use ($app) {
-$app->get('/publicaciones/', function() use ($app) {
-    /*$rol = Rol::find_by_nombre('Docente');
-    $rolus = UsuariosRoles::find_all_by_rol_id($rol->id);
-    $idusuarios = array();
-    foreach ($rolus as $u) {
-        $idusuarios[] = $u->id;
-    }
-#FIXME Error encontrado al tratar de cargar publicaciones, revisar
-    $usuarios = $data['usuarios'] = Usuario::find($idusuarios,array('include'=> array('personal','publicaciones')));
-    $publicaciones = array();
-    foreach ($usuarios as $usuario) {
-        foreach ($usuario->publicaciones as $pub) {
-            $nombrecompleto=$usuario->personal->nombre." ".$usuario->personal->paterno." ".$usuario->personal->materno;
-            $publicaciones[$pub->tipo][$nombrecompleto][] = $pub;
-        }
-        $data['pub'] = $publicaciones;
 
-    }
-    $data['pub'] = $publicaciones;
-    ladybug_dump($data);*/
+
+$app->get('/productividad-academica/', function() use ($app) {
+    $data['user'] = isAllowed("Administrador", false);
+	$data['usuarios']=Usuario::find('all',array('include' => array('personal','publicaciones')));
+	
     $app->render('productividadacademica.html');
 })->name('productividad-academica');
+
+$app->get('/publicaciones/', function() use ($app) {
+    $data['user'] = isAllowed("Administrador", false);
+	$data['usuarios']=Usuario::find('all',array('include' => array('personal','publicaciones')));
+	
+    $app->render('productividadacademica.html');
+})->name('publicaciones');
 
 $app->get('/calendario/(:year/(:month/))', function($year, $month) use ($app) {
     $data['user'] = isAllowed("Administrador", false);
@@ -288,7 +279,8 @@ $app->get('/noticias/:slug/', function($slug) use ($app){
 
 $app->get('/estadisticas/matriculacion/', function() use ($app) {
     $data['user'] = isAllowed("Administrador", false);
-    $app->render('EstadisticaMatriculacion.html');
+	$data['matriculaciones']=Matriculacion::all();
+    $app->render('EstadisticaMatriculacion.html',$data);
 })->name('matriculacion');
 
 /* =======================
@@ -793,7 +785,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
       } else {
            $flash = array(
         "title" => "ERROR",
-        "msg" => "El nombre de usuario ".$_POST['Usuarios']." ya se encuentra registrado actualmente.",
+        "msg" => "El nombre de usuario ".$_POST['usuario']." ya se encuentra registrado actualmente.",
         "type" => "error",
         "fade" => 1
       );
@@ -926,7 +918,7 @@ $app->post('/nuevo-tesista/',function() use ($app) {
                $posgrado->titulacion=$_POST['ftitulacion'];
            }
            if (isset($_POST['lineainv'])) {
-               $posgrado->linea=$_POST['lineainv'];
+               $posgrado->linea=$_POST['lineainve'];
            }
 		   $posgrado->save();
 

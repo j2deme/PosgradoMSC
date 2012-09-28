@@ -347,6 +347,7 @@
 
 <div class="modal hide fade" id="modNuevaMemoria">
 	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
 		<h3>Nueva Memoria</h3>
 	</div>
 	<form class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
@@ -393,6 +394,7 @@
 
 <div class="modal hide fade" id="modNuevoLibro">
 	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
 		<h3>Nuevo Libro</h3>
 	</div>
 	<form class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
@@ -447,6 +449,7 @@
 
 <div class="modal hide fade" id="modNuevoTrabajo">
 	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
 		<h3>Nuevo Trabajo</h3>
 	</div>
 	<form class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
@@ -505,6 +508,7 @@
 
 <div class="modal hide fade" id="modNuevaRevista">
 	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
 		<h3>Nueva Revista</h3>
 	</div>
 	<form class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
@@ -567,6 +571,7 @@
 
 <div class="modal hide fade" id="modEditPublicacion{{ publicacion.id }}">
 	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
 		<h3>Editar Publicacion</h3>
 	</div>
 	<form class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
@@ -752,10 +757,11 @@
 
 	<div class="modal hide fade" id="modconfirmacion{{ publicacion.id }}">
 		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
 			<h3>Confirmacion de Borrado</h3>
 		</div>
 		<div class="modal-body">
-			<label>¿Esta seguro que desea borrar {% if publicacion.tipo=="Libro" or publicacion.tipo=="Trabajo" %} el {% else %} la {% endif %} {{ publicacion.tipo~" "~ publicacion.nombre }} </label>
+			<label>¿Esta seguro que desea borrar {% if publicacion.tipo=="Libro" or publicacion.tipo=="Trabajo" %} el {% else %} la {% endif %} {{ publicacion.tipo }}  <strong>{{ publicacion.nombre }}</strong> ?  </label>
 		</div>
 		<div class="modal-footer">
 			<a href="#" class="btn" data-dismiss="modal">
