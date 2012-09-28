@@ -2,11 +2,15 @@
 {% block content %}
 <div class="row">
 	
-	<h3 align="center">Gestor de Tesistas</h3>
+	<legend align="center"><strong>Gestor de Tesistas</strong> </legend>
 	
 	<div class="row">
 		<div class="span12 offset1">
-			<a class="btn btn-primary" data-toggle="modal" href="#modTesista">Nuevo tesista</a>
+			
+			<a class="btn btn-primary" data-toggle="modal" href="#modTesista">
+				<i class="icon-plus-sign"></i>
+				Nuevo tesista
+				</a>
 		</div>
 		
 	</div>
@@ -15,7 +19,7 @@
 			<br />
 			<br />
 			
-			<table class="table table-striped table-bordered" >
+			<table class="table table-striped table-bordered table-condensed" >
 		<thead>
 			<tr>
 				<th align="center" >#</th>
@@ -54,10 +58,10 @@
 				<td>
 					<div class="btn-group">
 						
-						<a class="btn btn-primary" data-toggle="modal" href="#modInfTesista{{ posgrado.usuario_id }}" rel="tooltip" title="Ver">
+						<a class="btn" data-toggle="modal" href="#modInfTesista{{ posgrado.usuario_id }}" rel="tooltip" title="Ver">
 						<i class="icon-eye-open"></i></a>
 					
-					<a class="btn btn-success" data-toggle="modal" href="#modEditTesista{{ posgrado.usuario_id }}" rel="tooltip" title="Editar">
+					<a class="btn btn-primary" data-toggle="modal" href="#modEditTesista{{ posgrado.usuario_id }}" rel="tooltip" title="Editar">
 					<i class="icon-edit"></i></a>
 					
 					<a class="btn" data-toggle="modal" href="#modDocTesis{{ posgrado.usuario_id }}" rel="tooltip" title="Adjuntar">
@@ -96,6 +100,7 @@
 	<!-- Editar TESISTA -->
 	<div class="modal hide fade" id="modEditTesista{{ posgrado.usuario_id }}">
 		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
 			<h3>Editar Tesista</h3>
 		</div>
 		<div class="modal-body">
@@ -169,9 +174,11 @@
 		</div>
 		<div class="modal-footer">
 			<button class="btn" type="reset" data-dismiss="modal">
+				<i class="icon-remove-sign"></i>
 				Cancelar
 			</button>
 			<button class=" btn btn-primary" type="submit">
+				<i class="icon-save"></i>
 				Guardar
 			</button>
 		</div>
@@ -183,6 +190,7 @@
 
 	<div class="modal hide fade" id="modInfTesista{{ posgrado.usuario_id }}">
 		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
 			<h3>Informacion Tesista</h3>
 		</div>
 		<div class="modal-body">
@@ -234,7 +242,10 @@
 			</p>
 		</div>
 		<div class="modal-footer">
-			<a href="#" class="btn" data-dismiss="modal" type="">Cerrar</a>
+			<a href="#" class="btn" data-dismiss="modal" >
+				<i class="icon-remove-sign"></i>
+				Cerrar
+				</a>
 			<!--    	<a href="#" class="btn btn-primary">Guardar</a>  -->
 		</div>
 	</div>
@@ -242,6 +253,7 @@
 	<!-- AGREGAR DOCUMENTOS DE TESIS-->
 	<div class="modal hide fade" id="modDocTesis{{ posgrado.usuario_id }}">
 		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
 			<h3>Documento de tesis</h3>
 		</div>
 		<div class="modal-body">
@@ -261,7 +273,7 @@
 							<label>Exposicion de tesis</label>
 
 							<input name="docpresentacion" type="file" id="presentacion" />
-
+							<input name="boton" class="btn btn-primary span1" id="boton" value="Adjuntar" />
 						</div>
 					</div>
 
@@ -269,24 +281,34 @@
 			</p>
 		</div>
 		<div class="modal-footer">
-			<a href="#" class="btn" data-dismiss="modal">Cancelar</a><!---->
-			<input name="boton" class="btn btn-primary span1" id="boton" value="Adjuntar" />
+			<a href="#" class="btn" data-dismiss="modal">
+				<i class="icon-remove-sign"></i>
+				Cancelar
+				</a><!---->
+			
 		</div>
 	</div>
 	
 	<!-- Confirmacion de borrado-->
 	<div class="modal hide fade" id="modconfirmacion{{ posgrado.usuario_id }}">
 		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
 			<h3>Confirmacion de Borrado</h3>
 		</div>
 		<div class="modal-body">
 			{% for datostesista in datostesistas %}
-			<label>¿Esta seguro que desea borrar a {% if datostesista.id==posgrado.usuario_id %} {{ datostesista.nombrecompleto }}? {% endif %} como su tesista </label>
+			<label>¿Esta seguro que desea borrar a {% if datostesista.id==posgrado.usuario_id %} {{ datostesista.nombrecompleto }} {% endif %} como su tesista? </label>
 			{% endfor %}
 		</div>
 		<div class="modal-footer">
-			<a href="#" class="btn" data-dismiss="modal">No</a><!---->
-			<a class="btn btn-primary" href="{{ urlFor('borrar-tesista',{'id': posgrado.id}) }}">Si</a>
+			<a href="#" class="btn" data-dismiss="modal">
+				<i class="icon-remove-sign"></i>
+				No  
+				
+				</a><!---->
+			<a class="btn btn-danger" href="{{ urlFor('borrar-tesista',{'id': posgrado.id}) }}">
+				<i class="icon-trash"></i>
+				Si</a>
 		</div>
 	</div>
 	{% endfor %}
@@ -295,14 +317,15 @@
 
 	<div class="modal hide fade" id="modTesista">
 		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
 			<h3>Nuevo Tesista</h3>
 		</div>
 		<div class="modal-body">
 			<form class="" method="post" action="{{ urlFor('nuevo-tesista-post') }}">
 				<div class="row">
 					<div class="span2 offset1">
-						<label for="lineainv">Linea de investigacion</label>
-						<select id="lineainv" name="lineainv" data-placeholder="Seleccione Linea de Investigacion " class="chzn-select" >
+						<label for="lineainve">Linea de investigacion</label>
+						<select id="lineainve" name="lineainve" data-placeholder="Seleccione Linea de Investigacion " class="chzn-select" >
 							<option></option>
 							{% for linea in lineas %}
 							<option value="{{ linea.id }}">{{ linea.nombre }}</option>
@@ -366,8 +389,12 @@
 				</div>
 		</div>
 		<div class="modal-footer">
-			<a href="#" class="btn" data-dismiss="modal">Cancelar</a><!---->
+			<a href="#" class="btn" data-dismiss="modal">
+				<i class="icon-remove-sign"></i>
+				Cancelar
+				</a><!---->
 			<button class="btn btn-primary" type="submit" >
+				<i class="icon-save"></i>
 				Guardar
 			</button>
 		</div>
