@@ -17,7 +17,11 @@
                             <a href="#tab1" data-toggle="tab">Editor</a>
                         </li>
                         <li>
-                            <a href="#tab2" data-toggle="tab">Adjuntos</a>
+                            <a href="#tab2" data-toggle="tab">Adjuntos
+                                {% if (numFiles is defined) and (numFiles != 0) %}
+                                <span class="badge badge-info">{{ numFiles }}</span>
+                                {% endif %}
+                            </a>
                         </li>
                         <li>
                             <a href="#tab3" data-toggle="tab">Adjuntar Archivos</a>
@@ -64,14 +68,18 @@
                                 <tbody>
                                     {% if (files is defined) and (files|length > 0) %}
                                         {% for file in files %}
+                                        {% if (starred is defined) and (starred)%}
+                                        {% set star = "btn-warning" %}
+                                        {% endif %}
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ file.name }}</td>
                                         <td>{{ file.size }}</td>
                                         <td>
                                             <div class="btn-group">
-                                            <a class="btn btn-danger" rel="tooltip" title="Eliminar" href="{{ urlFor('delete-file',{'type':'news', 'id': noticia.id, 'name': file.name}) }}"><i class="icon-trash"> </i></a>
                                             <a class="btn btn-info" rel="tooltip" title="Descargar" href="{{ urlFor('home') }}files/news/{{ file.name }}" target="_blank"><i class="icon-download"> </i></a>
+                                            <a class="btn {{ star|default('') }}" href="{{ urlFor('home') }}" rel="tooltip" title="Marcar como principal"><i class="icon-star"></i></a>
+                                            <a class="btn btn-danger" rel="tooltip" title="Eliminar" href="{{ urlFor('delete-file',{'type':'news', 'id': noticia.id, 'name': file.name}) }}"><i class="icon-trash"> </i></a>
                                             </div>
                                         </td>
                                     </tr>
@@ -94,7 +102,7 @@
                                         <i class="icon-save"> </i> Subir archivos
                                     </button>
                                 </div>
-                            </form>                         
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -136,6 +144,6 @@
                 wrapperWidth: '200px'
             });
         });
-    }); 
+    });
 </script>
 {% endblock %}

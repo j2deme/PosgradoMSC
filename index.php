@@ -241,19 +241,19 @@ $app->get('/docente/', function() use ($app) {
 
 $app -> get('/docente/borrar-publicacion/:id/', function($id) use ($app) {
 
-    	
+
         $publicacion = Publicacion::find($id);
         $publicacion -> delete();
-		
+
         $flash = array("title" => "OK", "msg" => "La publicacion ha sido borrada correctamente.", "type" => "info", "fade" => 1);
         $app -> flash("flash", $flash);
         $app -> flashKeep();
         $app -> redirect($app -> urlFor('docente-publicaciones'));
-		
+
 }) -> name('borrar-publicacion');
 
 $app->get('/docente/publicaciones/', function() use ($app) {
-    $data['user']=isAllowed('Docente',FALSE);	
+    $data['user']=isAllowed('Docente',FALSE);
     $data['usuario']=Usuario::find_by_id($data['user']->id,array('include'=> array('personal','publicaciones')));
 	$data['publicaciones']=$data['usuario']->publicaciones;
 	$data['personal']=$data['usuario']->personal;
@@ -266,7 +266,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
        $validator= new GUMP;
        $_POST=$validator->sanitize($_POST);
       if (isset($_POST['modif'])) {
-                 
+
 			 if ($_POST['tipo']==1) {
              $rules=array(
             'mtitulo'=>'required',
@@ -299,7 +299,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -347,7 +347,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -396,7 +396,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-          
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -444,7 +444,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -494,7 +494,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -542,7 +542,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -591,7 +591,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-          
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -639,7 +639,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -680,13 +680,13 @@ $app->get('/docente/publicaciones/', function() use ($app) {
 
     );
     $_POST = $validator->filter($_POST, $filters);
-	
+
     $validated = $validator->validate($_POST, $rules);
-    
+
     if ($validated === TRUE) {
-    	
+
     	$usuario=Usuario::find_by_usuario($_POST['usuario']);
-    	
+
       if (count($usuario)==0) {
       	ladybug_dump_die($_POST);
           if ($_POST['pass']==$_POST['confirmacion']) {
@@ -740,7 +740,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
      $app->flashKeep();
      $app->redirect($app->urlFor('registro-inicio'));
       }
-      
+
     }else {
 
 		  $msgs = humanize_gump($validated);
@@ -761,7 +761,7 @@ $app->get('/docente/tesistas/', function() use ($app) {
 
     $data['user'] = isAllowed("Docente",FALSE);
     $rolalumno=Rol::find_by_nombre('Alumno');
-	
+
     $idss=UsuariosRoles::find_all_by_rol_id($rolalumno->id);
     $idalumnos=array();
     foreach ($idss as $u) {
@@ -795,10 +795,10 @@ $app->get('/docente/tesistas/', function() use ($app) {
         unset($dato);
     }
 	$data['datostesistas']=$tesistas;
-		
+
 	}
     $data['lineas']= LineaInvestigacion::all();
-    
+
     //ladybug_dump($data['lineas'][0]);
     //ladybug_dump($data['posgrados'][0]);
    $app->render('gestTesista02.html',$data);
@@ -807,25 +807,25 @@ $app->get('/docente/tesistas/', function() use ($app) {
 $app->get('/docente/tesistas/:id', function($id) use ($app) {
     $posgrado=Posgrado::find_by_id($id);
 	if (count($posgrado)==0) {
-	
+
 		$flash = array(
             "title" => "ERROR",
             "msg" => "Se ha borrado el tesista exitosamente.",
             "type" => "error",
             "fade" => 0
           );
-		
+
 	} else {
-		$posgrado->delete();	
+		$posgrado->delete();
 		$flash = array(
             "title" => "OK",
             "msg" => "Se ha borrado el tesista exitosamente.",
             "type" => "success",
             "fade" => 1
           );
-		
+
 	}
-	
+
 		   $app -> flash("flash", $flash);
           $app->flashKeep();
           $app->redirect($app->urlFor('docente-tesistas'));
@@ -851,7 +851,7 @@ $app->post('/nuevo-tesista/',function() use ($app) {
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
     	if (isset($_POST['proc'])) {
-				
+
 			$posgrado=Posgrado::find_by_usuario_id($_POST['tesista']);
 			$posgrado->nombre=$_POST['nombreTesis'];
            $posgrado->asesor=$data['user']->id;
@@ -868,16 +868,16 @@ $app->post('/nuevo-tesista/',function() use ($app) {
                $posgrado->linea=$_POST['lineainv'];
            }
 		   $posgrado->save();
-			
+
 			$flash = array(
             "title" => "OK",
             "msg" => "Se ha actualizado el tesista exitosamente.",
             "type" => "success",
             "fade" => 1
           );
-			
+
 		} else {
-		
+
 		   $posgrado= new Posgrado;
            $posgrado->usuario_id=$_POST['tesista'];
            $posgrado->nombre=$_POST['nombreTesis'];
@@ -893,7 +893,7 @@ $app->post('/nuevo-tesista/',function() use ($app) {
            }
            if (isset($_POST['lineainv'])) {
                $posgrado->linea=$_POST['lineainv'];
-           }      
+           }
 			$posgrado->save();
 		    $flash = array(
             "title" => "OK",
@@ -901,7 +901,7 @@ $app->post('/nuevo-tesista/',function() use ($app) {
             "type" => "success",
             "fade" => 1
           );
-			
+
 		}
     } else {
 
@@ -1435,9 +1435,9 @@ $app->post('/nuevo-conocimiento/',function() use ($app) {
                  }
              }
          }
-        
+
          $flash = array("title" => "OK", "msg" => "Conocimiento de Herramientas,plataformas y lenguajes se agregó satisfactoriamente .", "type" => "success", "fade" => 1);
- 
+
          $app -> flash("flash", $flash);
          $app -> flashKeep();
          if ($_POST['perfil'] == 1) {
@@ -1471,7 +1471,7 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
          foreach ($iu as $idioma) {
              if ($idioma -> idioma_id == $_POST['idioma']) {
                  $flash = array("title" => "ERROR", "msg" => "El Idioma que esta tratando de guardar ya existe en su perfil .", "type" => "error", "fade" => 0);
- 
+
                  $app -> flash("flash", $flash);
                  $app -> flashKeep();
                  if ($_POST['perfil'] == 1) {
@@ -1479,7 +1479,7 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
                  } else {
                      $app -> redirect($app -> urlFor('perfil-docente'));
                  }
- 
+
              } else {
                  $ui = new UsuariosIdiomas;
                  $ui -> usuario_id = $data['user'] -> id;
@@ -1491,7 +1491,7 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
                  $ui -> save();
              }
         }
-         
+
         $flash = array("title" => "OK", "msg" => "El idioma se ha guardado correctamente.", "type" => "success", "fade" => 1);
 
         $app -> flash("flash", $flash);
@@ -1530,7 +1530,7 @@ $app -> post('/actualizar-idioma-usuario/', function() use ($app) {
          $iu -> entiende = $_POST['entiende'];
          $iu -> save();
          $flash = array("title" => "OK", "msg" => "El idioma se ha actualizado correctamente.", "type" => "success", "fade" => 1);
- 
+
          $app -> flash("flash", $flash);
          $app -> flashKeep();
          if ($_POST['perfil'] == 1) {
@@ -1552,18 +1552,18 @@ $app -> post('/actualizar-idioma-usuario/', function() use ($app) {
 }) -> name('actualizar-idioma-usuario-post');
 
 $app -> get('/borrar-idioma-usuario/:id/:perfil/', function($id, $perfil) use ($app) {
-     $data['user'] = isAllowed(array("Docente", "Alumno", "Aspirante"), FALSE);  
+     $data['user'] = isAllowed(array("Docente", "Alumno", "Aspirante"), FALSE);
      $iu = UsuariosIdiomas::find($id);
-     $iu -> delete(); 
+     $iu -> delete();
      $flash = array("title" => "OK", "msg" => "El idioma se ha borrado correctamente.", "type" => "success", "fade" => 1);
- 
+
      $app -> flash("flash", $flash);
      $app -> flashKeep();
      if ($perfil == 1) {
          $app -> redirect($app -> urlFor('perfil'));
      } else {
          $app -> redirect($app -> urlFor('perfil-docente'));
-      } 
+      }
 }) -> name('borrar-idioma-usuario-post');
 
 /* =======================
