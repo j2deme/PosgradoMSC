@@ -225,6 +225,67 @@ $app->get('/egresados/', function() use ($app) {
     $data['user'] = isAllowed("Administrador", false);
 })->name('egresados');
 
+$app->get('/noticias/', function() use ($app){
+    $tb = new Toolbox();
+    $data['user'] = isAllowed("Administrador", false);
+    $noticias = Noticia::find('all',array('order'=>'id desc'));
+    foreach ($noticias as $noticia) {
+        if($noticia->slug == "" && $noticia->titulo != ""){
+            $noticia->slug = $tb->slugify($noticia->titulo);
+            $noticia->save();
+        }
+    }
+    $years = array();
+    foreach ($noticias as $noticia) {
+        $date = $noticia->creado;
+        $date = date("Y", $date);
+        $years["$date"][] = $noticia;
+    }
+    $data['years'] = $years;
+    $data['noticias'] = $noticias;
+    $app->render('archivo-noticias.html', $data);
+})->name('noticias');
+
+$app->get('/noticias/:slug/', function($slug) use ($app){
+    $data['user'] = isAllowed("Administrador", false);
+    $noticia = Noticia::find_by_slug($slug);
+    if ($noticia) {
+        $contenido = (array) json_decode($noticia->contenido);
+        $pronoticia = array(
+            'id'          => $noticia->id,
+            'titulo'      => $noticia->titulo,
+            'slug'        => $noticia->slug,
+            'imagen'      => $noticia->imagen,
+            'contenido'   => replace_hashes($contenido['data']),
+            'files'       => $contenido['files'],
+            'creado'      => $noticia->creado,
+            'actualizado' => $noticia->actualizado
+        );
+        $data['noticia'] = $pronoticia;
+        $files = (array) $contenido['files'];
+        $imgs = array();
+        $upload_path = "./uploads/news/";
+        foreach($files as $file){
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            $filename = pathinfo($file, PATHINFO_BASENAME);
+            $img_exts = array('png','jpg','gif','jpeg','bmp');
+            if(in_array($ext, $img_exts)){
+                $imgs[] = $file;
+                if(!file_exists($upload_path."thumb_$filename")){
+                    $layer = new PHPImageWorkshop\ImageWorkshop(array('imageFromPath' => $upload_path.$file));
+                    $layer->cropMaximumInPixel(0, 0, "MM");
+                    $layer->resizeInPixel(200, 200);
+                    $layer->save($upload_path, "thumb_$filename", true, null, 95);
+                    @chmod($upload_path."thumb_$filename", 0777);
+                }
+            }
+        }
+        $data['imgs'] = $imgs;
+        $data['files'] = $files;
+    }
+    $app->render('index.html', $data);
+})->name('noticia');
+
 $app->get('/estadisticas/matriculacion/', function() use ($app) {
     $data['user'] = isAllowed("Administrador", false);
     $app->render('EstadisticaMatriculacion.html');
@@ -1570,6 +1631,13 @@ $app -> get('/borrar-idioma-usuario/:id/:perfil/', function($id, $perfil) use ($
  * ====== PRINCIPAL ======
  * =======================*/
 $app->get('/(:slug/)', function ($slug = "") use ($app) {
+    // Get request object
+    $req = $app->request();
+    // Get request headers as associative array
+    $headers = $req->headers();
+    // Get the ACCEPT_CHARSET header
+    $charset = $req->headers('ACCEPT_CHARSET');
+
     $data['user'] = isAllowed("Administrador", false);
     if ($slug != "") {
         $seccion = Seccion::find_by_slug($slug);

@@ -1,6 +1,6 @@
-{% set url = urlFor('home')~"uploads/sections/" %}
+{% set url = urlFor('home')~"uploads/news/" %}
 <div class="page-header">
-    <h2>{{ seccion.nombre }}</h2>
+    <h2>{{ noticia.titulo }}</h2>
 </div>
 <div class="row">
     {% if (imgs is defined) and (imgs|length > 0) %}
@@ -9,7 +9,7 @@
         {% set spanSize = 8 %}
     {% endif %}
     <div class="span{{ spanSize }}">
-      {{ seccion.contenido|raw }}
+      {{ noticia.contenido|raw }}
     </div>
     {% if (imgs is defined) and (imgs|length > 0) %}
     <div class="span2">

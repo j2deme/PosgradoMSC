@@ -420,6 +420,7 @@ $app->get('/admin/noticias/', function() use ($app) {
 })->name('admin-noticias');
 
 $app->post('/nueva-noticia/', function() use ($app){
+    $tb = new Toolbox();
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array('titulo' => 'required');
@@ -428,7 +429,8 @@ $app->post('/nueva-noticia/', function() use ($app){
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
         $noticia = new Noticia();
-        $notica->titulo = $_POST['titulo'];
+        $noticia->titulo = $_POST['titulo'];
+        $noticia->slug = $tb->slugify($_POST['titulo']);
         $contenido = array();
         $contenido['data'] = $_POST['contenido'];
         $contenido['files'] = array();
@@ -502,6 +504,7 @@ $app->get('/admin/noticias/editor/:id', function($id) use ($app) {
 })->name('editor-noticia');
 
 $app->post('/editar-noticia-post/:id/', function($id) use ($app) {
+    $tb = new Toolbox();
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
@@ -519,6 +522,7 @@ $app->post('/editar-noticia-post/:id/', function($id) use ($app) {
         $contenido['data']    = $_POST['contenido'];
         $noticia->contenido   = json_encode($contenido);
         $noticia->titulo      = $_POST['titulo'];
+        $noticia->slug        = $tb->slugify($_POST['titulo']);
         $noticia->actualizado = time();
         $noticia->save();
         $flash = array(
@@ -562,3 +566,4 @@ $app->get('/admin/eventos/', function() use($app) {
     $app->render('validar.html',$data);
 })->name('admin-eventos');
 ?>
+

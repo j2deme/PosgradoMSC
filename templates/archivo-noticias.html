@@ -1,28 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="page-header">
+    <h2>Archivo de Noticias</h2>
+</div>
 <div class="row">
 	<div class="span8">
-		<table class="table table-striped table-bordered">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>Nombre</th>
-				</tr>
-			</thead>
-			<tbody>
-{#
-				{% for usuario in usuarios %}
-				<tr>
-					<td>{% if usuario.id is defined %}{{ usuario.id }}{% endif %}</td>
-					<td>{% if (usuario.personal.nombre is defined)and(usuario.personal.paterno)and(usuario.personal.materno)%}{{ usuario.personal.nombre~" "~usuario.personal.paterno~" "~usuario.personal.materno }}{% endif %}</td>
-					<td>{% if usuario.docente.grado is defined %}{{ usuario.docente.grado }}{% endif %}</td>
-					<td>{% if usuario.docente.especialidad is defined %}{{ usuario.docente.especialidad }}{% endif %}</td>
-					<td>{% if usuario.docente.cedula is defined %}{{ usuario.docente.cedula }}{% endif %}</td>
-				</tr>
-				{% endfor %}
-#}
-			</tbody>
-		</table>
+	{% if (noticias is defined) and (noticias|length > 0)%}
+		{% for key, year in years %}
+		<dl class="dl-horizontal">
+    		<dt>{{ key }}</dt>
+    		{% for noticia in year %}
+    		<dd>
+    			<p style="margin-bottom: 1px;">
+    			<a href="{{ urlFor('noticia',{'slug': noticia.slug }) }}">{{ noticia.titulo }}</a>
+    			<small class="pull-right">
+    				<i class="icon-calendar"> </i> {{ noticia.creado|date("d/m") }}
+    			</small>
+    			</p>
+    		</dd>
+    		{% endfor %}
+    	</dl>
+		{% endfor %}
+	{% else %}
+		<p>No existe ninguna noticia en el archivo.</p>
+	{% endif %}
 	</div>
 </div>
 {% endblock %}
