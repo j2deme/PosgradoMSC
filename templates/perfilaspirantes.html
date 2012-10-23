@@ -80,7 +80,7 @@
 									<label for="nestado">Estado:</label>
 									<select id="nestado" name="nestado" class="chzn-select" data-placeholder="Selecciona Estado" >
 										<option></option>
-										{% for estado in estados %} <option {% if( ue is not null) and (ue.clave==estado.clave) %} selected=""  {% endif %} value="{{ estado.clave }}">{{ estado.nombre }}</option>
+										{% for estado in estados %} <option {% if( ue is not null) and (ue.id==estado.id) %} selected=""  {% endif %} value="{{ estado.id }}">{{ estado.nombre }}</option>
 										{% endfor %}
 									</select>
 								</div>
@@ -88,7 +88,8 @@
 									<label for="nmunicipio">Municipio:</label>
 									<select id="nmunicipio" name="nmunicipio" class="chzn-select" data-placeholder="Selecciona Municipio" >
 										<option></option>
-										{% for municipio in municipios %} <option {% if ( um is not null) and (um.clave==municipio.clave) %} selected=""  {% endif %}  value="{{ municipio.clave }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
+										{% for municipio in municipios %} 
+										<option {% if ( um is not null) and (um.id==municipio.id) %} selected=""  {% endif %}  value="{{ municipio.id }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
 										{% endfor %}
 									</select>
 								</div>
@@ -96,7 +97,8 @@
 									<label for="nlocalidad">Localidad:</label>
 									<select id="nlocalidad" name="nlocalidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
 										<option></option>
-										{% for localidad in localidades %} <option {% if ( ul is not null) and (ul.clave==localidad.clave) %} selected="" {% endif %} value="{{ localidad.clave }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
+										{% for localidad in localidades %} 
+										<option {% if ( ul is not null) and (ul.id==localidad.id) %} selected="" {% endif %} value="{{ localidad.id }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
 										{% endfor %}
 									</select>
 									<script>
@@ -220,7 +222,7 @@
 							<label for="estado">Estado:</label>
 							<select id="estado" name="estado" class="chzn-select" data-placeholder="Selecciona Estado" >
 								<option></option>
-								{% for estado in estados %} <option {% if (ie is not null) and (ie.clave==estado.clave) %} selected=""  {% endif %} value="{{ estado.clave }}">{{ estado.nombre }}</option>
+								{% for estado in estados %} <option {% if (ie is not null) and (ie.id==estado.id) %} selected=""  {% endif %} value="{{ estado.id }}">{{ estado.nombre }}</option>
 								{% endfor %}
 							</select>
 						</div>
@@ -228,7 +230,7 @@
 							<label for="municipio">Municipio:</label>
 							<select id="municipio" name="municipio" class="chzn-select" data-placeholder="Selecciona Municipio" >
 								<option></option>
-								{% for municipio in municipios %} <option {% if (im is not null) and (im.clave==municipio.clave) %} selected=""  {% endif %}  value="{{ municipio.clave }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
+								{% for municipio in municipios %} <option {% if (im is not null) and (im.id==municipio.id) %} selected=""  {% endif %}  value="{{ municipio.id }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
 								{% endfor %}
 							</select>
 						</div>
@@ -236,7 +238,7 @@
 							<label for="localidad">Localidad:</label>
 							<select id="localidad" name="localidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
 								<option></option>
-								{% for localidad in localidades %} <option {% if (il is not null) and (il.clave==localidad.clave) %} selected="" {% endif %} value="{{ localidad.clave }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
+								{% for localidad in localidades %} <option {% if (il is not null) and (il.id==localidad.id) %} selected="" {% endif %} value="{{ localidad.id }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
 								{% endfor %}
 							</select>
 						</div>

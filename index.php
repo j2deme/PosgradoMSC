@@ -1018,11 +1018,11 @@ $app->get('/editor-perfil/', function() use ($app) {
     $data['formas']=FormaTitulacion::all();
     $data['carreras']=Carrera::all();
     $data['ul']=Localidad::find_by_id($data['personal']->procedencia);
-    $data['um']=Municipio::find_by_id($data['ul']->clave);
-    $data['ue']=Estado::find_by_id($data['um']->clave);
+    $data['um']=Municipio::find_by_id($data['ul']->municipio);
+    $data['ue']=Estado::find_by_id($data['um']->estado);
      $data['il']=Localidad::find_by_id($data['academico']->ubicacion);
-    $data['im']=Municipio::find_by_id($data['il']->clave);
-    $data['ie']=Estado::find_by_id($data['im']->clave);
+    $data['im']=Municipio::find_by_id($data['il']->municipio);
+    $data['ie']=Estado::find_by_id($data['im']->estado);
     $data['formasenterado']=FormaEnterado::all();
     /*ladybug_dump($data);*/
 
@@ -1033,6 +1033,10 @@ $app->get('/test/', function() use ($app) {
     $data['user'] = isAllowed("Administrador",FALSE);
     ladybug_dump($data);
 })->name('test');
+
+$app->get('/formato/', function() use ($app) {
+     $app->render('FORMATO19.html');
+})->name('formato');
 
 $app->post('/nuevo-datos-personales/',function() use ($app) {
     $validator = new GUMP();
@@ -1199,25 +1203,28 @@ $app->post('/nuevo-info-contacto/',function() use ($app) {
     $rules = array(
         'email' => 'required',
         'enterado' => 'required',
-        'mantener' => 'required',
-        'fijo' => 'required',
     );
     $filters = array(
         'email' => 'trim',
         'enterado' => 'trim',
-        'mantener' => 'trim',
         'movil' => 'trim',
         'fijo' => 'trim',
         );
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
+    	//ladybug_dump_die($_POST);
         if ($_POST['id']) {
            $perfilinfo = Contacto::find($_POST['id']);
         $perfilinfo->email = $_POST['email'];
         $perfilinfo->movil = $_POST['movil'];
         $perfilinfo->fijo = $_POST['fijo'];
-        $perfilinfo->contactar = $_POST['mantener'];
+		if (isset($_POST['mantener'])) {
+			$perfilinfo->contactar =1;
+		}else{
+		$perfilinfo->contactar =0;	
+		}
+        
         $perfilinfo->forma = $_POST['enterado'];
         $perfilinfo->save();
         } else {
@@ -1225,7 +1232,11 @@ $app->post('/nuevo-info-contacto/',function() use ($app) {
         $perfilinfo->email = $_POST['email'];
         $perfilinfo->movil = $_POST['movil'];
         $perfilinfo->fijo = $_POST['fijo'];
-        $perfilinfo->contactar = $_POST['mantener'];
+        if (isset($_POST['mantener'])) {
+			$perfilinfo->contactar =1;
+		}else{
+		$perfilinfo->contactar =0;	
+		}
         $perfilinfo->forma = $_POST['enterado'];
         $perfilinfo->save();
         }
@@ -1266,14 +1277,25 @@ $app->post('/nuevo-experiencia-laboral/',function() use ($app) {
     if ($validated === true) {
         if (isset($_POST['id'])) {
              $perfillaboral =Laboral::find($_POST['id']);
-        $perfillaboral->trabajado = $_POST['trabajo'];
+        if (isset($_POST['trabajo'])) {
+            $perfillaboral->trabajado =1;
+        } else {
+        $perfillaboral->trabajado =0;    
+        }
+        
+        
         $perfillaboral->experiencia = $_POST['explab'];
         $perfillaboral->tiempo = $_POST['anostrabajo'];
         $perfillaboral->usuario_id = 1;
         $perfillaboral->save();
         } else {
            $perfillaboral = new Laboral();
-        $perfillaboral->trabajado = $_POST['trabajo'];
+        if (isset($_POST['trabajo'])) {
+            $perfillaboral->trabajado =1;
+        } else {
+        $perfillaboral->trabajado =0;    
+        }
+        
         $perfillaboral->experiencia = $_POST['explab'];
         $perfillaboral->tiempo = $_POST['anostrabajo'];
         $perfillaboral->usuario_id = 1;
@@ -1462,6 +1484,7 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
          $iu = UsuariosIdiomas::find_by_usuario_id($data['user'] -> id);
          foreach ($iu as $idioma) {
              if ($idioma -> idioma_id == $_POST['idioma']) {
+             	
                  $flash = array("title" => "ERROR", "msg" => "El Idioma que esta tratando de guardar ya existe en su perfil .", "type" => "error", "fade" => 0);
  
                  $app -> flash("flash", $flash);
@@ -1473,6 +1496,7 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
                  }
  
              } else {
+             	ladybug_dump_die($_POST);
                  $ui = new UsuariosIdiomas;
                  $ui -> usuario_id = $data['user'] -> id;
                  $ui -> idioma_id = $_POST['idioma'];
