@@ -58,7 +58,7 @@ $app = new Slim(array(
 
 $app->post('/login/', function() use ($app) {
     $validator = new GUMP();
-    ladybug_dump($_POST);
+//    ladybug_dump($_POST);
     $_POST = $validator->sanitize($_POST);
     $rules = array(
         'usuario'    => 'required|alpha_dash|max_len,100',
@@ -72,7 +72,7 @@ $app->post('/login/', function() use ($app) {
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
 
-    ladybug_dump($validated);
+//    ladybug_dump($validated);
     if ($validated === true) {
         $user = Usuario::find_by_usuario($_POST['usuario']);
         if (is_object($user)) {
