@@ -994,7 +994,7 @@ $app->post('/nuevo-subir-doc/',function() use ($app) {
  * =======================*/
 $app->get('/editor-perfil/', function() use ($app) {
     $data['user'] = isAllowed(array('Alumno','Aspirante'), false);
-    $data['usuario'] = Usuario::find(1, array('include' => array('academico','personal','contacto','pg','laboral','docente')));
+    $data['usuario'] = Usuario::find($data['user']->id, array('include' => array('academico','personal','contacto','pg','laboral','docente')));
     $data['contacto'] = $data['usuario']->contacto;
     $data['personal'] = $data['usuario']->personal;
     $data['academico'] = $data['usuario']->academico;
@@ -1010,11 +1010,13 @@ $app->get('/editor-perfil/', function() use ($app) {
     $data['idiomas'] = Idioma::all();
     $data['lenguajes'] = Lenguaje::all();
     $data['plataformas'] = Plataforma::all();
-    $data['idiomasusuario']=UsuariosIdiomas::find_all_by_usuario_id(1,array('include' => array('idioma')));
-    $data['herramientasusuario']=UsuariosHerramientas::find_all_by_usuario_id(1,array('include'=>array('herramienta')));
-    $data['plataformasusuario']=UsuariosPlataformas::find_all_by_usuario_id(1,array('include'=>array('plataforma')));
-    $data['lenguajesusuario']=UsuariosLenguajes::find_all_by_usuario_id(1,array('include'=>array('lenguaje')));
-    $data['areasusuario']=UsuariosAreas::find_all_by_usuario_id(1);
+    
+    $idiomas=Usuario::find_by_id($data['user']->id,array('include' => array('ui')));
+	$data['idiomasusuario']=$idiomas->ui;
+    $data['herramientasusuario']=UsuariosHerramientas::find_all_by_usuario_id($data['user']->id,array('include'=>array('herramienta')));
+    $data['plataformasusuario']=UsuariosPlataformas::find_all_by_usuario_id($data['user']->id,array('include'=>array('plataforma')));
+    $data['lenguajesusuario']=UsuariosLenguajes::find_all_by_usuario_id($data['user']->id,array('include'=>array('lenguaje')));
+    $data['areasusuario']=UsuariosAreas::find_all_by_usuario_id($data['user']->id);
     $data['formas']=FormaTitulacion::all();
     $data['carreras']=Carrera::all();
     $data['ul']=Localidad::find_by_id($data['personal']->procedencia);
@@ -1024,7 +1026,7 @@ $app->get('/editor-perfil/', function() use ($app) {
     $data['im']=Municipio::find_by_id($data['il']->municipio);
     $data['ie']=Estado::find_by_id($data['im']->estado);
     $data['formasenterado']=FormaEnterado::all();
-    /*ladybug_dump($data);*/
+   // ladybug_dump_die($data['idiomasusuario']->ui[0]->idioma);
 
     $app->render('perfilaspirantes.html', $data);
 })->name('perfil');
@@ -1481,23 +1483,24 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
      $_POST = $validator -> filter($_POST, $filters);
      $validated = $validator -> validate($_POST, $rules);
      if ($validated === TRUE) {
-         $iu = UsuariosIdiomas::find_by_usuario_id($data['user'] -> id);
-         foreach ($iu as $idioma) {
-             if ($idioma -> idioma_id == $_POST['idioma']) {
-             	
+         $iu = UsuariosIdiomas::find_by_usuario_id_and_idioma_id($data['user'] -> id,$_POST['idioma']);
+		 //ladybug_dump_die($data['user'] -> id,$_POST['idioma']); 
+             if ($iu!=null) {
+         			  	
                  $flash = array("title" => "ERROR", "msg" => "El Idioma que esta tratando de guardar ya existe en su perfil .", "type" => "error", "fade" => 0);
  
                  $app -> flash("flash", $flash);
                  $app -> flashKeep();
                  if ($_POST['perfil'] == 1) {
+                 	
                      $app -> redirect($app -> urlFor('perfil'));
                  } else {
                      $app -> redirect($app -> urlFor('perfil-docente'));
                  }
  
-             } else {
-             	ladybug_dump_die($_POST);
-                 $ui = new UsuariosIdiomas;
+             }else{
+             	
+				$ui = new UsuariosIdiomas;
                  $ui -> usuario_id = $data['user'] -> id;
                  $ui -> idioma_id = $_POST['idioma'];
                  $ui -> lee = $_POST['lee'];
@@ -1505,10 +1508,8 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
                  $ui -> habla = $_POST['habla'];
                  $ui -> entiende = $_POST['entiende'];
                  $ui -> save();
-             }
-        }
-         
-        $flash = array("title" => "OK", "msg" => "El idioma se ha guardado correctamente.", "type" => "success", "fade" => 1);
+				 
+				 $flash = array("title" => "OK", "msg" => "El idioma se ha guardado correctamente.", "type" => "success", "fade" => 1);
 
         $app -> flash("flash", $flash);
         $app -> flashKeep();
@@ -1517,6 +1518,11 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
         } else {
             $app -> redirect($app -> urlFor('perfil-docente'));
         }
+				
+             }
+		 //ladybug_dump_die($_POST);
+          
+        
 } else {
         $msgs = humanize_gump($validated);
          $flash = array("title" => "ERROR", "msg" => $msgs, "type" => "error", "fade" => 0);
@@ -1539,9 +1545,9 @@ $app -> post('/actualizar-idioma-usuario/', function() use ($app) {
      $_POST = $validator -> filter($_POST, $filters);
      $validated = $validator -> validate($_POST, $rules);
      if ($validated === TRUE) {
-         $iu = UsuariosIdiomas::all(array('conditions' => array('usuario_id =' . $data['user'] -> id . 'AND idioma_id =' . $_POST['idioma'])));
+         $iu = UsuariosIdiomas::find_by_usuario_id_and_idioma_id($data['user'] -> id,$_POST['idioma']);
          $iu -> lee = $_POST['lee'];
-         $iu -> eescribe = $_POST['escribe'];
+         $iu -> escribe = $_POST['escribe'];
          $iu -> habla = $_POST['habla'];
          $iu -> entiende = $_POST['entiende'];
          $iu -> save();

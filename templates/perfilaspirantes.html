@@ -36,7 +36,7 @@
 									<label for="nombre">Nombre:</label>
 									<input id="nombre"name="nombre" type="text" placeholder="Nombre" value="{{ personal.nombre|default('') }}"/>
 									<input id="perfil" name="perfil" type="hidden" value="1" />
-									<input id="id" name="id" type="hidden" value="{{ personal.id }}" />
+									<input id="id" name="id" type="hidden" value="{{ personal.id|default('') }}" />
 								</div>
 								<div class="span4">
 									<label for="ap">Apellido Paterno:</label>
@@ -169,12 +169,16 @@
 							<input id="id" name="id" type="hidden" value="0" />
 							{% endif %}
 							<input id="perfil" name="perfil" type="hidden" value="1" />
-							<input id="id" name="id" type="hidden" value="{{ academico.id }}" />
+							<input id="id" name="id" type="hidden" value="{{ academico.id|default('') }}" />
 							<label for="institucion">Institucion de Procedencia:</label>
 							<select id="institucion" name="institucion" class="chzn-select" data-placeholder="Selecciona Institucion" >
 								<option></option>
-								{% for institucion in instituciones %} <option {% if academico.institucion==institucion.id %}selected {% endif %} value="{{ institucion.id }}" >{{ institucion.nombre|default('') }}</option>
+								
+								{% for institucion in instituciones %} 
+								<option {% if academico.institucion==institucion.id %} selected {% endif %} 
+										value="{{ institucion.id|default('') }}" >{{ institucion.nombre|default('') }}</option>
 								{% endfor %}
+					
 							</select>
 						</div>
 					</div>
@@ -343,7 +347,8 @@
 							{% endif %}
 							{% else %}
 							<input id="id" name="id" type="hidden" value="0" />
-							{% endif %} <label class="checkbox" for="trabajo">
+							{% endif %} 
+							<label class="checkbox" for="trabajo">
 								<input id="trabajo"name="trabajo"type="checkbox" {% if laboral.trabajado is defined %} {% if laboral.trabajado==1 %} checked {% endif %}{% endif %}/>
 								Ha trabajado</label>
 						</div>
@@ -436,14 +441,26 @@
 						<div class="span12">
 							<div class="row">
 								<div class="span4 offset1">
+										<input id="perfil" name="perfil" type="hidden" value="1" />
 									<label for="area">Area de Interes:</label>
-									<select id="area" name="area" class="chzn-select" multiple="" data-placeholder="Selecciona Area de Interes" >
+									<select id="area" name="area[]" class="chzn-select" multiple="" data-placeholder="Selecciona Area de Interes" >
 										<option></option>
+										{% if areasusuario is null %}
+										
 										{% for area in areas %}
 										{% for areausuario in areasusuario %}
-										{{ area.nombre }} <option {% if areausuario.area_id==area.id %} selected=""  {% endif %} value="{{ area.id }}">{{ area.nombre }}</option>
+										 <option value="{{ area.id }}">{{ area.nombre }}</option>
 										{% endfor %}
 										{% endfor %}
+										
+										{% else %}
+										
+										{% for area in areas %}
+										 <option value="{{ area.id }}">{{ area.nombre }}</option>
+										{% endfor %}
+										
+										{% endif %}
+										
 									</select>
 								</div>
 								<div class="span4 offset1">
@@ -451,8 +468,16 @@
 									<select id="lenguaje" name="lenguaje[]" multiple="" class="chzn-select" data-placeholder="Selecciona Lenguaje" >
 										<option></option>
 										{% for lenguaje in lenguajes %}
+										{% if lenguajesusuario is null %}
+										
 										{% for lenguajeusuario in lenguajesusuario %} <option {% if lenguajeusuario.lenguaje_id==lenguaje.id %} selected="" {% endif %} value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
 										{% endfor %}
+											
+										{% else %}
+										
+										<option  value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
+										
+										{% endif %}
 										{% endfor %}
 									</select>
 								</div>
@@ -465,8 +490,16 @@
 									<select id="herramienta" name="herramienta[]" class="chzn-select" multiple="" data-placeholder="Selecciona Herramienta" >
 										<option></option>
 										{% for herramienta in herramientas %}
+										{% if herramientasusuario is null %}
+										
 										{% for herramientausuario in herramientasusuario %} <option {% if herramientausuario.herramienta_id==herramienta.id %} selected="" {% endif %} value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
 										{% endfor %}
+										
+										{% else%}
+										
+										<option value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
+										
+										{% endif %}
 										{% endfor %}
 									</select>
 								</div>
@@ -475,9 +508,17 @@
 									<select id="plataformas" name="plataformas[]" class="chzn-select" multiple="" data-placeholder="Selecciona Plataformas" >
 										<option></option>
 										{% for plataforma in plataformas %}
+										{% if plataformasusuario %}
+										
 										{% for plataformausuario in plataformasusuario %} 
 										<option {% if plataformausuario.plataforma_id==plataforma.id %} selected="" {% endif %} value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
 										{% endfor %}
+										
+										{% else %}
+										
+										<option value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
+										
+										{% endif %}
 										{% endfor %}
 									</select>
 								</div>
@@ -523,15 +564,15 @@
 								</thead>
 								<tbody>
 									{% if idiomasusuario is defined %}
-									{% for  idiomausuario in idiomasusuario %}
+									{% for  idioma in idiomasusuario %}
 									<tr>
 										<td>{{ loop.index }}</td>
-										<td>{{ idiomausuario.idioma.nombre }}</td>
-										<td>{{ idiomausuario.lee }}%</td>
-										<td>{{ idiomausuario.escribe }}%</td>
-										<td>{{ idiomausuario.habla }}%</td>
-										<td>{{ idiomausuario.entiende }}%</td>
-										<td><a data-toggle="modal" href="#modeditaridioma{{ idiomausuario.id }}">Editar</a><a href="{{ urlFor('borrar-idioma-usuario-post',{'id': idiomausuario.id,'perfil': 1}) }}">Borrar</a></td>
+										<td>{{ idioma.idioma.nombre }}</td>
+										<td>{{ idioma.lee }}%</td>
+										<td>{{ idioma.escribe }}%</td>
+										<td>{{ idioma.habla }}%</td>
+										<td>{{ idioma.entiende }}%</td>
+										<td><a data-toggle="modal" href="#modeditaridioma{{ idioma.id }}">Editar</a><a href="{{ urlFor('borrar-idioma-usuario-post',{'id': idioma.id,'perfil': 1}) }}">Borrar</a></td>
 									</tr>
 									{% endfor %}
 									{% else %} <td>No se han agregado idiomas en su perfil</td>
