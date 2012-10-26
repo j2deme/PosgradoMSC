@@ -45,10 +45,10 @@
 									<a class="btn btn-primary" href="{{ urlFor('editor-noticia',{'id': noticia.id}) }}" rel="tooltip" data-original-title="Editar">
 										<i class="icon-edit"> </i>
 									</a>
-									<a class="btn" href="#" rel="tooltip" data-original-title="Ver">
+									<a class="btn" href="{{ urlFor('noticia',{'slug': noticia.slug}) }}" rel="tooltip" data-original-title="Ver" target="_blank">
 										<i class="icon-eye-open"> </i>
 									</a>
-									<a class="btn btn-danger" href="#" rel="tooltip" data-original-title="Borrar">
+									<a class="btn btn-danger" href="{{ urlFor('borrar-noticia',{'id': noticia.id}) }}" rel="tooltip" data-original-title="Borrar">
 										<i class="icon-trash"> </i>
 									</a>
 
