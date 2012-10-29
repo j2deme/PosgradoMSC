@@ -546,6 +546,15 @@ $app->post('/editar-noticia-post/:id/', function($id) use ($app) {
     $app->redirect($app->urlFor('admin-noticias'));
 })->name('editar-noticia-post');
 
+$app->get('/borrar-noticia/:id/', function($id) use($app){
+    $noticia = Noticia::find($id);
+    $noticia->delete();
+    $flash = array("title" => "OK", "msg" => "Noticia borrada.", "type" => "info", "fade" => 1);
+    $app -> flash("flash", $flash);
+    $app -> flashKeep();
+    $app -> redirect($app -> urlFor('admin-noticias'));
+})->name('borrar-noticia');
+
 $app->get('/admin/catalogos/', function() use ($app) {
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
