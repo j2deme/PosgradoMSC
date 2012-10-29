@@ -51,16 +51,16 @@
 									<a class="btn btn-danger" href="#" rel="tooltip" data-original-title="Borrar">
 										<i class="icon-trash"> </i>
 									</a>
-									
+
 								</div>
-								
+
 							</td>
 						</tr>
 						{% endfor %}
 					{% else %}
 							<tr>
 								<td> </td>
-								<td>No se han dado de alta las secciones</td>
+								<td>No se ha creado ninguna noticia.</td>
 								<td> </td>
 								<td> </td>
 								<td> </td>
@@ -85,7 +85,7 @@
         <div class="control-group">
             <label class="control-label" for="titulo">Título</label>
             <div class="controls">
-                <input type="text" class="input-xlarge" id="titulo" name="titulo">
+                <input id="titulo" name="titulo" type="text" class="input-xlarge">
             </div>
         </div>
         <div class="control-group">
@@ -108,22 +108,23 @@ head.ready(function(){
 		$('#results').fadeIn(1500);
 		var seccionesTable = $('#noticias-table').dataTable({
 			"oLanguage": {
-			    "sUrl": "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			    "sUrl": "{{ urlFor('home') }}js/dataTables.spanish.txt"
 			},
 			"fnDrawCallback": function () {
 			},
 			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
 			"sPaginationType": "bootstrap"
 		});
-		
+
 		$(".ago").each(function() {
 		    moment.lang('es');
 		    var now = moment();
 		    var text = $(this).text();
 		    var date = moment(text, "DD/MM/YYYY H:m");
+            //Check if methods can be chained
 		    $(this).text(date.from(now));
-		    $(this).attr('title',text); 
-		    $(this).attr('rel','tooltip'); 
+		    $(this).attr('title',text);
+		    $(this).attr('rel','tooltip');
         });
 
 	});

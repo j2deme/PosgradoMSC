@@ -58,7 +58,7 @@ $app = new Slim(array(
 
 $app->post('/login/', function() use ($app) {
     $validator = new GUMP();
-    ladybug_dump($_POST);
+//    ladybug_dump($_POST);
     $_POST = $validator->sanitize($_POST);
     $rules = array(
         'usuario'    => 'required|alpha_dash|max_len,100',
@@ -72,7 +72,7 @@ $app->post('/login/', function() use ($app) {
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
 
-    ladybug_dump($validated);
+//    ladybug_dump($validated);
     if ($validated === true) {
         $user = Usuario::find_by_usuario($_POST['usuario']);
         if (is_object($user)) {
@@ -216,6 +216,67 @@ $app->get('/egresados/', function() use ($app) {
     $data['user'] = isAllowed("Administrador", false);
 })->name('egresados');
 
+$app->get('/noticias/', function() use ($app){
+    $tb = new Toolbox();
+    $data['user'] = isAllowed("Administrador", false);
+    $noticias = Noticia::find('all',array('order'=>'id desc'));
+    foreach ($noticias as $noticia) {
+        if($noticia->slug == "" && $noticia->titulo != ""){
+            $noticia->slug = $tb->slugify($noticia->titulo);
+            $noticia->save();
+        }
+    }
+    $years = array();
+    foreach ($noticias as $noticia) {
+        $date = $noticia->creado;
+        $date = date("Y", $date);
+        $years["$date"][] = $noticia;
+    }
+    $data['years'] = $years;
+    $data['noticias'] = $noticias;
+    $app->render('archivo-noticias.html', $data);
+})->name('noticias');
+
+$app->get('/noticias/:slug/', function($slug) use ($app){
+    $data['user'] = isAllowed("Administrador", false);
+    $noticia = Noticia::find_by_slug($slug);
+    if ($noticia) {
+        $contenido = (array) json_decode($noticia->contenido);
+        $pronoticia = array(
+            'id'          => $noticia->id,
+            'titulo'      => $noticia->titulo,
+            'slug'        => $noticia->slug,
+            'imagen'      => $noticia->imagen,
+            'contenido'   => replace_hashes($contenido['data']),
+            'files'       => $contenido['files'],
+            'creado'      => $noticia->creado,
+            'actualizado' => $noticia->actualizado
+        );
+        $data['noticia'] = $pronoticia;
+        $files = (array) $contenido['files'];
+        $imgs = array();
+        $upload_path = "./uploads/news/";
+        foreach($files as $file){
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            $filename = pathinfo($file, PATHINFO_BASENAME);
+            $img_exts = array('png','jpg','gif','jpeg','bmp');
+            if(in_array($ext, $img_exts)){
+                $imgs[] = $file;
+                if(!file_exists($upload_path."thumb_$filename")){
+                    $layer = new PHPImageWorkshop\ImageWorkshop(array('imageFromPath' => $upload_path.$file));
+                    $layer->cropMaximumInPixel(0, 0, "MM");
+                    $layer->resizeInPixel(200, 200);
+                    $layer->save($upload_path, "thumb_$filename", true, null, 95);
+                    @chmod($upload_path."thumb_$filename", 0777);
+                }
+            }
+        }
+        $data['imgs'] = $imgs;
+        $data['files'] = $files;
+    }
+    $app->render('index.html', $data);
+})->name('noticia');
+
 $app->get('/estadisticas/matriculacion/', function() use ($app) {
     $data['user'] = isAllowed("Administrador", false);
 	$data['matriculaciones']=Matriculacion::all();
@@ -233,19 +294,19 @@ $app->get('/docente/', function() use ($app) {
 
 $app -> get('/docente/borrar-publicacion/:id/', function($id) use ($app) {
 
-    	
+
         $publicacion = Publicacion::find($id);
         $publicacion -> delete();
-		
+
         $flash = array("title" => "OK", "msg" => "La publicacion ha sido borrada correctamente.", "type" => "info", "fade" => 1);
         $app -> flash("flash", $flash);
         $app -> flashKeep();
         $app -> redirect($app -> urlFor('docente-publicaciones'));
-		
+
 }) -> name('borrar-publicacion');
 
 $app->get('/docente/publicaciones/', function() use ($app) {
-    $data['user']=isAllowed('Docente',FALSE);	
+    $data['user']=isAllowed('Docente',FALSE);
     $data['usuario']=Usuario::find_by_id($data['user']->id,array('include'=> array('personal','publicaciones')));
 	$data['publicaciones']=$data['usuario']->publicaciones;
 	$data['personal']=$data['usuario']->personal;
@@ -258,7 +319,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
        $validator= new GUMP;
        $_POST=$validator->sanitize($_POST);
       if (isset($_POST['modif'])) {
-                 
+
 			 if ($_POST['tipo']==1) {
              $rules=array(
             'mtitulo'=>'required',
@@ -291,7 +352,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -339,7 +400,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -388,7 +449,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-          
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -436,7 +497,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -486,7 +547,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -534,7 +595,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -583,7 +644,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-          
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -631,7 +692,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
             $app->redirect($app->urlFor('docente-publicaciones'));
 
         } else {
-           
+
 		  $msgs = humanize_gump($validated);
       //   ladybug_dump($msgs);
         $flash = array(
@@ -672,13 +733,13 @@ $app->get('/docente/publicaciones/', function() use ($app) {
 
     );
     $_POST = $validator->filter($_POST, $filters);
-	
+
     $validated = $validator->validate($_POST, $rules);
-    
+
     if ($validated === TRUE) {
-    	
+
     	$usuario=Usuario::find_by_usuario($_POST['usuario']);
-    	
+
       if (count($usuario)==0) {
       	ladybug_dump_die($_POST);
           if ($_POST['pass']==$_POST['confirmacion']) {
@@ -732,7 +793,7 @@ $app->get('/docente/publicaciones/', function() use ($app) {
      $app->flashKeep();
      $app->redirect($app->urlFor('registro-inicio'));
       }
-      
+
     }else {
 
 		  $msgs = humanize_gump($validated);
@@ -753,7 +814,7 @@ $app->get('/docente/tesistas/', function() use ($app) {
 
     $data['user'] = isAllowed("Docente",FALSE);
     $rolalumno=Rol::find_by_nombre('Alumno');
-	
+
     $idss=UsuariosRoles::find_all_by_rol_id($rolalumno->id);
     $idalumnos=array();
     foreach ($idss as $u) {
@@ -787,10 +848,10 @@ $app->get('/docente/tesistas/', function() use ($app) {
         unset($dato);
     }
 	$data['datostesistas']=$tesistas;
-		
+
 	}
     $data['lineas']= LineaInvestigacion::all();
-    
+
     //ladybug_dump($data['lineas'][0]);
     //ladybug_dump($data['posgrados'][0]);
    $app->render('gestTesista02.html',$data);
@@ -799,25 +860,25 @@ $app->get('/docente/tesistas/', function() use ($app) {
 $app->get('/docente/tesistas/:id', function($id) use ($app) {
     $posgrado=Posgrado::find_by_id($id);
 	if (count($posgrado)==0) {
-	
+
 		$flash = array(
             "title" => "ERROR",
             "msg" => "Se ha borrado el tesista exitosamente.",
             "type" => "error",
             "fade" => 0
           );
-		
+
 	} else {
-		$posgrado->delete();	
+		$posgrado->delete();
 		$flash = array(
             "title" => "OK",
             "msg" => "Se ha borrado el tesista exitosamente.",
             "type" => "success",
             "fade" => 1
           );
-		
+
 	}
-	
+
 		   $app -> flash("flash", $flash);
           $app->flashKeep();
           $app->redirect($app->urlFor('docente-tesistas'));
@@ -843,7 +904,7 @@ $app->post('/nuevo-tesista/',function() use ($app) {
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
     	if (isset($_POST['proc'])) {
-				
+
 			$posgrado=Posgrado::find_by_usuario_id($_POST['tesista']);
 			$posgrado->nombre=$_POST['nombreTesis'];
            $posgrado->asesor=$data['user']->id;
@@ -860,16 +921,16 @@ $app->post('/nuevo-tesista/',function() use ($app) {
                $posgrado->linea=$_POST['lineainve'];
            }
 		   $posgrado->save();
-			
+
 			$flash = array(
             "title" => "OK",
             "msg" => "Se ha actualizado el tesista exitosamente.",
             "type" => "success",
             "fade" => 1
           );
-			
+
 		} else {
-		
+
 		   $posgrado= new Posgrado;
            $posgrado->usuario_id=$_POST['tesista'];
            $posgrado->nombre=$_POST['nombreTesis'];
@@ -885,7 +946,7 @@ $app->post('/nuevo-tesista/',function() use ($app) {
            }
            if (isset($_POST['lineainv'])) {
                $posgrado->linea=$_POST['lineainv'];
-           }      
+           }
 			$posgrado->save();
 		    $flash = array(
             "title" => "OK",
@@ -893,7 +954,7 @@ $app->post('/nuevo-tesista/',function() use ($app) {
             "type" => "success",
             "fade" => 1
           );
-			
+
 		}
     } else {
 
@@ -950,11 +1011,10 @@ $app->post('/nuevo-documentotesista/',function() use ($app) {
 })->name('nuevo-documentotesis-post');
 
 $app->get('/docente/perfil/', function() use ($app) {
-    $data['user'] = isAllowed("Docente",FALSE);
-    $data['usuario'] = Usuario::find(2,array('include' => array('academico','personal','contacto','pg','laboral','docente')));
+     $data['user'] = isAllowed(array('Docente'), false);
+    $data['usuario'] = Usuario::find($data['user']->id, array('include' => array('personal','contacto','pg','laboral','docente')));
     $data['contacto'] = $data['usuario']->contacto;
     $data['personal'] = $data['usuario']->personal;
-    $data['academico'] = $data['usuario']->academico;
     $data['docente'] = $data['usuario']->docente;
     $data['laboral'] = $data['usuario']->laboral;
     $data['posgrado'] = $data['usuario']->pg;
@@ -962,10 +1022,29 @@ $app->get('/docente/perfil/', function() use ($app) {
     $data['estados'] = Estado::all();
     $data['municipios'] = Municipio::all();
     $data['localidades'] = Localidad::all();
+    $data['areas'] = AreaInteres::all();
+    $data['herramientas'] = Herramienta::all();
+    $data['idiomas'] = Idioma::all();
+    $data['lenguajes'] = Lenguaje::all();
+    $data['plataformas'] = Plataforma::all();
     $data['snis'] = SNI::all();
     $data['promeps'] = PROMEP::all();
-    $data['idiomas']=Idioma::all();
-    $data['idiomasusuario']=UsuariosIdiomas::find_all_by_usuario_id(2,array('include' => array('idioma')));
+    
+    $idiomas=Usuario::find_by_id($data['user']->id,array('include' => array('ui')));
+	$data['idiomasusuario']=$idiomas->ui;
+    $data['herramientasusuario']=UsuariosHerramientas::find_all_by_usuario_id($data['user']->id,array('include'=>array('herramienta')));
+    $data['plataformasusuario']=UsuariosPlataformas::find_all_by_usuario_id($data['user']->id,array('include'=>array('plataforma')));
+    $data['lenguajesusuario']=UsuariosLenguajes::find_all_by_usuario_id($data['user']->id,array('include'=>array('lenguaje')));
+    $data['areasusuario']=UsuariosAreas::find_all_by_usuario_id($data['user']->id);
+    $data['formas']=FormaTitulacion::all();
+    $data['carreras']=Carrera::all();
+    $data['ul']=Localidad::find_by_id($data['personal']->procedencia);
+    $data['um']=Municipio::find_by_id($data['ul']->municipio);
+    $data['ue']=Estado::find_by_id($data['um']->estado);
+     $data['il']=Localidad::find_by_id($data['academico']->ubicacion);
+    $data['im']=Municipio::find_by_id($data['il']->municipio);
+    $data['ie']=Estado::find_by_id($data['im']->estado);
+	 $data['formasenterado']=FormaEnterado::all();
      /* ladybug_dump($data['idiomasusuario']);  */
 
     $app->render('perfildocente.html',$data);
@@ -1411,31 +1490,44 @@ $app->post('/nuevo-conocimiento/',function() use ($app) {
     $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if ($validated === TRUE) {
-
+		$msg="";
         if (isset($_POST['area'])) {
             foreach ($_POST['area'] as $area) {
-             $areainteres=new UsuariosAreas;
+            	$are=UsuariosArea::find_by_id($are);
+				if (count($are)==0) {
+					
+					$areainteres=new UsuariosAreas;
              $areainteres->usuario_id=$data['user'] -> id;
              $areainteres->area_id=$_POST['area'];
              $areainteres->save();
+			  $msg.='El area se agregó satisfactoriamente ';
+					
+				}
             }
         }
         if (isset($_POST['lenguaje'])) {
             foreach ($_POST['lenguaje'] as $lenguaje) {
-                $lenguajes=new UsuariosLenguajes;
+             $leng=UsuariosLenguajes::find_by_id($lenguaje);
+				if (count($leng)==0) {
+				
+				$lenguajes=new UsuariosLenguajes;
                 $lenguajes->usuario_id=$data['user'] -> id;
                 $lenguajes->lenguaje_id=$lenguaje;
                 $lenguajes->save();
+					 $msg.=',El lenguaje se agregó satisfactoriamente ';
+				}
+                
             }
         }
         if (isset($_POST['herramienta'])) {
             foreach ($_POST['herramienta'] as $herramienta) {
                 $herr = Herramienta::find_by_id($herramienta);
-                if (is_null($herr)) {
+                if (count($herr)==0) {
                     $herramientas = new UsuariosHerramientas;
                     $herramientas -> usuario_id = $data['user'] -> id;
                     $herramientas -> herramienta_id = $herramienta;
                     $herramientas -> save();
+					 $msg.=',La herramienta se agregó satisfactoriamente ';
                 }
 
             }
@@ -1443,17 +1535,18 @@ $app->post('/nuevo-conocimiento/',function() use ($app) {
         if (isset($_POST['plataformas'])) {
             foreach ($_POST['plataformas'] as $plataformas) {
                 $plat = Plataforma::find_by_id($plataformas);
-                 if (is_null($plat)) {
+                 if (count($plat)==0) {
                      $plataforma = new UsuariosPlataformas;
                      $plataforma -> usuario_id = $data['user'] -> id;
                      $plataforma -> plataforma_id = $plataformas;
                      $plataforma -> save();
+					 $msg.=',La plataforma se agregó satisfactoriamente ';
                  }
              }
          }
-        
-         $flash = array("title" => "OK", "msg" => "Conocimiento de Herramientas,plataformas y lenguajes se agregó satisfactoriamente .", "type" => "success", "fade" => 1);
- 
+
+         $flash = array("title" => "OK", "msg" =>$msg , "type" => "success", "fade" => 1);
+
          $app -> flash("flash", $flash);
          $app -> flashKeep();
          if ($_POST['perfil'] == 1) {
@@ -1488,7 +1581,7 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
              if ($iu!=null) {
          			  	
                  $flash = array("title" => "ERROR", "msg" => "El Idioma que esta tratando de guardar ya existe en su perfil .", "type" => "error", "fade" => 0);
- 
+
                  $app -> flash("flash", $flash);
                  $app -> flashKeep();
                  if ($_POST['perfil'] == 1) {
@@ -1552,7 +1645,7 @@ $app -> post('/actualizar-idioma-usuario/', function() use ($app) {
          $iu -> entiende = $_POST['entiende'];
          $iu -> save();
          $flash = array("title" => "OK", "msg" => "El idioma se ha actualizado correctamente.", "type" => "success", "fade" => 1);
- 
+
          $app -> flash("flash", $flash);
          $app -> flashKeep();
          if ($_POST['perfil'] == 1) {
@@ -1574,24 +1667,31 @@ $app -> post('/actualizar-idioma-usuario/', function() use ($app) {
 }) -> name('actualizar-idioma-usuario-post');
 
 $app -> get('/borrar-idioma-usuario/:id/:perfil/', function($id, $perfil) use ($app) {
-     $data['user'] = isAllowed(array("Docente", "Alumno", "Aspirante"), FALSE);  
+     $data['user'] = isAllowed(array("Docente", "Alumno", "Aspirante"), FALSE);
      $iu = UsuariosIdiomas::find($id);
-     $iu -> delete(); 
+     $iu -> delete();
      $flash = array("title" => "OK", "msg" => "El idioma se ha borrado correctamente.", "type" => "success", "fade" => 1);
- 
+
      $app -> flash("flash", $flash);
      $app -> flashKeep();
      if ($perfil == 1) {
          $app -> redirect($app -> urlFor('perfil'));
      } else {
          $app -> redirect($app -> urlFor('perfil-docente'));
-      } 
+      }
 }) -> name('borrar-idioma-usuario-post');
 
 /* =======================
  * ====== PRINCIPAL ======
  * =======================*/
 $app->get('/(:slug/)', function ($slug = "") use ($app) {
+    // Get request object
+    $req = $app->request();
+    // Get request headers as associative array
+    $headers = $req->headers();
+    // Get the ACCEPT_CHARSET header
+    $charset = $req->headers('ACCEPT_CHARSET');
+
     $data['user'] = isAllowed("Administrador", false);
     if ($slug != "") {
         $seccion = Seccion::find_by_slug($slug);

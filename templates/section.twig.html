@@ -1,6 +1,7 @@
+{% set url = urlFor('home')~"uploads/sections/" %}
 <div class="page-header">
     <h2>{{ seccion.nombre }}</h2>
-</div>  
+</div>
 <div class="row">
     {% if (imgs is defined) and (imgs|length > 0) %}
         {% set spanSize = 6 %}
@@ -8,7 +9,7 @@
         {% set spanSize = 8 %}
     {% endif %}
     <div class="span{{ spanSize }}">
-      {{ seccion.contenido|raw }}  
+      {{ seccion.contenido|raw }}
     </div>
     {% if (imgs is defined) and (imgs|length > 0) %}
     <div class="span2">
@@ -16,7 +17,7 @@
         {% for img in imgs %}
         <li class="span2">
             <a href="#preview_{{ loop.index }}" class="thumbnail" data-toggle="modal">
-                <img src="{{ urlFor('home') }}uploads/sections/{{ 'thumb_'~img }}" alt="{{ img }}">
+                <img src="{{ url~'thumb_'~img }}" alt="{{ img }}">
             </a>
             <div class="modal hide fade" id="preview_{{ loop.index }}">
                 <div class="modal-header">
@@ -24,11 +25,11 @@
                     <h4>{{ img }}</h4>
                 </div>
                 <div class="modal-body">
-                    <img src="{{ urlFor('home') }}uploads/sections/{{ img }}" alt="{{ img }}">    
+                    <img src="{{ url~img }}" alt="{{ img }}">
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-mini" data-dismiss="modal">Cerrar</a>
-                    <a href="{{ urlFor('home') }}uploads/sections/{{ img }}" target="_blank" class="btn btn-primary btn-mini"><i class="icon-download"></i>Descargar</a>
+                    <a href="#" class="btn btn-mini" data-dismiss="modal"><i class="icon-remove-sign"></i>Cerrar</a>
+                    <a href="{{ url~img }}" target="_blank" class="btn btn-primary btn-mini"><i class="icon-download"></i>Descargar</a>
                 </div>
             </div>
         </li>
@@ -46,7 +47,7 @@
             {% for file in files %}
             <li><a href="{{ urlFor('home') }}uploads/sections/{{ file }}" target="_blank">{{ file }}</a></li>
             {% endfor %}
-        </ul>  
+        </ul>
     </div>
 </div>
 {% endif %}

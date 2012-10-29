@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+    <h2>Archivo de Noticias</h2>
+</div>
+<div class="row">
+	<div class="span8">
+	{% if (noticias is defined) and (noticias|length > 0)%}
+		{% for key, year in years %}
+		<dl class="dl-horizontal">
+    		<dt>{{ key }}</dt>
+    		{% for noticia in year %}
+    		<dd>
+    			<p style="margin-bottom: 1px;">
+    			<a href="{{ urlFor('noticia',{'slug': noticia.slug }) }}">{{ noticia.titulo }}</a>
+    			<small class="pull-right">
+    				<i class="icon-calendar"> </i> {{ noticia.creado|date("d/m") }}
+    			</small>
+    			</p>
+    		</dd>
+    		{% endfor %}
+    	</dl>
+		{% endfor %}
+	{% else %}
+		<p>No existe ninguna noticia en el archivo.</p>
+	{% endif %}
+	</div>
+</div>
+{% endblock %}

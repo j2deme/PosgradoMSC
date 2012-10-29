@@ -38,7 +38,7 @@ $app->post('/nuevo-usuario/', function() use ($app) {
         $ok = Usuario::transaction(function() use ($post,$tb,$password) {
             $user = Usuario::find_by_login($_POST['usuario']);
             if(is_object($user)) return false;
-            
+
             $usuario = new Usuario();
             $usuario->usuario = $_POST['usuario'];
             $usuario->password = md5($password);
@@ -410,7 +410,7 @@ $app->get('/admin/noticias/', function() use ($app) {
         array("name" => "Panel de Control","alias" => "admin"),
         array("name" => "Noticias", "alias" => "admin-noticias")
     );
-    
+
     $data['noticias'] = $news = Noticia::find('all', array('order' => 'creado desc'));
     foreach ($news as $new) {
         $contenido = (array) json_decode($new->contenido);
@@ -420,6 +420,7 @@ $app->get('/admin/noticias/', function() use ($app) {
 })->name('admin-noticias');
 
 $app->post('/nueva-noticia/', function() use ($app){
+    $tb = new Toolbox();
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array('titulo' => 'required');
@@ -428,7 +429,8 @@ $app->post('/nueva-noticia/', function() use ($app){
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
         $noticia = new Noticia();
-        $notica->titulo = $_POST['titulo'];
+        $noticia->titulo = $_POST['titulo'];
+        $noticia->slug = $tb->slugify($_POST['titulo']);
         $contenido = array();
         $contenido['data'] = $_POST['contenido'];
         $contenido['files'] = array();
@@ -459,37 +461,50 @@ $app->post('/nueva-noticia/', function() use ($app){
     }
 })->name('nueva-noticia-post');
 
-$app->get('/admin/noticias/editor/:id', function($id) use ($app) {    
+$app->get('/admin/noticias/editor/:id', function($id) use ($app) {
     $data['breadcrumb'] = array(
         array("name" => "Panel de Control","alias" => "admin"),
         array("name" => "Noticias", "alias" => "admin-secciones"),
         array("name" => "Editor", "alias" => "editor-seccion")
     );
     $data['noticias'] = Noticia::find('all', array('order' => 'creado desc'));
-    $noticia = Noticia::find($id);
-    $contenido = (array) json_decode($noticia->contenido);
-    $pronoticia = array(
-        'id' => $noticia->id,
-        'titulo' => $noticia->titulo,
-        'slug' => $noticia->slug,
-        'contenido' => $contenido['data'],
-        'files' => $contenido['files'],
-        'creado' => $noticia->creado,
+    $noticia          = Noticia::find($id);
+    $contenido        = (array) json_decode($noticia->contenido);
+    $pronoticia       = array(
+        'id'          => $noticia->id,
+        'titulo'      => $noticia->titulo,
+        'slug'        => $noticia->slug,
+        'contenido'   => $contenido['data'],
+        'files'       => $contenido['files'],
+        'imagen'      => $noticia->imagen,
+        'creado'      => $noticia->creado,
         'actualizado' => $noticia->actualizado
     );
     $data['noticia'] = $pronoticia;
     $files = array();
     $tb = new Toolbox();
     foreach ($contenido['files'] as $file) {
-        $size = filesize("./uploads/news/$file");
-        $files[] = array('name'=>$file, 'size' => $tb->bytes2human($size));
+        $filePath = "./uploads/news/$file";
+        $ext      = pathinfo($filePath, PATHINFO_EXTENSION);
+        $size     = filesize($filePath);
+        $img_exts = array('png','jpg','jpeg');
+        $isImg    = (in_array($ext, $img_exts)) ? true : false;
+        $starred  = ($noticia->imagen == $file) ? true : false;
+        $files[]  = array(
+            'name'    =>$file,
+            'size'    => $tb->bytes2human($size),
+            'img'     => $isImg,
+            'starred' => $starred
+        );
     }
-    $data['files'] = $files;
+    $data['files']   = $files;
+    $data['numFiles'] = count($files);
 
     $app->render('editor-noticia.html', $data);
 })->name('editor-noticia');
 
 $app->post('/editar-noticia-post/:id/', function($id) use ($app) {
+    $tb = new Toolbox();
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
@@ -502,11 +517,12 @@ $app->post('/editar-noticia-post/:id/', function($id) use ($app) {
     $post = $_POST = $validator->filter($_POST, $filters);
     $validated = $validator->validate($_POST, $rules);
     if ($validated === true) {
-        $noticia = Noticia::find($id);
-        $contenido = (array) json_decode($noticia->contenido);
-        $contenido['data'] = $_POST['contenido'];
-        $noticia->contenido = json_encode($contenido);
-        $noticia->titulo = $_POST['titulo'];
+        $noticia              = Noticia::find($id);
+        $contenido            = (array) json_decode($noticia->contenido);
+        $contenido['data']    = $_POST['contenido'];
+        $noticia->contenido   = json_encode($contenido);
+        $noticia->titulo      = $_POST['titulo'];
+        $noticia->slug        = $tb->slugify($_POST['titulo']);
         $noticia->actualizado = time();
         $noticia->save();
         $flash = array(
@@ -520,9 +536,9 @@ $app->post('/editar-noticia-post/:id/', function($id) use ($app) {
         $msgs = humanize_gump($validated);
         $flash = array(
             "title" => "ERROR",
-            "msg" => $msgs,
-            "type" => "error",
-            "fade" => 0
+            "msg"   => $msgs,
+            "type"  => "error",
+            "fade"  => 0
         );
         $app -> flash("flash", $flash);
     }
@@ -538,4 +554,16 @@ $app->get('/admin/catalogos/', function() use ($app) {
     $data['user'] = isAllowed("Administrador", false);
     $app->render('catalogos.html', $data);
 })->name('admin-catalogos');
+
+$app->get('/admin/eventos/', function() use($app) {
+    $data['breadcrumb'] = array(
+        array("name" => "Panel de Control","alias" => "admin"),
+        array("name" => "Eventos", "alias" => "admin-eventos")
+    );
+    $data['user'] = isAllowed("Administrador", false);
+    $data['no_validados'] = Evento::find_all_by_validado(0);
+    $data['validados'] = Evento::find_all_by_validado(1);
+    $app->render('validar.html',$data);
+})->name('admin-eventos');
 ?>
+

@@ -1,0 +1,184 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+	<div class="span12">
+		<div class="row">
+			<div class="span4">
+				<h2>Validar eventos de docentes</h2>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="span12">
+				<div id="waiting" class="hide pagination-centered">
+					<img src="{{urlFor('home')}}img/loader.gif"/>
+				</div>
+				<div id="results"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="tabbable">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#tab1" data-toggle="tab">Eventos pendientes</a></li>
+  </ul>
+<table class= "table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Fecha de creación</th>
+      <th>Creador</th>
+      <th>Nombre de evento</th>
+      <th>Fecha de evento</th>
+      <th>Hora del evento</th>
+      <th>Validar</th>
+      <th>Acción</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+  	{% if no_validados|length > 0 %}
+  		{% for evento in no_validados %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ evento.creado }}</td>
+      <td>{{ evento.autor }}</td>
+      <td>{{ evento.nombre }}</td>
+      <td>{{ evento.inicio }}</td>
+      <td>{{ evento.hora_inicio }}</td>
+      <td>
+      	<div class="span2">
+				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal" rel="tooltip" title="Ver">
+					<i class="icon-eye-open icon-white"></i> Ver
+				</a>
+		</div>
+      </td>
+      <td>
+      		<div class="btn-group">
+		        <a href="#" class="btn btn-success" data-target="#aceptar" data-toggle="modal" rel="tooltip" title="Aceptar">
+					<i class="icon-ok icon-white"></i>
+				</a>
+				<a href="#" class="btn btn-danger" data-target="#descartar" data-toggle="modal" rel="tooltip" title="Descartar">
+					<i class="icon-remove icon-white"></i>
+				</a>
+		    </div>
+      </td>
+
+<div class="modal hide fade" id="viewEvento">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Ver evento</h3>
+	</div>
+ 	<div class="modal-body">
+		<form action="{{ urlFor('home')}}" method="post" class="form-horizontal">
+    	<div class="control-group">
+      		<label class="control-label" for="username">Fecha:</label>
+      		<div class="controls">
+      			<input type="text" class="input-xlarge" value="{{ evento.inicio }}">
+      		</div>
+    	</div>
+    	<div class="control-group">
+      		<label class="control-label" for="username">Hora inicio:</label>
+      		<div class="controls">
+      			<input type="text" class="input-xlarge" value="{{ evento.hora_inicio }}">
+      		</div>
+    	</div>
+		</form>
+	</div>
+</div>
+
+
+    </tr>
+    	{% endfor %}
+    {% else %}
+    <tr>
+		<td> </td>
+		<td>No se encontraron resultados.</td>
+		<td> </td>
+		<td> </td>
+		<td> </td>
+        <td> </td>
+        <td> </td>
+		<td> </td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#tab1" data-toggle="tab">Eventos validados</a></li>
+  </ul>
+<table class= "table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>	
+      <th>Fecha de evento</th>
+      <th>Creador</th>
+      <th>Nombre de evento</th>
+      <th>Hora del evento</th>
+      <th>Opción</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% if validados|length > 0 %}
+  		{% for evento in validados %}
+    <tr>
+      <td>{{ loop.index }}</td>	
+      <td>{{ evento.inicio }}</td>
+      <td>{{ evento.autor }}</td>
+      <td>{{ evento.nombre }}</td>
+      <td>{{ evento.hora_inicio }}</td>
+      <td>
+      	<div class="span2">
+				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
+					<i class="icon-eye-open icon-white"></i> Ver
+				</a>
+		</div>
+	  </td>
+    </tr>
+    	{% endfor %}
+    	{% else %}
+    <tr>
+		<td> </td>
+		<td>No se encontraron resultados.</td>
+		<td> </td>
+		<td> </td>
+		<td> </td>
+        <td> 
+        
+     </tr>
+     {% endif %}
+  </tbody>
+</table>
+</div>
+
+<div class="modal hide fade" id="newUser">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Ver evento</h3>
+	</div>
+ 	<div class="modal-body">
+		<form action="{{ urlFor('home')}}" method="post" class="form-horizontal">
+    	<div class="control-group">
+      		<label class="control-label" for="username">Fecha: </label>
+      		<input type="text" class="input-xlarge" >
+      		
+    	</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal">Cerrar</a>
+	</div>
+</div>
+
+
+
+<script>
+head.ready(function(){
+	$(function(){
+	    
+	});
+});
+</script>
+{% endblock %}
