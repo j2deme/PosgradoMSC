@@ -214,9 +214,8 @@ $app->get('/relacion-aceptados/', function() use ($app) {
     foreach ($generacion as $aceptado) {
         $aceptados[] = $aceptado->usuario_id;
     }
-    $usuarios = Usuario::find($aceptados, array('include' => 'personal'));
+    $usuarios = Usuario::find($aceptados, array('joins' => array('personal'), 'order' => 'ap_paterno asc'));
     $data['aceptados'] = $usuarios;
-    //ladybug_dump($usuarios);
     $app->render('relacion-aceptados.html',$data);
 })->name('relacion-aceptados');
 
