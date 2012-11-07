@@ -172,18 +172,19 @@ $app->get('/estadisticas/nucleo-academico/', function() use ($app) {
     $app->render('nucleoacademico.html',$data);
 })->name('nucleo-academico');
 
-
+/*
+ * Verificar cual controlador es el correcto?
+ * productividad-academica o publicaciones.
+ */
 $app->get('/productividad-academica/', function() use ($app) {
     $data['user'] = isAllowed("Administrador", false);
 	$data['usuarios']=Usuario::find('all',array('include' => array('personal','publicaciones')));
-
     $app->render('productividadacademica.html');
 })->name('productividad-academica');
 
 $app->get('/publicaciones/', function() use ($app) {
     $data['user'] = isAllowed("Administrador", false);
 	$data['usuarios']=Usuario::find('all',array('include' => array('personal','publicaciones')));
-
     $app->render('productividadacademica.html');
 })->name('publicaciones');
 
