@@ -250,8 +250,10 @@ $app->get('/admin/aspirantes/', function() use ($app) {
     $rolAspirante = Rol::find_by_nombre("Aspirante");
     $idAspirantes = UsuariosRoles::find_all_by_rol_id($rolAspirante->id);
     $ids = array();
-    foreach ($idAspirantes as $ia) { $ids[] = $ia->usuario_id; }
-    $data['aspirantes'] = "";
+    foreach ($idAspirantes as $ia) {
+        $ids[] = $ia->usuario_id;
+    }
+    $data['aspirantes'] = array();
     if (!empty($ids)) {
         $data['aspirantes'] = Usuario::find_all_by_id($ids, array('order'=>'creado asc','include' => array('personal','ur','contacto')));
     }
@@ -266,7 +268,20 @@ $app->get('/procesar-aspirante/:action/:id/', function($action,$id) use ($app) {
     if ($action == "aceptar") {
         $ur->rol_id = $rolAlumno->id;
         $verb = "aceptado";
+        $posgrado = Posgrado::find_by_usuario_id($id);
+        if(is_object($posgrado)){
+            $posgrado->generacion = date("Y");
+            $posgrado->save();
+        } else {
+            $posgrado = new Posgrado();
+            $posgrado->usuario_id = $id;
+            $posgrado->generacion = date("Y");
+            $posgrado->save();
+        }
     } else {
+        $user = Usuario::find($id);
+        $user->intentos++;
+        $user->save();
         $ur->rol_id = $rolNoAceptado->id;
         $verb = "no aceptado";
     }

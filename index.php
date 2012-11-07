@@ -176,14 +176,14 @@ $app->get('/estadisticas/nucleo-academico/', function() use ($app) {
 $app->get('/productividad-academica/', function() use ($app) {
     $data['user'] = isAllowed("Administrador", false);
 	$data['usuarios']=Usuario::find('all',array('include' => array('personal','publicaciones')));
-	
+
     $app->render('productividadacademica.html');
 })->name('productividad-academica');
 
 $app->get('/publicaciones/', function() use ($app) {
     $data['user'] = isAllowed("Administrador", false);
 	$data['usuarios']=Usuario::find('all',array('include' => array('personal','publicaciones')));
-	
+
     $app->render('productividadacademica.html');
 })->name('publicaciones');
 
@@ -209,7 +209,15 @@ $app->get('/calendario/(:year/(:month/))', function($year, $month) use ($app) {
 
 $app->get('/relacion-aceptados/', function() use ($app) {
     $data['user'] = isAllowed("Administrador", false);
-    $app->render('relacion-aceptados.html');
+    $generacion = Posgrado::find_all_by_generacion(date("Y"),array('select' => 'usuario_id'));
+    $aceptados = array();
+    foreach ($generacion as $aceptado) {
+        $aceptados[] = $aceptado->usuario_id;
+    }
+    $usuarios = Usuario::find($aceptados, array('include' => 'personal'));
+    $data['aceptados'] = $usuarios;
+    //ladybug_dump($usuarios);
+    $app->render('relacion-aceptados.html',$data);
 })->name('relacion-aceptados');
 
 $app->get('/egresados/', function() use ($app) {
