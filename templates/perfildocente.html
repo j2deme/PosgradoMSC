@@ -37,8 +37,9 @@
 								<div class="span4">
 									<label for="nombre">Nombre:</label>
 									<input id="nombre"name="nombre" type="text" placeholder="Nombre" value="{{ personal.nombre|default('') }}"/>
-				
-									<input id="id" name="id" type="hidden" value="{{ personal.id|default('') }}" />
+									{% if personal.id is defined and personal.id is not null %}
+									<input id="id" name="id" type="hidden" value="{{ personal.id }}" />
+									{% endif %}
 								</div>
 								<div class="span4">
 									<label for="ap">Apellido Paterno:</label>
@@ -133,15 +134,15 @@
 									<label for="calle">Calle:</label>
 									<input id="calle"name="calle"type="text"placeholder="Calle" value="{{personal.calle|default('')}}"/>
 									<label for="numex">Numero Externo:</label>
-									<input id="numex" name="numex"type="number"placeholder="Numero Externo" value="{{ personal.num_ext|default('') }}" />
+									<input id="numex" name="numex"type="text"placeholder="Numero Externo" value="{{ personal.num_ext|default('') }}" />
 									<label for="numint">Numero Interno:</label>
-									<input id="numint"name="numint"type="number"placeholder="Numero Interno" value="{{ personal.num_int|default('') }}" />
+									<input id="numint"name="numint"type="text"placeholder="Numero Interno" value="{{ personal.num_int|default('') }}" />
 								</div>
 								<div class="span4">
 									<label for="colonia">Colonia:</label>
 									<input id="colonia"name="colonia"type="text"placeholder="Colonia" value="{{ personal.colonia|default('') }}" />
 									<label for="cp">Codigo Postal:</label>
-									<input id="cp" name="cp"type="number"placeholder="Codigo Posatal" value="{{ personal.cp|default('') }}" />
+									<input id="cp" name="cp"type="text"placeholder="Codigo Posatal" value="{{ personal.cp|default('') }}" />
 								</div>
 							</div>
 							<div class="row">
@@ -169,14 +170,17 @@
     				<label for="grado">Grado:</label>
     				{% if (docente is defined) and (docente is not null) %}
     					<input id="id" name="id" type="hidden" value="{{ docente.id }}" />
-    				{% else %}
-    					<input id="id" name="id" type="hidden" value="0" />
     				{% endif %}
     					
     				<input id="grado"name="grado" type="text" placeholder="Grado" value="{{ docente.grado|default('') }}"/>
     			</div>
     			<div class="span4">
-    				<label class="checkbox" for="pertenecesni"><input id="pertenecesni" type="checkbox" {% if docente.tiene_sni is defined %}{% if docente.tiene_sni==1 %} checked {% endif %}{% endif %}/> Pertenece a SNI</label>
+    				<label for="completo">Tiempo Completo:</label>
+    				<select id="completo" name="completo" data-placeholder="Tiempo Completo" class="chzn-select">
+    					<option></option>
+    					<option value="0" {% if docente.ptc==0 %} selected  {% endif %}>Si</option>
+    					<option value="1" {% if docente.ptc==1 %} selected  {% endif %}>No</option>
+    				</select>
     			</div>
     		</div>
     		<div class="row">
@@ -186,9 +190,10 @@
     			</div>
     			<div class="span4">
     				<label for="sni">Nivel SNI:</label>
-    				<select id="sni" class="chzn-select">
+    				<select id="sni" name="sni" class="chzn-select" data-placeholder="Seleccione SNI">
+    					<option></option>
     					{% for sni in snis %}
-    					<option value="{{ sni.id|default('') }}">{{ sni.nombre|default('') }}</option>
+    					<option value="{{ sni.id|default('') }}" {% if docente.sni==sni.id %} selected  {% endif %}>{{ sni.nombre|default('') }}</option>
     					{% endfor %}
     				</select>
     			</div>
@@ -196,24 +201,18 @@
     		<div class="row">
     			<div class="span4">
     				<label for="especialidad">Especialidad:</label>
-    				<input id="especialidad"name="especialidad" type="text" placeholder="Especialidad" value="{{ docente.esecialidad|default('') }}" />
+    				<input id="especialidad"name="especialidad" type="text" placeholder="Especialidad" value="{{ docente.especialidad|default('') }}" />
     			</div>
     			<div class="span4">
     				<label for="promep">Perfil PROMEP:</label>
-    				<select id="promep" class="chzn-select">
+    				<select id="promep" name="promep" class="chzn-select" data-placeholder="Seleccione PROMEP">
+    					<option></option>
     					{% for promep in promeps %}
-    					<option value="{{ promep.id|default('') }}">{{ promep.nombre|default('') }}</option>
+    					<option value="{{ promep.id|default('') }}" {% if docente.promep==promep.id %} selected  {% endif %}>{{ promep.nombre|default('') }}</option>
     					{% endfor %}
     				</select>
     			</div>
-    				<div class="span4">
-    				<label for="completo">Tiempo Completo:</label>
-    				<select id="completo" class="chzn-select">
-    					<option>Timepo completo</option>
-    					<option>Si</option>
-    					<option>No</option>
-    				</select>
-    			</div>
+  
     		</div>
     		<div class="row">
    	 					<div class="span12">
@@ -390,21 +389,17 @@
 									<label for="area">Area de Interes:</label>
 									<select id="area" name="area[]" class="chzn-select" multiple="" data-placeholder="Selecciona Area de Interes" >
 										<option></option>
-										{% if areasusuario is not null %}
+								
 										
 										{% for area in areas %}
-										{% for areausuario in areasusuario %}
-										 <option {% if areausuario==area.id %} selected="" {% endif %} value="{{ area.id }}">{{ area.nombre }}</option>
-										{% endfor %}
-										{% endfor %}
-										
+										{% if area.id in areasusuario|keys %}
+											<option selected="" value="{{ area.id }}">{{ area.nombre }}</option>
 										{% else %}
-										
-										{% for area in areas %}
 										 <option value="{{ area.id }}">{{ area.nombre }}</option>
+										 {% endif %}
 										{% endfor %}
 										
-										{% endif %}
+										
 										
 									</select>
 								</div>
@@ -412,18 +407,17 @@
 									<label for="lenguaje">Lenguaje:</label>
 									<select id="lenguaje" name="lenguaje[]" multiple="" class="chzn-select" data-placeholder="Selecciona Lenguaje" >
 										<option></option>
+										
 										{% for lenguaje in lenguajes %}
-										{% if lenguajesusuario is not null %}
-										
-										{% for lenguajeusuario in lenguajesusuario %} <option {% if lenguajeusuario.lenguaje_id==lenguaje.id %} selected="" {% endif %} value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
-										{% endfor %}
+											{% if lenguaje.id in lenguajesusuario|keys %}	
+												<option selected="" value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
+											{% else %}
+												<option value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
+											{% endif %}
 											
-										{% else %}
-										
-										<option  value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
-										
-										{% endif %}
 										{% endfor %}
+										
+					
 									</select>
 								</div>
 							</div>
@@ -435,16 +429,11 @@
 									<select id="herramienta" name="herramienta[]" class="chzn-select" multiple="" data-placeholder="Selecciona Herramienta" >
 										<option></option>
 										{% for herramienta in herramientas %}
-										{% if herramientasusuario is not null %}
-										
-										{% for herramientausuario in herramientasusuario %} <option {% if herramientausuario.herramienta_id==herramienta.id %} selected="" {% endif %} value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
-										{% endfor %}
-										
-										{% else%}
-										
-										<option value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
-										
-										{% endif %}
+											{% if herramienta.id in herramientasusuario|keys %}
+												<option selected="" value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
+											{% else %}
+												<option value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
+											{% endif %}
 										{% endfor %}
 									</select>
 								</div>
@@ -453,17 +442,11 @@
 									<select id="plataformas" name="plataformas[]" class="chzn-select" multiple="" data-placeholder="Selecciona Plataformas" >
 										<option></option>
 										{% for plataforma in plataformas %}
-										{% if plataformasusuario is not null %}
-										
-										{% for plataformausuario in plataformasusuario %} 
-										<option {% if plataformausuario.plataforma_id==plataforma.id %} selected="" {% endif %} value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
-										{% endfor %}
-										
-										{% else %}
-										
-										<option value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
-										
-										{% endif %}
+											{% if plataforma.id in plataformasusuario|keys %}
+												<option selected="" value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
+											{% else %}
+												<option value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
+											{% endif %}
 										{% endfor %}
 									</select>
 								</div>
@@ -533,67 +516,95 @@
 </div>
 <!---------------------------------------------------------------------------Modales------------------------------------------------------------->
     
-   {% for idiomausuario in idiomasusuario %} 
-    <div class="modal hide fade" id="modeditaridioma{{ idiomausuario.id }}">
-    <div class="modal-header">
-    	<h3>Editar Idioma</h3>
-    </div>
-    <div class="modal-body">
-    		<form class="" method="post" action="{{ urlFor('nuevo-idioma-post') }}">
-    		<div class="row">
-    			<div class="span2 offset1">
-    				
-    				<label for="lee">Lee:</label> 
-    				<input id="lee" name="lee" value="{{ idiomausuario.lee }}"/>
-    				<label for="escribe">Escribe:</label> 
-    				<input id="escribe" name="escribe" value="{{ idiomausuario.escribe }}"/>
-    				<label for="habla">Habla:</label> 
-    				<input id="habla" name="habla" value="{{ idiomausuario.habla }}" />
-    				<label for="entiende">Entiende:</label> 
-    				<input id="entiende" name="entiende" value="{{ idiomausuario.entiende }}"/>		
-    			</div>
-    		</div>		
-    		
-            </form>
-    </div>
-    <div class="modal-footer">
-    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
-    	<button class="btn btn-primary" > Guardar</button>
-    </div>
+  {% for idiomausuario in idiomasusuario %}
+<div class="modal hide fade" id="modeditaridioma{{ idiomausuario.id }}">
+	<div class="modal-header">
+		<h3>Editar Idioma</h3>
+	</div>
+	<div class="modal-body">
+		<form class="" method="post" action="{{ urlFor('actualizar-idioma-usuario-post') }}">
+			<div class="row">
+				<div class="span2 offset1">
+					<input id="idioma" name="idioma" type="hidden" value="{{ idiomausuario.idioma_id }}" />
+					<label id="el" name="el" for="lee">Lee: {{ idiomausuario.lee|default(0) }}%</label>
+					<input id="lee" name="lee"  class="range" type="range" min="0" max="100" value="{{ idiomausuario.lee|default(0) }}" step="1" data-label="el" data-texto="Lee: "/>
+					<label id="ee" name="ee" for="escribe">Escribe: {{ idiomausuario.escribe|default(0) }}%</label>
+					<input id="escribe" name="escribe" class="range" type="range" min="0" max="100" value="{{ idiomausuario.escribe|default(0) }}" step="1" data-label="ee" data-texto="Escribe: "/>
+					<label id="eh" name="eh" for="habla">Habla: {{ idiomausuario.habla|default(0) }}%</label>
+					<input id="habla" name="habla" class="range" type="range" min="0" max="100" value="{{ idiomausuario.habla|default(0) }}" step="1" data-label="eh" data-texto="Habla: "/>
+					<label id="een" name="een" for="entiende">Entiende: {{ idiomausuario.entiende|default(0) }}%</label>
+					<input id="entiende" name="entiende" class="range" type="range" min="0" max="100" value="{{ idiomausuario.entiende|default(0) }}" step="1" data-label="een" data-texto="Entiende: "/>
+					
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn" data-dismiss="modal">Cancelar</a><!---->
+				<button id="" name="" class="btn btn-primary" type="submit" >
+					Guardar
+				</button>
+			</div>
+		</form>
+	</div>
 </div>
 {% endfor %}
-
-
 <div class="modal hide fade" id="modnuevoidioma">
-    <div class="modal-header">
-    	<h3>Nuevo Idioma</h3>
-    </div>
-    <div class="modal-body">
-    		<form class="" method="post" action="{{ urlFor('nuevo-idioma-post') }}">
-    		<div class="row">
-    			<div class="span2 offset1">
-    				<label for="idioma">Idioma:</label>
-    				<select id="idioma" class="chzn-select">
-    					{% for idioma in idiomas %}
-    					<option value="{{ idioma.id }}">{{ idioma.nombre }}</option>
-    					{% endfor %}
-    				</select>
-    				<label for="lee">Lee:</label> 
-    				<input id="lee" name="lee" />
-    				<label for="escribe">Escribe:</label> 
-    				<input id="escribe" name="escribe" />
-    				<label for="habla">Habla:</label> 
-    				<input id="habla" name="habla" />
-    				<label for="entiende">Entiende:</label> 
-    				<input id="entiende" name="entiende" />		
-    			</div>
-    		</div>		
-    		
-            </form>
-    </div>
-    <div class="modal-footer">
-    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a> <!---->
-    	<button class="btn btn-primary" > Guardar</button>
-    </div>
+	<div class="modal-header">
+		<h3>Nuevo Idioma</h3>
+	</div>
+	<div class="modal-body">
+		<form class="" method="post" action="{{ urlFor('nuevo-idioma-usuario-post') }}">
+			<div class="row">
+				<div class="span2 offset1">
+					<label for="idioma">Idioma:</label>
+					<select id="idioma" name="idioma" class="chzn-select" data-placeholder="Seleccione un idioma" >
+						<option></option>
+						{% for idioma in idiomas %} 
+						<option value="{{ idioma.id }}">{{ idioma.nombre }}</option>
+						{% endfor %}
+					</select>
+					<br />
+				
+					
+					<label id="elee" name="elee" for="lee">Lee:</label>
+					<input id="lee" name="lee"  class="range" type="range" min="0" max="100" value="0" step="1" data-label="elee" data-texto="Lee: "/>
+					<label id="eescribe" name="eescribe" for="escribe">Escribe:</label>
+					<input id="escribe" name="escribe" class="range" type="range" min="0" max="100" value="0" step="1" data-label="eescribe" data-texto="Escribe: "/>
+					<label id="ehabla" name="ehabla" for="habla">Habla:</label>
+					<input id="habla" name="habla" class="range" type="range" min="0" max="100" value="0" step="1" data-label="ehabla" data-texto="Habla: "/>
+					<label id="eentiende" name="eentiende" for="entiende">Entiende:</label>
+					<input id="entiende" name="entiende" class="range" type="range" min="0" max="100" value="0" step="1" data-label="eentiende" data-texto="Entiende: "/>
+					<script type="text/javascript">
+						head.ready(function() {
+							$('input[type="range"]').change(function(e) {
+								var value = $(this).val();
+								var tag = $(this).attr('data-label');
+								var text = $(this).attr('data-texto');
+								
+								showValue(value, tag, text);
+							});
+						});
+						function showValue(newValue, etiqueta, texto) {
+							//$(etiqueta).html= texto + newValue;
+							document.getElementById(etiqueta).innerHTML = texto+newValue+"%";
+						}
+					</script>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn" data-dismiss="modal">Cancelar</a><!---->
+				<button class="btn btn-primary" type="submit" >
+					Guardar
+				</button>
+			</div>
+		</form>
+	</div>
 </div>
+<script>
+	head.ready("app", function() {
+		head.js({
+			html5slider : "{{ urlFor('home') }}js/html5slider.js"
+		});
+	});
+
+</script>
 {% endblock %}

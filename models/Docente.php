@@ -13,7 +13,6 @@ class Docente extends ActiveRecord\Model {
 	
 	static $alias_attribute = array(
 		'ptc' => 'tiempo_completo',
-		'tiene_sni' => 'sni',
 		'sni' => 'nivel_sni' 
 	);
 }

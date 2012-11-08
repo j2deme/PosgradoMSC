@@ -1,4 +1,4 @@
-{% extends 'docente-base.html' %}
+{% extends 'admin-base.html' %}
 {% block content %}
 <h3 align="center">Lista de eventos creados.</h3>
 <br/>
@@ -7,7 +7,8 @@
 <table class="table table-bordered table-condensed table-striped" id="listaEventos" >
 	<thead>
 		<tr>
-			<th class="ziseTable">Fecha de creación</th>
+			<th class="ziseTable">#</th>
+			
 			<th class="ziseTable">Nombre de evento</th>
 			<th class="ziseTable">Descripcion</th>
 			<th class="ziseTable">Hora, de inicio</th>
@@ -20,12 +21,13 @@
 		{% if eventos |length > 0  %}
 		{% for evento in eventos %}
 		<tr>
-			<td >{{ evento.fecha_creado }}</td>
+			<td >{{ loop.index }}</td>
+			<td >{{ evento.fecha_creado|date('d/m/y') }}</td>
 			<td >{{ evento.nombre }}</td>
 			<td >{{ evento.descripcion }}</td>
 			<td >{{ evento.hora_inicio }}</td>
 			<td >{{ evento.hora_fin }}</td>
-			<td >{{ evento.prioridad }}</td>
+			<td >{% if evento.prioridad==0 %} Alta {% endif %} {% if evento.prioridad==1 %} Media {% endif %}{% if evento.prioridad==2 %} Baja {% endif %}</td>
 		</tr>
 		{% endfor %}
 		{% else %}

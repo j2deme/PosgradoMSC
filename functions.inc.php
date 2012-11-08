@@ -330,4 +330,6 @@ function mime($ext){
 
 	return $mime_types_map[$ext];
 }
+
+function
 ?>
