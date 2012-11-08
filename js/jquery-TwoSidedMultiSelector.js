@@ -104,18 +104,18 @@
 			$This.attr("id", modifiedName).attr("name", modifiedName);
 			
 			// Create our element to hold the selections and the buttons for moving elements
-			var htmlBlock = "<div class=\"" + nameModifier + "options\">" +
-			"<p class=\"AddOne\" rel=\"" + newName + "\" title=\"Add Selected\">&rsaquo;</p>" +
-			"<p class=\"AddAll\" rel=\"" + newName + "\" title=\"Add All\">&raquo;</p>" +
-			"<p class=\"RemoveOne\" rel=\"" + newName + "\" title=\"Remove Selected\">&lsaquo;</p>" +
-			"<p class=\"RemoveAll\" rel=\"" + newName + "\" title=\"Remove All\">&laquo;</p>" +
-			"</div>" +
-			"<div class=\"" + nameModifier + "select\">" +
+			var htmlBlock = "<div class=\"span1\"><div class=\"" + nameModifier + "options btn-group-vertical\">" +
+			"<a class=\"AddOne btn btn-mini btn-primary\" rel=\"" + newName + "\" title=\"Agregar Seleccionado\"><i class=\"icon-caret-right\"></i></a>" +
+			"<a class=\"AddAll btn btn-mini btn-primary\" rel=\"" + newName + "\" title=\"Agregar a Todos\"><i class=\"icon-forward\"></i></a>" +
+			"<a class=\"RemoveOne btn btn-mini btn-primary\" rel=\"" + newName + "\" title=\"Quitar Seleccionado\"><i class=\"icon-caret-left\"></i></a>" +
+			"<a class=\"RemoveAll btn btn-mini btn-primary\" rel=\"" + newName + "\" title=\"Quitar Todos\"><i class=\"icon-backward\"></i></a>" +
+			"</div></div>" +
+			"<div class=\"" + nameModifier + "select span2\">" +
 			"<select name=\"" + originalName + arrayName + "\" id=\"" + newName + "\" size=\"" + size + "\"multiple=\"multiple\" size=\"8\" class=\"" + originalClass + "TakeOver\"></select>" +
 			"</div>";
 	
 			$This.after(htmlBlock);
-			$This.wrap("<div class=\"" + nameModifier + "select\" />");
+			$This.wrap("<div class=\"" + nameModifier + "select span3\" />");
 			
 			// Move existing selection to our elements
 			$("#" + modifiedName + " option:selected").remove().appendTo("#" + newName);

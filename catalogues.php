@@ -668,23 +668,19 @@ $app -> get('/borrar-rol/:id/', function($id) use ($app) {
 
 #XXX Eventos
 
-$app->get('/docente/eventos/', function() use ($app) {
-    $user ['usuarios'] = Usuario::find_by_id('1');
-    $data['eventos'] = Evento::find_all_by_autor($user['usuarios']->id);
-    $app->render('eventosDoc.html',$data);
-})->name('eventosDoc');
+
 
 $app -> get('/nuevo-evento/', function() use ($app) {
    $data['user']=isAllowed('Docente',FALSE);
-    $data['eventos'] = Evento::all();
-	$data['usuarios']=Usuario::find('all',array('include' => array('personal')));
+	$data['usuarios']=Usuario::all(array('conditions' => array('id <> ?',$data['user']->id),'include' => array('personal')));
+	ladybug_dump_die($data);
     $app -> render('nuevoevento.html', $data);
 }) -> name('nuevo-evento');
 
 $app -> post('/nuevo-evento/', function() use ($app) {
     $validator = new GUMP();
     $_POST = $validator -> sanitize($_POST);
-    $rules = array('nombre' => 'required|max_len,100|min_len,1', 'autor' => 'required|max_len,50|min_len,1', 'descripcion' => 'required|max_len,100|min_len,1', 'fecha_inicio' => 'required|max_len,100|min_len,1', 'fecha_fin' => 'required|max_len,100|min_len,1', 'prioridad' => 'required|max_len,100|min_len,1', 'fecha_creado' => 'required|max_len,10|min_len,1', 'hora_inicio' => 'required|max_len,10|min_len,1', 'hora_fin' => 'required|max_len,100|min_len,1', 'validado' => 'required|max_len,50|min_len,1', );
+    $rules = array('nombre' => 'required|max_len,100|min_len,1', 'autor' => 'required|max_len,50|min_len,1', 'descripcion' => 'required|max_len,100|min_len,1', 'fecha_inicio' => 'required|max_len,100|min_len,1', 'fecha_fin' => 'required|max_len,100|min_len,1', 'prioridad' => 'required|max_len,100|min_len,1', 'hora_inicio' => 'required|max_len,10|min_len,1', 'hora_fin' => 'required|max_len,100|min_len,1' );
     $filters = array('nombre' => 'trim|sanitize_string', );
     $post = $_POST = $validator -> filter($_POST, $filters);
     $validated = $validator -> validate($_POST, $rules);
@@ -696,21 +692,20 @@ $app -> post('/nuevo-evento/', function() use ($app) {
         $evento -> fecha_inicio = $_POST['fecha_inicio'];
         $evento -> fecha_fin = $_POST['fecha_fin'];
         $evento -> prioridad = $_POST['prioridad'];
-        $evento -> fecha_creado = $_POST['fecha_creado'];
+        $evento -> fecha_creado = time();
         $evento -> hora_inicio = $_POST['hora_inicio'];
         $evento -> hora_fin = $_POST['hora_fin'];
-        $evento -> validado = $_POST['validado'];
         $evento -> save();
         $flash = array("title" => "OK", "msg" => "El evento se agregó satisfactoriamente .", "type" => "success", "fade" => 1);
         $app -> flash("flash", $flash);
         $app -> flashKeep();
-        $app -> redirect($app -> urlFor('CatEvento'));
+        $app -> redirect($app -> urlFor('eventosDoc'));
     } else {
         $msgs = humanize_gump($validated);
         $flash = array("title" => "ERROR", "msg" => $msgs, "type" => "error", "fade" => 0);
         $app -> flash("flash", $flash);
         $app -> flashKeep();
-        $app -> redirect($app -> urlFor('CatEvento'));
+        $app -> redirect($app -> urlFor('nuevo-evento'));
     }
 }) -> name('nuevo-evento-post');
 

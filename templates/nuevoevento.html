@@ -12,15 +12,15 @@
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label" for="autor">Autor</label>
+
 				<div class="controls">
-					<input type="text"  id="autor" name="autor" value="">
+					<input type="hidden""  id="autor" name="autor" " value="{{ user.id }}">
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="descripcion">Descripción</label>
 				<div class="controls">
-					<textarea id="descripcion" name="descripcion"></textarea> 
+					<textarea id="descripcion" name="descripcion" style="width: 682px; height: 150px;"></textarea> 
 				</div>
 			</div>
 		
@@ -74,13 +74,78 @@
 					</div>
 				</div>
 			</div>
-			<div >
-				<select id="principal" name="principal" multiple="" class="multiselect">
+			<div class="control-group" >
+					<label class="control-label">Invitados:</label>
+					<div class="controls">
+						<div class="row">
+
+						<select id="principal" name="principal[]" multiple="" class="multiselect" >
+							{% for usuario in usuarios %}
+							
+								<option value="{{ usuario.id }}">{{ usuarios.personal.nombre~" "~usuario.personal.paterno~" "~usuario.personal.materno }}</option>
+							
+							{% endfor %}
+						</select>
+								
+						<!----	<div class="span1">
+
+								<div class="btn-group-vertical">
+							
+							<a class= "AddOne btn btn-mini btn-primary" rel="principaltsms" title="Agregar Seleccionado">
+								<i class="icon-caret-right"></i></a>
+							<a class="AddAll btn btn-mini btn-primary" rel="principaltsms" title="Agregar a Todos">
+								<i class="icon-forward"></i></a>
+							<a class="RemoveOne btn btn-mini btn-primary" rel="principaltsms" title="Quitar Seleccionado">
+								<i class="icon-caret-left"></i></a>
+							<a class="RemoveAll btn btn-mini btn-primary" rel="principaltsms" title="Quitar Todos">
+								<i class="icon-backward"></i></a>
+			
+							
+						</div>
+			
+								
+							</div>
+							<div class="span1">
+
+								<select id="principal" name="principal[]" multiple="" class="multiselecta">
+						</select>
+								
+							</div>---->
+							
+						</div>
+					<!--	<div class="row">
+							<div class="span7">
+								
+
+								<select id="principaltsms" name="principaltsms" multiple="" class="multiselecta span3">
 					<option value="1">Hola</option>
-				</select>
-				<select id="selecciones" name="selecciones[]" multiple="" class="multiselect TakeOver"></select>
-				<script> $(".multiselect").twosidedmultiselect();</script>
-			</div>
+						</select>	
+									<a class= "AddOne btn btn-mini btn-primary" rel="principaltsms" title="Agregar Seleccionado">
+								<i class="icon-caret-right"></i></a>
+							<a class="AddAll btn btn-mini btn-primary" rel="principaltsms" title="Agregar a Todos">
+								<i class="icon-forward"></i></a>
+							<a class="RemoveOne btn btn-mini btn-primary" rel="principaltsms" title="Quitar Seleccionado">
+								<i class="icon-caret-left"></i></a>
+							<a class="RemoveAll btn btn-mini btn-primary" rel="principaltsms" title="Quitar Todos">
+								<i class="icon-backward"></i></a>		
+								
+								
+							
+			
+
+								<select id="principal" name="principal[]" multiple="" class="multiselecta span3">
+						</select>
+							
+
+								
+							</div>
+						</div>
+					</div>
+					
+				
+					
+	
+			</div>--->
 			
 			<div class="form-actions">
 				{% if user is defined %}
@@ -98,4 +163,12 @@
 	</form>
 </div>
 </div>
+
+<script>
+head.ready(function(){
+	$(function(){
+		 $(".multiselect").twosidedmultiselect();
+	});
+});
+</script>
 {% endblock %} 
