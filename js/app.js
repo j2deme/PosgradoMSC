@@ -10,15 +10,18 @@ $(function(){
         e.preventDefault()
 	});
 	$('.carousel').carousel();
-	$('.timepicker').timepicker();
+	$('.timepicker').timepicker({
+        minuteStep: 5,
+        disableFocus: true
+    });
     $(".chzn-select").chosen();
     $('[rel=tooltip]').tooltip();
-    
+
 	var fullDate = new Date();
 	//convert month to 2 digits
 	var twoDigitMonth = ((fullDate.getMonth().length+1) === 1)? (fullDate.getMonth()+1) : '0' + (fullDate.getMonth()+1);
 	var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
-	
+
 	$('#start-date')
 	.datepicker()
     .on('changeDate', function(ev){
