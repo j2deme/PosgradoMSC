@@ -120,6 +120,7 @@ require 'catalogues.php';
 /* =======================
  * ======= PUBLICO =======
  * =======================*/
+
 $app -> get('/estructura-plan-estudios/', function() use ($app) {
 	$data['user'] = isAllowed("Administrador", false);
 	$data['optativas'] = Materia::find_by_tipo(0);
@@ -236,6 +237,7 @@ $app -> get('/estadisticas/matriculacion/', function() use ($app) {
 	$data['matriculaciones'] = Matriculacion::all();
 	$app -> render('EstadisticaMatriculacion.html', $data);
 }) -> name('matriculacion');
+
 
 /* =======================
  * ======= DOCENTE =======

@@ -78,7 +78,7 @@
     	</div>
     	<div class="control-group">
       		<label class="control-label" for="password">
-      			Contraseña 
+      			Contraseña
       			<a data-content="Si se especifica un nuevo password sobreescribira al anterior" rel="popover" data-original-title="Atención" class="mute">
       				<i class="icon-info-sign"> </i>
       			</a>
@@ -164,7 +164,6 @@
 <script>
 head.ready(function(){
 	$(function(){
-		//$('#waiting').addClass('hide').fadeOut(2500);
 		$('#results').fadeIn(1500);
 		var usersTable = $('#users-table').dataTable({
 			"oLanguage": {
@@ -175,8 +174,8 @@ head.ready(function(){
 			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
 			"sPaginationType": "bootstrap"
 		});
-		
-		$('form#newUserForm').isHappy({
+
+/*		$('form#newUserForm').isHappy({
 			fields: {
 				'#usuario':{
 					required: true,
@@ -194,21 +193,7 @@ head.ready(function(){
 					test: happy.nequal
 				}
 			}
-		});
-		
-		/*NO COPIAR == EN PRUEBAS*/
-/*		$('#newUserForma').handleForm({
-			closeModal: true,
-			onSuccess: function(){
-				usersTable.fnAddData([
-					usersTable.fnGetData().length + 1,
-					"",
-					$('#rol').find(":selected").text(),
-					""
-				]);
-			}
 		});*/
-		/*NO COPIAR == EN PRUEBAS*/
 	});
 });
 </script>
