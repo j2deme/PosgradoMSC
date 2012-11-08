@@ -140,10 +140,6 @@ $app->get('/logout/', function() use ($app) {
 /* =======================
  * ==== ADMINISTRADOR ====
  * =======================*/
-//XXX Cut from here
-
-//XXX Cut to here
-
 require 'administrator.php';
 require 'filesystem.php';
 require 'graphs.php';
