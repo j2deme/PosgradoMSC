@@ -1,7 +1,7 @@
 {% extends 'admin-base.html' %}
 {% block content %}
 <div class="row">
-	<div class="span12">
+	<div class="span11">
 		<div class="tabbable"> <!-- Only required for left/right tabs -->
 			<ul class="nav nav-tabs">
 			<li class="active">
@@ -25,7 +25,7 @@
 			<li>
 				<a href="#tab7" data-toggle="tab">Idiomas</a>
 			</li>
-			
+
 		</ul>
     	<div class="tab-content">
     		<!-------------------------------------------------Primera Tab...........------------------------------------------------------>
@@ -91,7 +91,7 @@
 									<label for="nmunicipio">Municipio:</label>
 									<select id="nmunicipio" name="nmunicipio" class="chzn-select" data-placeholder="Selecciona Municipio" >
 										<option></option>
-										{% for municipio in municipios %} 
+										{% for municipio in municipios %}
 										<option {% if ( um is not null) and (um.id==municipio.id) %} selected=""  {% endif %}  value="{{ municipio.id }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
 										{% endfor %}
 									</select>
@@ -100,7 +100,7 @@
 									<label for="nlocalidad">Localidad:</label>
 									<select id="nlocalidad" name="nlocalidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
 										<option></option>
-										{% for localidad in localidades %} 
+										{% for localidad in localidades %}
 										<option {% if ( ul is not null) and (ul.id==localidad.id) %} selected="" {% endif %} value="{{ localidad.id }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
 										{% endfor %}
 									</select>
@@ -161,17 +161,15 @@
 					</div>
 				</form>
     </div>
-   
-    <!-----------------------------------------------Segunda Tab------------------------------------------------------------------------------------->
+
+    <!--Segunda Tab-->
      <div class="tab-pane fade" id="tab2">
+     	{% if (docente is defined) and (docente is not null) %}
     	<form id="datosdocente" name="datosdocente"method="post"action="{{ urlFor('nuevo-datosdocente-post') }}">
     		<div class="row">
     			<div class="span4">
     				<label for="grado">Grado:</label>
-    				{% if (docente is defined) and (docente is not null) %}
-    					<input id="id" name="id" type="hidden" value="{{ docente.id }}" />
-    				{% endif %}
-    					
+    				<input id="id" name="id" type="hidden" value="{{ docente.id }}" />
     				<input id="grado"name="grado" type="text" placeholder="Grado" value="{{ docente.grado|default('') }}"/>
     			</div>
     			<div class="span4">
@@ -212,7 +210,7 @@
     					{% endfor %}
     				</select>
     			</div>
-  
+
     		</div>
     		<div class="row">
    	 					<div class="span12">
@@ -223,6 +221,7 @@
    	 					</div>
    	 				</div>
     	</form>
+    	{% endif %}
     </div>
 			<!-----------------------------------------------Trecera Tab------------------------------------------------------------------------------------->
 			<div class="tab-pane fade" id="tab3">
@@ -291,7 +290,7 @@
 							{% endif %}
 							{% else %}
 							<input id="id" name="id" type="hidden" value="0" />
-							{% endif %} 
+							{% endif %}
 							<label class="checkbox" for="trabajo">
 								<input id="trabajo"name="trabajo"type="checkbox" {% if laboral.trabajado is defined %} {% if laboral.trabajado==1 %} checked {% endif %}{% endif %}/>
 								Ha trabajado</label>
@@ -309,13 +308,13 @@
 					<br />
 					<br />
 					<div class="row">
-						<div class="span12">
+						<div class="span11">
 							<label for="explab">Esperiencia Laboral:</label>
-							<textarea id="explab"name="explab" cols="100" rows="15" style="width: 1058px; height: 271px;">{{ laboral.experiencia|default('') }}</textarea>
+							<textarea id="explab" name="explab" class="span9" rows="15" style="height: 270px;">{{ laboral.experiencia|default('') }}</textarea>
 						</div>
 					</div>
 					<div class="row">
-						<div class="span10 offset1">
+						<div class="span11">
 							<div class="form-actions">
 								<button id="" name="" class="btn btn-primary" type="submit">
 									Guardar
@@ -328,69 +327,61 @@
 					</div>
 				</form>
 			</div>
-    <!---------------------------------------------------------------Quinta Tab----------------------------------------------------->
-   <div class="tab-pane fade active in" id="tab5">
-				<form id="editusuario" name="editusuario" class="" method="post" action="{{ urlFor('actualiza-usuario-post') }}">
-					<div class="row">
-						<div class="span10 offset1">
-							<div class="row">
-								
-								<input id="id" name="id" type="hidden" value="{{ usuario.id }}" />
-								<div class="control-group">
-									<label class="control-label" for="login">Login:</label>
-									<div class="controls">
-										<input id="login"name="login" class="span3" type="text" placeholder="Login" value="{{ usuario.login|default('') }}"/>
-									</div>
-								</div>
-								<div class="control-group">
-									<label class="control-label" for="paspassword">Contraseña Actual:</label>
-									<div class="controls">
-										<input id="paspassword" name="paspassword" class="span3" type="text" placeholder="Password"/>
-									</div>
-								</div>
-								<div class="control-group">
-									<label class="control-label" for="password">Contraseña Nueva:</label>
-									<div class="controls">
-										<input id="password" name="password" class="span3" type="text" placeholder="Password"/>
-									</div>
-								</div>
-								<div class="control-group">
-									<label class="control-label" for="confirmacion">Confimacion Contraseña:</label>
-									<div class="controls">
-										<input id="confirmacion" name="confirmacion" class="span3" type="text" placeholder="Confirme Contraseña" />
-									</div>
-								</div>
-								<input id="email-edit" name="email-edit" class="span3" type="hidden"/>
-							</div>
-						</div>
-						<div class="row">
-							<div class="span10 offset1">
-								<div class="form-actions">
-									<button id="" name="" class="btn btn-primary" type="submit">
-										Guardar
-									</button>
-									<button id=""name="" class="btn"type="reset">
-										Cancelar
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</form>
+    <!--Quinta Tab-->
+	<div class="tab-pane fade active in" id="tab5">
+	<div class="row">
+		<div class="span10 offset1">
+		<form id="editusuario" name="editusuario" class="form-horizontal" method="post" action="{{ urlFor('actualiza-usuario-post') }}">
+			<input id="id" name="id" type="hidden" value="{{ usuario.id }}" />
+			<input id="email-edit" name="email-edit" type="hidden"/ value="">
+			<input id="blogin" name="blogin" type="hidden" value="{{ usuario.login|default('') }}"></input>
+			<div class="control-group">
+				<label class="control-label" for="login">Login:</label>
+				<div class="controls">
+					<input id="login" name="login" class="span3" type="text" placeholder="Login" value="{{ usuario.login|default('') }}"/>
+					<span class="help-inline"></span>
+				</div>
 			</div>
-			<!-----------------------------------------------------------------------Sexta Tab--------------------------------------------------------------->
+			<legend>Cambiar contraseña</legend>
+			<div class="control-group">
+				<label class="control-label" for="paspassword">Contraseña actual</label>
+				<div class="controls">
+					<input id="paspassword" name="paspassword" class="span3" type="text" placeholder="Contraseña"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="password">Contraseña nueva</label>
+				<div class="controls">
+					<input id="password" name="password" class="span3" type="text" placeholder="Contraseña nueva"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="confirmacion">Confirmar contraseña</label>
+				<div class="controls">
+					<input id="confirmacion" name="confirmacion" class="span3" type="text" placeholder="Confirmar contraseña" />
+				</div>
+			</div>
+			<div class="form-actions">
+				<button id="" name="" class="btn btn-primary" type="submit">Guardar</button>
+				<button id=""name="" class="btn"type="reset">Cancelar</button>
+			</div>
+		</form>
+		</div>
+	</div>
+	</div>
+			<!--Sexta Tab-->
 			<div class="tab-pane fade" id="tab6">
 				<form id="conocimiento" name="conocimiento" class="" method="post" action="{{ urlFor('nuevo-conocimiento-post') }}">
 					<div class="row">
-						<div class="span12">
+						<div class="span11">
 							<div class="row">
 								<div class="span4 offset1">
-										
+
 									<label for="area">Area de Interes:</label>
 									<select id="area" name="area[]" class="chzn-select" multiple="" data-placeholder="Selecciona Area de Interes" >
 										<option></option>
-								
-										
+
+
 										{% for area in areas %}
 										{% if area.id in areasusuario|keys %}
 											<option selected="" value="{{ area.id }}">{{ area.nombre }}</option>
@@ -398,26 +389,26 @@
 										 <option value="{{ area.id }}">{{ area.nombre }}</option>
 										 {% endif %}
 										{% endfor %}
-										
-										
-										
+
+
+
 									</select>
 								</div>
 								<div class="span4 offset1">
 									<label for="lenguaje">Lenguaje:</label>
 									<select id="lenguaje" name="lenguaje[]" multiple="" class="chzn-select" data-placeholder="Selecciona Lenguaje" >
 										<option></option>
-										
+
 										{% for lenguaje in lenguajes %}
-											{% if lenguaje.id in lenguajesusuario|keys %}	
+											{% if lenguaje.id in lenguajesusuario|keys %}
 												<option selected="" value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
 											{% else %}
 												<option value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
 											{% endif %}
-											
+
 										{% endfor %}
-										
-					
+
+
 									</select>
 								</div>
 							</div>
@@ -515,7 +506,7 @@
 	</div>
 </div>
 <!---------------------------------------------------------------------------Modales------------------------------------------------------------->
-    
+
   {% for idiomausuario in idiomasusuario %}
 <div class="modal hide fade" id="modeditaridioma{{ idiomausuario.id }}">
 	<div class="modal-header">
@@ -534,7 +525,7 @@
 					<input id="habla" name="habla" class="range" type="range" min="0" max="100" value="{{ idiomausuario.habla|default(0) }}" step="1" data-label="eh" data-texto="Habla: "/>
 					<label id="een" name="een" for="entiende">Entiende: {{ idiomausuario.entiende|default(0) }}%</label>
 					<input id="entiende" name="entiende" class="range" type="range" min="0" max="100" value="{{ idiomausuario.entiende|default(0) }}" step="1" data-label="een" data-texto="Entiende: "/>
-					
+
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -558,13 +549,13 @@
 					<label for="idioma">Idioma:</label>
 					<select id="idioma" name="idioma" class="chzn-select" data-placeholder="Seleccione un idioma" >
 						<option></option>
-						{% for idioma in idiomas %} 
+						{% for idioma in idiomas %}
 						<option value="{{ idioma.id }}">{{ idioma.nombre }}</option>
 						{% endfor %}
 					</select>
 					<br />
-				
-					
+
+
 					<label id="elee" name="elee" for="lee">Lee:</label>
 					<input id="lee" name="lee"  class="range" type="range" min="0" max="100" value="0" step="1" data-label="elee" data-texto="Lee: "/>
 					<label id="eescribe" name="eescribe" for="escribe">Escribe:</label>
@@ -579,7 +570,7 @@
 								var value = $(this).val();
 								var tag = $(this).attr('data-label');
 								var text = $(this).attr('data-texto');
-								
+
 								showValue(value, tag, text);
 							});
 						});
@@ -591,7 +582,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a href="#" class="btn" data-dismiss="modal">Cancelar</a><!---->
+				<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
 				<button class="btn btn-primary" type="submit" >
 					Guardar
 				</button>
@@ -600,10 +591,50 @@
 	</div>
 </div>
 <script>
-	head.ready("app", function() {
-		head.js({
+	head.js({
 			html5slider : "{{ urlFor('home') }}js/html5slider.js"
+	});
+
+	head.ready("app", function() {
+		$(function(){
+			$('#login').blur(username_check);
 		});
+
+		function username_check(){
+			var	login    = $('#login');
+				blogin   = $('#blogin');
+				username = login.val();
+				blogin   = blogin.val();
+				group    = login.closest(".control-group");
+				help     = login.next(".help-inline");
+			if (username == blogin) {
+				group.removeClass("success");
+				group.removeClass("error");
+				help.html("");
+			} else if(username == '' || username.length < 2){
+				group.removeClass("success");
+				group.addClass("error");
+				help.html("<i class=\"icon-remove-sign\"></i> <b>No debe ser menor de 2 caracteres</b>");
+			} else {
+				$.ajax({
+					type:'POST',
+					url: "{{ urlFor('user-available') }}",
+					data: 'username='+ username,
+					cache: false,
+					success: function(response){
+						if(response == 1){//No disponible
+							group.removeClass("success");
+							group.addClass("error");
+							help.html("<i class=\"icon-remove-sign\"></i> <b>No disponible</b>");
+						} else {
+							group.removeClass("error");
+							group.addClass("success");
+							help.html("<i class=\"icon-ok-sign\"></i> <b>Disponible</b>");
+						}
+					}
+				});
+			}
+		}
 	});
 
 </script>

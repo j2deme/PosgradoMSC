@@ -22,7 +22,7 @@ $app->post('/nuevo-usuario/', function() use ($app) {
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
-        'usuario'    => 'required|alpha_dash|max_len,100',
+        'usuario'    => 'required|alpha_dash|min_len,2|max_len,100',
         'email'    => 'required|valid_email',
     );
 
@@ -126,6 +126,14 @@ $app->post('/nuevo-usuario/', function() use ($app) {
         $app->redirect($app->urlFor('admin-usuarios'));
     }
 })->name('nuevo-usuario-post');
+
+$app->post('/user-available/', function() use($app) {
+    $nick = $_POST['username'];
+    $nick = trim($nick);
+    $usuario = Usuario::find_by_login($nick);
+    $num = (is_object($usuario)) ? 1 : 0;
+    echo $num;
+})->name('user-available');
 
 $app->post('/actualiza-usuario/:id/', function($id) use ($app) {
     $validator = new GUMP();
