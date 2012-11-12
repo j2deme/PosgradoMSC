@@ -6,7 +6,7 @@ $app -> get('/admin/catalogos/areas-interes/', function() use ($app) {
         array("name" => "Catálogos", "alias" => "admin-catalogos"),
         array("name" => "Areas de Interes", "alias" => "CatAreaInteres")
     );
-    $data['areas_interes'] = AreaInteres::all();
+    $data['areas'] = AreaInteres::all();
     $app -> render('areasinteres.html', $data);
 }) -> name('CatAreaInteres');
 

@@ -776,6 +776,12 @@ $app -> get('/docente/perfil/', function() use ($app) {
 	$data['contacto'] = $data['usuario'] -> contacto;
 	$data['personal'] = $data['usuario'] -> personal;
 	$data['docente'] = $data['usuario'] -> docente;
+	if (is_null($data['docente'])) {
+		$docente= new Docente;
+		$docente->usuario_id=$data['user'] -> id;
+		$docente->save();
+		$data['docente']=Docente::find_by_usuario_id($data['user'] -> id);
+	}
 	$data['laboral'] = $data['usuario'] -> laboral;
 	$data['posgrado'] = $data['usuario'] -> pg;
 	$data['instituciones'] = Institucion::all();
