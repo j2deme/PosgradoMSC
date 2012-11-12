@@ -149,6 +149,7 @@ $app -> get('/publicaciones/', function() use ($app) {
 	$data['usuarios'] = Usuario::find('all', array('include' => array('personal', 'publicaciones')));
 	ladybug_dump_die($data['usuarios']);
 	$app -> render('publicaciones.html');
+
 }) -> name('gestor-publicaciones');
 
 $app -> get('/calendario/(:year/(:month/))', function($year, $month) use ($app) {
@@ -959,8 +960,8 @@ $app -> post('/nuevo-datos-personales/', function() use ($app) {
 			$perfilpersonal -> colonia = $_POST['colonia'];
 			$perfilpersonal -> cp = $_POST['cp'];
 			$perfilpersonal -> save();
-			
-			
+
+
 			$usuario=$data['user'];
 			$usuario->actualizado = time();
 			$usuario->save();
@@ -1018,7 +1019,7 @@ $app -> post('/nuevo-datos-academicos/', function() use ($app) {
 			$perfilacademico -> titulacion = $_POST['forma'];
 			$perfilacademico -> ubicacion = $_POST['localidad'];
 			$perfilacademico -> save();
-			
+
 			$usuario=$data['user'];
 			$usuario->actualizado = time();
 			$usuario->save();
@@ -1082,8 +1083,12 @@ $app -> post('/nuevo-info-contacto/', function() use ($app) {
 			$perfilinfo -> forma = $_POST['enterado'];
 			$perfilinfo -> save();
 		}
-		
+
 		$usuario=$data['user'];
+			$usuario->actualizado = time();
+			$usuario->save();
+
+		$usuario=Usuario::find_by_id($user['user']->id);
 			$usuario->actualizado = time();
 			$usuario->save();
 
@@ -1217,64 +1222,22 @@ $app -> post('/nuevo-conocimiento/', function() use ($app) {
 	$validated = $validator -> validate($_POST, $rules);
 	if ($validated === TRUE) {
 		$msg = "";
+		$arr = (isset($_POST['area'])) ? $_POST['area'] : array();
+		sincBd($arr, $data['user'] -> id, "UsuariosAreas");
+		$msg .= 'El Area de Interes se edito satisfactoriamente <br />';
+		$arr = (isset($_POST['lenguaje'])) ? $_POST['lenguaje'] : array();
+		sincBd($_POST['lenguaje'], $data['user'] -> id, "UsuariosLenguajes");
+		$msg .= 'El Lenguaje se edito satisfactoriamente <br />';
+		$arr = (isset($_POST['area'])) ? $_POST['area'] : array();
+		sincBd($_POST['herramienta'], $data['user'] -> id, "UsuariosHerramientas");
+		$msg .= 'La Herramienta se edito satisfactoriamente <br />';
+		$arr = (isset($_POST['plataformas'])) ? $_POST['plataformas'] : array();
+		sincBd($_POST['plataformas'], $data['user'] -> id, "UsuariosPlataformas");
+		$msg .= 'La Plataforma se edito satisfactoriamente <br />';
 
-			ladybug_dump_die($_POST);
-		if (isset($_POST['area'])) {
-			foreach ($_POST['area'] as $area) {
-
-				$are = UsuariosAreas::find_all_by_area_id($area);
-
-				if (count($are) == 0) {
-					$areainteres = new UsuariosAreas;
-					$areainteres -> usuario_id = $data['user'] -> id;
-					$areainteres -> area_id = $_POST['area'];
-					$areainteres -> save();
-					$msg .= 'El area se agregó satisfactoriamente ';
-
-
-				}
-			}
-		}
-		if (isset($_POST['lenguaje'])) {
-			foreach ($_POST['lenguaje'] as $lenguaje) {
-				$leng = UsuariosLenguajes::all(array('Conditions' =>array('usuario_id AND lenguaje_id',$data['user']->id,$lenguaje)));
-				if (count($leng) == 0) {
-
-					$lenguajes = new UsuariosLenguajes;
-					$lenguajes -> usuario_id = $data['user'] -> id;
-					$lenguajes -> lenguaje_id = $lenguaje;
-					$lenguajes -> save();
-					$msg .= ',El lenguaje se agregó satisfactoriamente ';
-				}
-
-			}
-		}
-		if (isset($_POST['herramienta'])) {
-			foreach ($_POST['herramienta'] as $herramienta) {
-				$herr = Herramienta::find_by_id($herramienta);
-				if (count($herr) == 0) {
-					$herramientas = new UsuariosHerramientas;
-					$herramientas -> usuario_id = $data['user'] -> id;
-					$herramientas -> herramienta_id = $herramienta;
-					$herramientas -> save();
-					$msg .= ',La herramienta se agregó satisfactoriamente ';
-				}
-
-			}
-		}
-		if (isset($_POST['plataformas'])) {
-			foreach ($_POST['plataformas'] as $plataformas) {
-				$plat = Plataforma::find_by_id($plataformas);
-				if (count($plat) == 0) {
-					$plataforma = new UsuariosPlataformas;
-					$plataforma -> usuario_id = $data['user'] -> id;
-					$plataforma -> plataforma_id = $plataformas;
-					$plataforma -> save();
-					$msg .= ',La plataforma se agregó satisfactoriamente ';
-				}
-			}
-		}
-		
+		$usuario=Usuario::find_by_id($user['user']->id);
+			$usuario->actualizado = time();
+			$usuario->save();
 		$flash = array("title" => "OK", "msg" => $msg, "type" => "success", "fade" => 1);
 
 		$app -> flash("flash", $flash);
@@ -1309,7 +1272,6 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
 		$iu = UsuariosIdiomas::find_by_usuario_id_and_idioma_id($data['user'] -> id, $_POST['idioma']);
 	//	ladybug_dump_die(count($iu));
 		if (!count($iu)==0) {
-			
 
 			$flash = array("title" => "ERROR", "msg" => "El Idioma que esta tratando de guardar ya existe en su perfil .", "type" => "error", "fade" => 0);
 
@@ -1332,7 +1294,7 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
 			$ui -> habla = $_POST['habla'];
 			$ui -> entiende = $_POST['entiende'];
 			$ui -> save();
-			
+
 			$usuario=$data['user'];
 			$usuario->actualizado = time();
 			$usuario->save();
@@ -1377,7 +1339,7 @@ $app -> post('/actualizar-idioma-usuario/', function() use ($app) {
 		$iu -> habla = $_POST['habla'];
 		$iu -> entiende = $_POST['entiende'];
 		$iu -> save();
-		
+
 		$usuario=$data['user'];
 			$usuario->actualizado = time();
 			$usuario->save();
@@ -1407,7 +1369,7 @@ $app -> get('/borrar-idioma-usuario/:id/:perfil/', function($id, $perfil) use ($
 	$data['user'] = isAllowed(array("Docente", "Alumno", "Aspirante"), FALSE);
 	$iu = UsuariosIdiomas::find($id);
 	$iu -> delete();
-	
+
 	$usuario=Usuario::find_by_usuario_id($user['user']->id);
 			$usuario->actualizado = time();
 			$usuario->save();

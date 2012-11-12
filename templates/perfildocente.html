@@ -392,9 +392,6 @@
 										 <option value="{{ area.id }}">{{ area.nombre }}</option>
 										 {% endif %}
 										{% endfor %}
-										
-										
-
 									</select>
 								</div>
 								<div class="span4 offset1">
@@ -512,7 +509,7 @@
 <!--Modales-->
 
   {% for idiomausuario in idiomasusuario %}
-  
+
   <!-- Confirmacion de borrado-->
 	<div class="modal hide fade" id="modconfirmacion{{ idiomausuario.idioma_id }}">
 		<div class="modal-header">
@@ -529,15 +526,14 @@
 		<div class="modal-footer">
 			<a href="#" class="btn" data-dismiss="modal">
 				<i class="icon-remove-sign"></i>
-				No  
-				
+				No
 				</a><!---->
 			<a class="btn btn-danger" href="{{ urlFor('borrar-idioma-usuario-post',{'id': idiomausuario.id,'perfil': 2}) }}">
 				<i class="icon-trash"></i>
 				Si</a>
 		</div>
 	</div>
-  
+
 <div class="modal hide fade" id="modeditaridioma{{ idiomausuario.idioma_id }}">
 	<div class="modal-header">
 		<h3>Editar Idioma</h3>

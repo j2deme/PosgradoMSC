@@ -100,7 +100,7 @@ function sincBd($idPost,$user,$tabla){
 			}
 		}
 		unset($db);
-		
+
 		echo "sali de la funcion";
 }
 
