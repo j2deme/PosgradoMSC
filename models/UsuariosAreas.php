@@ -11,6 +11,7 @@ class UsuariosAreas extends ActiveRecord\Model {
 	);
 	
 	static $alias_attribute = array(
+	'conocimiento' => 'area_id'
 	);
 }
 ?>

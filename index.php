@@ -140,7 +140,7 @@ $app -> get('/estadisticas/nucleo-academico/', function() use ($app) {
 	$data['usuarios'] = Usuario::find_all_by_id($rolus -> usuario_id, array('include' => array('personal', 'docente')));
 	$app -> render('nucleoacademico.html', $data);
 }) -> name('nucleo-academico');
-
+//falta crear esta vista
 $app -> get('/productividad-academica/', function() use ($app) {
 	$data['user'] = isAllowed("Administrador", false);
 	$data['usuarios'] = Usuario::find('all', array('include' => array('personal', 'publicaciones')));
@@ -152,8 +152,8 @@ $app -> get('/publicaciones/', function() use ($app) {
 	$data['user'] = isAllowed("Administrador", false);
 	$data['usuarios'] = Usuario::find('all', array('include' => array('personal', 'publicaciones')));
 
-	$app -> render('productividadacademica.html');
-}) -> name('publicaciones');
+	$app -> render('gestorpublicaciones.html');
+}) -> name('gestor-publicaciones');
 
 $app -> get('/calendario/(:year/(:month/))', function($year, $month) use ($app) {
 	$data['user'] = isAllowed("Administrador", false);
@@ -237,7 +237,6 @@ $app -> get('/estadisticas/matriculacion/', function() use ($app) {
 	$data['matriculaciones'] = Matriculacion::all();
 	$app -> render('EstadisticaMatriculacion.html', $data);
 }) -> name('matriculacion');
-
 
 /* =======================
  * ======= DOCENTE =======
@@ -566,6 +565,7 @@ $app -> post('/formulario-registro-post/', function() use ($app) {
 				$us -> login = $_POST['usuario'];
 				$us -> password = $_POST['pass'];
 				$us -> activo = 1;
+				$us->actualizado = time();
 				$us -> save();
 
 				$personal -> nombre = $_POST['nombre'];
@@ -792,30 +792,30 @@ $app -> get('/docente/perfil/', function() use ($app) {
 
 	$idiomas = Usuario::find_by_id($data['user'] -> id, array('include' => array('ui')));
 	$data['idiomasusuario'] = $idiomas -> ui;
-	$idherramienta= UsuariosHerramientas::find_all_by_usuario_id($data['user'] -> id,array('select'=>'herramienta_id'));
-	$ids=array();
+	$idherramienta = UsuariosHerramientas::find_all_by_usuario_id($data['user'] -> id, array('select' => 'herramienta_id'));
+	$ids = array();
 	foreach ($idherramienta as $key) {
-		$ids[$key->herramienta_id]=1;
+		$ids[$key -> herramienta_id] = 1;
 	}
-	$data['herramientasusuario']=$ids;
-	$idplataformas = UsuariosPlataformas::find_all_by_usuario_id($data['user'] -> id,array('select'=>'plataforma_id'));
-	$ids=array();
+	$data['herramientasusuario'] = $ids;
+	$idplataformas = UsuariosPlataformas::find_all_by_usuario_id($data['user'] -> id, array('select' => 'plataforma_id'));
+	$ids = array();
 	foreach ($idplataformas as $key) {
-		$ids[$key->plataforma_id]=1;
+		$ids[$key -> plataforma_id] = 1;
 	}
-	$data['plataformasusuario']=$ids;
-	$idlenguajes= UsuariosLenguajes::find_all_by_usuario_id($data['user'] -> id,array('select'=>'lenguaje_id'));
-	$ids=array();
+	$data['plataformasusuario'] = $ids;
+	$idlenguajes = UsuariosLenguajes::find_all_by_usuario_id($data['user'] -> id, array('select' => 'lenguaje_id'));
+	$ids = array();
 	foreach ($idlenguajes as $key) {
-		$ids[$key->lenguaje_id]=1;
+		$ids[$key -> lenguaje_id] = 1;
 	}
-	$data['lenguajesusuario']=$ids;
-	$idareasusuario = UsuariosAreas::find_all_by_usuario_id($data['user'] -> id,array('select'=>'area_id'));
-	$ids=array();
+	$data['lenguajesusuario'] = $ids;
+	$idareasusuario = UsuariosAreas::find_all_by_usuario_id($data['user'] -> id, array('select' => 'area_id'));
+	$ids = array();
 	foreach ($idareasusuario as $key) {
-		$ids[$key->area_id]=1;
+		$ids[$key -> area_id] = 1;
 	}
-	$data['areasusuario']=$ids;
+	$data['areasusuario'] = $ids;
 	$data['formas'] = FormaTitulacion::all();
 	$data['carreras'] = Carrera::all();
 	$data['ul'] = Localidad::find_by_id($data['personal'] -> procedencia);
@@ -868,10 +868,30 @@ $app -> get('/editor-perfil/', function() use ($app) {
 
 	$idiomas = Usuario::find_by_id($data['user'] -> id, array('include' => array('ui')));
 	$data['idiomasusuario'] = $idiomas -> ui;
-	$data['herramientasusuario'] = UsuariosHerramientas::find_all_by_usuario_id($data['user'] -> id, array('include' => array('herramienta')));
-	$data['plataformasusuario'] = UsuariosPlataformas::find_all_by_usuario_id($data['user'] -> id, array('include' => array('plataforma')));
-	$data['lenguajesusuario'] = UsuariosLenguajes::find_all_by_usuario_id($data['user'] -> id, array('include' => array('lenguaje')));
-	$data['areasusuario'] = UsuariosAreas::find_all_by_usuario_id($data['user'] -> id);
+	$idherramienta = UsuariosHerramientas::find_all_by_usuario_id($data['user'] -> id, array('select' => 'herramienta_id'));
+	$ids = array();
+	foreach ($idherramienta as $key) {
+		$ids[$key -> herramienta_id] = 1;
+	}
+	$data['herramientasusuario'] = $ids;
+	$idplataformas = UsuariosPlataformas::find_all_by_usuario_id($data['user'] -> id, array('select' => 'plataforma_id'));
+	$ids = array();
+	foreach ($idplataformas as $key) {
+		$ids[$key -> plataforma_id] = 1;
+	}
+	$data['plataformasusuario'] = $ids;
+	$idlenguajes = UsuariosLenguajes::find_all_by_usuario_id($data['user'] -> id, array('select' => 'lenguaje_id'));
+	$ids = array();
+	foreach ($idlenguajes as $key) {
+		$ids[$key -> lenguaje_id] = 1;
+	}
+	$data['lenguajesusuario'] = $ids;
+	$idareasusuario = UsuariosAreas::find_all_by_usuario_id($data['user'] -> id, array('select' => 'area_id'));
+	$ids = array();
+	foreach ($idareasusuario as $key) {
+		$ids[$key -> area_id] = 1;
+	}
+	$data['areasusuario'] = $ids;
 	$data['formas'] = FormaTitulacion::all();
 	$data['carreras'] = Carrera::all();
 	$data['ul'] = Localidad::find_by_id($data['personal'] -> procedencia);
@@ -937,6 +957,11 @@ $app -> post('/nuevo-datos-personales/', function() use ($app) {
 			$perfilpersonal -> colonia = $_POST['colonia'];
 			$perfilpersonal -> cp = $_POST['cp'];
 			$perfilpersonal -> save();
+			
+			
+			$usuario=Usuario::find_by_id($user['user']->id);
+			$usuario->actualizado = time();
+			$usuario->save();
 		}
 		$flash = array("title" => "OK", "msg" => "Datos personales guardados correctamente.", "type" => "success", "fade" => 1);
 
@@ -991,6 +1016,10 @@ $app -> post('/nuevo-datos-academicos/', function() use ($app) {
 			$perfilacademico -> titulacion = $_POST['forma'];
 			$perfilacademico -> ubicacion = $_POST['localidad'];
 			$perfilacademico -> save();
+			
+			$usuario=Usuario::find_by_id($user['user']->id);
+			$usuario->actualizado = time();
+			$usuario->save();
 		}
 		$flash = array("title" => "OK", "msg" => "Datos académicos guardados correctamente.", "type" => "success", "fade" => 1);
 
@@ -1051,6 +1080,10 @@ $app -> post('/nuevo-info-contacto/', function() use ($app) {
 			$perfilinfo -> forma = $_POST['enterado'];
 			$perfilinfo -> save();
 		}
+		
+		$usuario=Usuario::find_by_id($user['user']->id);
+			$usuario->actualizado = time();
+			$usuario->save();
 
 		$flash = array("title" => "OK", "msg" => "Datos de contacto guardados correctamente.", "type" => "success", "fade" => 1);
 
@@ -1104,6 +1137,9 @@ $app -> post('/nuevo-experiencia-laboral/', function() use ($app) {
 			$perfillaboral -> usuario_id = $data['user'] -> id;
 			$perfillaboral -> save();
 		}
+		$usuario=Usuario::find_by_id($user['user']->id);
+			$usuario->actualizado = time();
+			$usuario->save();
 
 		$flash = array("title" => "OK", "msg" => "Datos de experiencia laboral guardados correctamente.", "type" => "success", "fade" => 1);
 
@@ -1152,7 +1188,9 @@ $app -> post('/nuevo-datos-docente/', function() use ($app) {
 			$perfldocente -> promep = $_POST['promep'];
 			$perfldocente -> save();
 		}
-
+			$usuario=Usuario::find_by_id($user['user']->id);
+			$usuario->actualizado = time();
+			$usuario->save();
 		$flash = array("title" => "OK", "msg" => "Datos de docente guardados correctamente.", "type" => "success", "fade" => 1);
 
 		$app -> flash("flash", $flash);
@@ -1177,63 +1215,22 @@ $app -> post('/nuevo-conocimiento/', function() use ($app) {
 	$validated = $validator -> validate($_POST, $rules);
 	if ($validated === TRUE) {
 		$msg = "";
-			ladybug_dump_die($_POST);
-		if (isset($_POST['area'])) {
-			foreach ($_POST['area'] as $area) {
-				
-				$are = UsuariosAreas::find_all_by_area_id($area);
-				
-				if (count($are) == 0) {
-					$areainteres = new UsuariosAreas;
-					$areainteres -> usuario_id = $data['user'] -> id;
-					$areainteres -> area_id = $_POST['area'];
-					$areainteres -> save();
-					$msg .= 'El area se agregó satisfactoriamente ';
-					
-
-				}
-			}
-		}
-		if (isset($_POST['lenguaje'])) {
-			foreach ($_POST['lenguaje'] as $lenguaje) {
-				$leng = UsuariosLenguajes::all(array('Conditions' =>array('usuario_id AND lenguaje_id',$data['user']->id,$lenguaje)));
-				if (count($leng) == 0) {
-				
-					$lenguajes = new UsuariosLenguajes;
-					$lenguajes -> usuario_id = $data['user'] -> id;
-					$lenguajes -> lenguaje_id = $lenguaje;
-					$lenguajes -> save();
-					$msg .= ',El lenguaje se agregó satisfactoriamente ';
-				}
-
-			}
-		}
-		if (isset($_POST['herramienta'])) {
-			foreach ($_POST['herramienta'] as $herramienta) {
-				$herr = Herramienta::find_by_id($herramienta);
-				if (count($herr) == 0) {
-					$herramientas = new UsuariosHerramientas;
-					$herramientas -> usuario_id = $data['user'] -> id;
-					$herramientas -> herramienta_id = $herramienta;
-					$herramientas -> save();
-					$msg .= ',La herramienta se agregó satisfactoriamente ';
-				}
-
-			}
-		}
-		if (isset($_POST['plataformas'])) {
-			foreach ($_POST['plataformas'] as $plataformas) {
-				$plat = Plataforma::find_by_id($plataformas);
-				if (count($plat) == 0) {
-					$plataforma = new UsuariosPlataformas;
-					$plataforma -> usuario_id = $data['user'] -> id;
-					$plataforma -> plataforma_id = $plataformas;
-					$plataforma -> save();
-					$msg .= ',La plataforma se agregó satisfactoriamente ';
-				}
-			}
-		}
-
+		$arr = (isset($_POST['area'])) ? $_POST['area'] : array();
+		sincBd($arr, $data['user'] -> id, "UsuariosAreas");
+		$msg .= 'El Area de Interes se edito satisfactoriamente <br />';
+		$arr = (isset($_POST['lenguaje'])) ? $_POST['lenguaje'] : array();
+		sincBd($_POST['lenguaje'], $data['user'] -> id, "UsuariosLenguajes");
+		$msg .= 'El Lenguaje se edito satisfactoriamente <br />';
+		$arr = (isset($_POST['area'])) ? $_POST['area'] : array();
+		sincBd($_POST['herramienta'], $data['user'] -> id, "UsuariosHerramientas");
+		$msg .= 'La Herramienta se edito satisfactoriamente <br />';
+		$arr = (isset($_POST['plataformas'])) ? $_POST['plataformas'] : array();
+		sincBd($_POST['plataformas'], $data['user'] -> id, "UsuariosPlataformas");
+		$msg .= 'La Plataforma se edito satisfactoriamente <br />';
+		
+		$usuario=Usuario::find_by_id($user['user']->id);
+			$usuario->actualizado = time();
+			$usuario->save();
 		$flash = array("title" => "OK", "msg" => $msg, "type" => "success", "fade" => 1);
 
 		$app -> flash("flash", $flash);
@@ -1266,8 +1263,9 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
 	$validated = $validator -> validate($_POST, $rules);
 	if ($validated === TRUE) {
 		$iu = UsuariosIdiomas::find_by_usuario_id_and_idioma_id($data['user'] -> id, $_POST['idioma']);
-		//ladybug_dump_die($data['user'] -> id,$_POST['idioma']);
-		if ($iu != null) {
+	//	ladybug_dump_die(count($iu));
+		if (!count($iu)==0) {
+			
 
 			$flash = array("title" => "ERROR", "msg" => "El Idioma que esta tratando de guardar ya existe en su perfil .", "type" => "error", "fade" => 0);
 
@@ -1290,7 +1288,10 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
 			$ui -> habla = $_POST['habla'];
 			$ui -> entiende = $_POST['entiende'];
 			$ui -> save();
-
+			
+			$usuario=Usuario::find_by_id($user['user']->id);
+			$usuario->actualizado = time();
+			$usuario->save();
 			$flash = array("title" => "OK", "msg" => "El idioma se ha guardado correctamente.", "type" => "success", "fade" => 1);
 
 			$app -> flash("flash", $flash);
@@ -1332,6 +1333,10 @@ $app -> post('/actualizar-idioma-usuario/', function() use ($app) {
 		$iu -> habla = $_POST['habla'];
 		$iu -> entiende = $_POST['entiende'];
 		$iu -> save();
+		
+		$usuario=Usuario::find_by_usuario_id($data['user'] -> id);
+			$usuario->actualizado = time();
+			$usuario->save();
 		$flash = array("title" => "OK", "msg" => "El idioma se ha actualizado correctamente.", "type" => "success", "fade" => 1);
 
 		$app -> flash("flash", $flash);
@@ -1358,6 +1363,10 @@ $app -> get('/borrar-idioma-usuario/:id/:perfil/', function($id, $perfil) use ($
 	$data['user'] = isAllowed(array("Docente", "Alumno", "Aspirante"), FALSE);
 	$iu = UsuariosIdiomas::find($id);
 	$iu -> delete();
+	
+	$usuario=Usuario::find_by_usuario_id($user['user']->id);
+			$usuario->actualizado = time();
+			$usuario->save();
 	$flash = array("title" => "OK", "msg" => "El idioma se ha borrado correctamente.", "type" => "success", "fade" => 1);
 
 	$app -> flash("flash", $flash);
