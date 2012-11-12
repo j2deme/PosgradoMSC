@@ -1088,10 +1088,6 @@ $app -> post('/nuevo-info-contacto/', function() use ($app) {
 			$usuario->actualizado = time();
 			$usuario->save();
 
-		$usuario=Usuario::find_by_id($user['user']->id);
-			$usuario->actualizado = time();
-			$usuario->save();
-
 		$flash = array("title" => "OK", "msg" => "Datos de contacto guardados correctamente.", "type" => "success", "fade" => 1);
 
 		$app -> flash("flash", $flash);
@@ -1235,9 +1231,11 @@ $app -> post('/nuevo-conocimiento/', function() use ($app) {
 		sincBd($_POST['plataformas'], $data['user'] -> id, "UsuariosPlataformas");
 		$msg .= 'La Plataforma se edito satisfactoriamente <br />';
 
-		$usuario=Usuario::find_by_id($user['user']->id);
+		$usuario=$data['user'];
 			$usuario->actualizado = time();
+			//ladybug_dump_die($usuario);
 			$usuario->save();
+
 		$flash = array("title" => "OK", "msg" => $msg, "type" => "success", "fade" => 1);
 
 		$app -> flash("flash", $flash);
