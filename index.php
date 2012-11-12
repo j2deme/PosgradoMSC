@@ -959,7 +959,7 @@ $app -> post('/nuevo-datos-personales/', function() use ($app) {
 			$perfilpersonal -> save();
 			
 			
-			$usuario=Usuario::find_by_id($user['user']->id);
+			$usuario=$data['user'];
 			$usuario->actualizado = time();
 			$usuario->save();
 		}
@@ -1017,7 +1017,7 @@ $app -> post('/nuevo-datos-academicos/', function() use ($app) {
 			$perfilacademico -> ubicacion = $_POST['localidad'];
 			$perfilacademico -> save();
 			
-			$usuario=Usuario::find_by_id($user['user']->id);
+			$usuario=$data['user'];
 			$usuario->actualizado = time();
 			$usuario->save();
 		}
@@ -1081,7 +1081,7 @@ $app -> post('/nuevo-info-contacto/', function() use ($app) {
 			$perfilinfo -> save();
 		}
 		
-		$usuario=Usuario::find_by_id($user['user']->id);
+		$usuario=$data['user'];
 			$usuario->actualizado = time();
 			$usuario->save();
 
@@ -1137,7 +1137,7 @@ $app -> post('/nuevo-experiencia-laboral/', function() use ($app) {
 			$perfillaboral -> usuario_id = $data['user'] -> id;
 			$perfillaboral -> save();
 		}
-		$usuario=Usuario::find_by_id($user['user']->id);
+		$usuario=$data['user'];
 			$usuario->actualizado = time();
 			$usuario->save();
 
@@ -1188,7 +1188,7 @@ $app -> post('/nuevo-datos-docente/', function() use ($app) {
 			$perfldocente -> promep = $_POST['promep'];
 			$perfldocente -> save();
 		}
-			$usuario=Usuario::find_by_id($user['user']->id);
+			$usuario=$data['user'];
 			$usuario->actualizado = time();
 			$usuario->save();
 		$flash = array("title" => "OK", "msg" => "Datos de docente guardados correctamente.", "type" => "success", "fade" => 1);
@@ -1228,9 +1228,11 @@ $app -> post('/nuevo-conocimiento/', function() use ($app) {
 		sincBd($_POST['plataformas'], $data['user'] -> id, "UsuariosPlataformas");
 		$msg .= 'La Plataforma se edito satisfactoriamente <br />';
 		
-		$usuario=Usuario::find_by_id($user['user']->id);
+		$usuario=$data['user'];
 			$usuario->actualizado = time();
+			//ladybug_dump_die($usuario);
 			$usuario->save();
+			
 		$flash = array("title" => "OK", "msg" => $msg, "type" => "success", "fade" => 1);
 
 		$app -> flash("flash", $flash);
@@ -1289,7 +1291,7 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
 			$ui -> entiende = $_POST['entiende'];
 			$ui -> save();
 			
-			$usuario=Usuario::find_by_id($user['user']->id);
+			$usuario=$data['user'];
 			$usuario->actualizado = time();
 			$usuario->save();
 			$flash = array("title" => "OK", "msg" => "El idioma se ha guardado correctamente.", "type" => "success", "fade" => 1);
@@ -1334,7 +1336,7 @@ $app -> post('/actualizar-idioma-usuario/', function() use ($app) {
 		$iu -> entiende = $_POST['entiende'];
 		$iu -> save();
 		
-		$usuario=Usuario::find_by_usuario_id($data['user'] -> id);
+		$usuario=$data['user'];
 			$usuario->actualizado = time();
 			$usuario->save();
 		$flash = array("title" => "OK", "msg" => "El idioma se ha actualizado correctamente.", "type" => "success", "fade" => 1);
