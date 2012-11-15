@@ -103,6 +103,20 @@ function sincBd($idPost,$user,$tabla){
 		
 		echo "sali de la funcion";
 }
+
+function unionCat($objs){
+	$arr= array();
+	foreach ($objs as $obj) {
+		$objgen= new Generic;
+		$objgen->id=$obj->id;
+		$objgen->nombre=$obj->nombre;
+		$objgen->tipo=get_class($obj);
+		$arr[]=$objgen;
+		unset($objgen);
+	}
+	return $arr;
+}
+
 function isAllowed($roles,$redirect = TRUE,$permisos = array()){
 	$app = Slim::getInstance();
 	$id = $app -> getCookie('userId');

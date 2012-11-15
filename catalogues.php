@@ -1,4 +1,46 @@
 <?php
+#XXX Gestor de Catálogos
+$app -> get('/admin/catalogos/gestor-catalogos/', function() use ($app) {
+    
+    $idiomas = Idioma::all();
+    $lineas = LineaInvestigacion::all();
+    $lenguajes = Lenguaje::all();
+    $plataformas = Plataforma::all();
+    $areas = AreaInteres::all();
+    $formas = FormaEnterado::all();
+    $herramientas = Herramienta::all();
+	$elementos=array_merge($idiomas,$lineas,$lenguajes,$plataformas,$areas,$formas,$herramientas);
+    $data['elementos']=unionCat($elementos);
+	//ladybug_dump_die($data['elementos'][1000]);
+    $app -> render('gestorcatalogos.html', $data);
+}) -> name('gestor-catalogos');
+
+
+$app->post('/admin/catalogos/gestor-catalogos-nuevo/', function() use($app){
+		
+		$validator = new GUMP();
+    $_POST = $validator -> sanitize($_POST);
+    $rules = array('id' => 'required','nombre' => 'required','tipo' => 'required' );
+    $filters = array();
+    $post = $_POST = $validator -> filter($_POST, $filters);
+    $validated = $validator -> validate($_POST, $rules);
+    if ($validated === true) {
+		
+		
+		
+		$flash = array("title" => "OK", "msg" => "El elmento se borro correctamente", "type" => "success", "fade" => 1);
+		$app -> flash("flash", $flash);
+        $app -> flashKeep();
+        $app -> redirect($app -> urlFor('gestor-catalogos'));
+	}else{
+		
+		
+		
+	}
+	
+	})->name('gestor-catalogos-post');
+
+
 #XXX Areas de Interes
 $app -> get('/admin/catalogos/areas-interes/', function() use ($app) {
     $data['breadcrumb'] = array(
