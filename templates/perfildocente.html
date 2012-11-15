@@ -28,7 +28,7 @@
 
 		</ul>
     	<div class="tab-content">
-    		<!-------------------------------------------------Primera Tab...........------------------------------------------------------>
+    		<!--Primera Tab-->
     	<div class="tab-pane fade" id="tab1">
     	<form id="datosperosnales" name="datospersonales" method="post" action="{{ urlFor('nuevo-datospersonales-post') }}">
 					<div class="row">
@@ -223,7 +223,7 @@
     	</form>
     	{% endif %}
     </div>
-			<!-----------------------------------------------Trecera Tab------------------------------------------------------------------------------------->
+			<!--Tercera Tab-->
 			<div class="tab-pane fade" id="tab3">
 				<form id="infocontacto" name="infocontacto" method="post" action="{{ urlFor('nuevo-infocontacto-post') }}">
 					<div class="row">
@@ -279,7 +279,7 @@
 					</div>
 				</form>
 			</div>
-			<!-------------------------------------------------Cuarta Tab-------------------------------------------------------------->
+			<!--Cuarta Tab-->
 			<div class="tab-pane fade" id="tab4">
 				<form id="explaboral" name="explaboral" method="post" action="{{ urlFor('nuevo-explaboral-post') }}">
 					<div class="row">
@@ -331,14 +331,14 @@
 	<div class="tab-pane fade active in" id="tab5">
 	<div class="row">
 		<div class="span10 offset1">
-		<form id="editusuario" name="editusuario" class="form-horizontal" method="post" action="{{ urlFor('actualiza-usuario-post') }}">
+		<form id="editusuario" name="editusuario" class="form-horizontal not-enter" method="post" action="{{ urlFor('actualiza-acceso',{'tipo':'Docente','id':usuario.id}) }}">
 			<input id="id" name="id" type="hidden" value="{{ usuario.id }}" />
-			<input id="email-edit" name="email-edit" type="hidden"/ value="">
 			<input id="blogin" name="blogin" type="hidden" value="{{ usuario.login|default('') }}"></input>
+			<legend>Cambiar usuario</legend>
 			<div class="control-group">
-				<label class="control-label" for="login">Login:</label>
+				<label class="control-label" for="login">Usuario:</label>
 				<div class="controls">
-					<input id="login" name="login" class="span3" type="text" placeholder="Login" value="{{ usuario.login|default('') }}"/>
+					<input id="login" name="login" class="span3" type="text" placeholder="Usuario" value="{{ usuario.login|default('') }}"/>
 					<span class="help-inline"></span>
 				</div>
 			</div>
@@ -346,24 +346,26 @@
 			<div class="control-group">
 				<label class="control-label" for="paspassword">Contraseña actual</label>
 				<div class="controls">
-					<input id="paspassword" name="paspassword" class="span3" type="text" placeholder="Contraseña"/>
+					<input id="paspassword" name="paspassword" class="span3" type="password" placeholder="Contraseña" autocomplete="off"/>
+					<span class="help-inline"></span>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="password">Contraseña nueva</label>
 				<div class="controls">
-					<input id="password" name="password" class="span3" type="text" placeholder="Contraseña nueva"/>
+					<input id="newpassword" name="newpassword" class="span3" type="password" placeholder="Contraseña nueva" autocomplete="off"/>
 				</div>
 			</div>
 			<div class="control-group">
 				<label class="control-label" for="confirmacion">Confirmar contraseña</label>
 				<div class="controls">
-					<input id="confirmacion" name="confirmacion" class="span3" type="text" placeholder="Confirmar contraseña" />
+					<input id="confirmacion" name="confirmacion" class="span3" type="password" placeholder="Confirmar contraseña" autocomplete="off"/>
+					<span class="help-inline"></span>
 				</div>
 			</div>
 			<div class="form-actions">
-				<button id="" name="" class="btn btn-primary" type="submit">Guardar</button>
-				<button id=""name="" class="btn"type="reset">Cancelar</button>
+				<button id="saveUserBtn" name="saveUserBtn" class="btn btn-primary" type="submit">Guardar</button>
+				<button id="" name="" class="btn" type="reset">Cancelar</button>
 			</div>
 		</form>
 		</div>
@@ -458,7 +460,7 @@
 					</div>
 				</form>
 			</div>
-			<!----------------------------------------------------------------------Tab 7--------------------------------------------------------------------->
+			<!--Tab 7-->
 			<div class="tab-pane fade" id="tab7">
 				<form id="idiomas" name="idiomas" method="post" action="">
 					<div class="row">
@@ -505,7 +507,7 @@
 		</div>
 	</div>
 </div>
-<!---------------------------------------------------------------------------Modales------------------------------------------------------------->
+<!--Modales-->
 
   {% for idiomausuario in idiomasusuario %}
 <div class="modal hide fade" id="modeditaridioma{{ idiomausuario.id }}">
@@ -597,43 +599,120 @@
 
 	head.ready("app", function() {
 		$(function(){
-			$('#login').blur(username_check);
+			$('#login').bind('blur', username_check);
+			$("#paspassword").bind('blur', validate_form);
+			$("#confirmacion").bind('blur', validate_form);
+			$("#editusuario button[type=reset]").click(function(){
+				$("#editusuario > .control-group").each(function(){
+					$(this).removeClass("success error");
+				});
+				$("#editusuario .help-inline").each(function(){
+					$(this).html("");
+				});
+
+			});
+			$(".not-enter").bind("keypress", function(e) {
+            	if (e.keyCode == 13) { return false;}
+         	});
 		});
 
-		function username_check(){
-			var	login    = $('#login');
-				blogin   = $('#blogin');
-				username = login.val();
-				blogin   = blogin.val();
-				group    = login.closest(".control-group");
-				help     = login.next(".help-inline");
-			if (username == blogin) {
-				group.removeClass("success");
+		function validate_form(){
+			var saveBtn = $("#saveUserBtn");
+			if(old_password() && passwords_match()){
+				saveBtn.removeAttr("disabled");
+			} else{
+				saveBtn.attr("disabled","disabled");
+			}
+		}
+
+		function old_password(){
+			var original    = $("#paspassword");
+			newPassword     = $("#newpassword");
+			confirmPassword = $("#confirmacion");
+			pass0           = original.val();
+			pass1           = $.trim(newPassword.val());
+			pass2           = $.trim(confirmPassword.val());
+			group           = original.closest(".control-group");
+			help            = original.next(".help-inline");
+			if(pass0 == "" && pass1 != "" && pass2 != ""){
+				group.removeClass("success").addClass("error");
+				help.html("<i class=\"icon-remove-sign\"></i> <b>Ingresa la contraseña original.</b>");
+				return false;
+			} else {
 				group.removeClass("error");
 				help.html("");
-			} else if(username == '' || username.length < 2){
-				group.removeClass("success");
-				group.addClass("error");
-				help.html("<i class=\"icon-remove-sign\"></i> <b>No debe ser menor de 2 caracteres</b>");
+				return true;
+			}
+		}
+		function passwords_match(){
+			var newPassword = $("#newpassword");
+			confirmPassword = $("#confirmacion");
+			pass1           = $.trim(newPassword.val());
+			pass2           = $.trim(confirmPassword.val());
+			group           = confirmPassword.closest(".control-group");
+			help            = confirmPassword.next(".help-inline");
+			if(pass1 == "" && pass2 == ""){
+				group.removeClass("success error");
+				help.html("");
+				return true;
+			} else if(pass2 != pass1){
+				group.removeClass("success").addClass("error");
+				help.html("<i class=\"icon-remove-sign\"></i> <b>Las contraseñas no coinciden.</b>");
+				return false;
 			} else {
+				group.removeClass("error").addClass("success");
+				help.html("<i class=\"icon-ok-sign\"></i> <b>Las contraseñas coinciden.</b>");
+				return true;
+			}
+		}
+
+		function username_check(){
+			var	login = $('#login');
+			blogin    = $('#blogin');
+			newName   = login.val();
+			oldName   = blogin.val();
+			group     = login.closest(".control-group");
+			help      = login.next(".help-inline");
+			icon      = "";
+			text      = "";
+			if (newName == oldName) {
+				group.removeClass("success error");
+				help.html("");
+				return true;
+			} else if(newName.length < 2){
+				group.removeClass("success").addClass("error");
+				icon = "icon-remove-sign";
+				text = "No debe ser menor a 2 caracteres";
+				return false;
+			} else {
+				request = superagent;
+				img = "{{ urlFor('home')}}img/loader.gif";
+				help.html('<img src="'+img+'">');
 				$.ajax({
-					type:'POST',
 					url: "{{ urlFor('user-available') }}",
-					data: 'username='+ username,
+					type:'POST',
+					data: "username=" + newName,
 					cache: false,
-					success: function(response){
-						if(response == 1){//No disponible
-							group.removeClass("success");
-							group.addClass("error");
-							help.html("<i class=\"icon-remove-sign\"></i> <b>No disponible</b>");
-						} else {
-							group.removeClass("error");
-							group.addClass("success");
-							help.html("<i class=\"icon-ok-sign\"></i> <b>Disponible</b>");
-						}
+        			timeout: 30000,
+					async: false,
+					success: function(data){
+						help.ajaxComplete(function(event, request, settings){
+							if(data == 1){
+								group.removeClass("success").addClass("error");
+								icon = "icon-remove-sign";
+								text = "No disponible";
+								return false;
+							} else {
+								group.removeClass("error").addClass("success");
+								icon = "icon-ok-sign";
+								text = "Disponible";
+								return true;
+							}
+						});
 					}
 				});
 			}
+			help.html('<i class="'+icon+'"></i> <b>'+text+'</b>');
 		}
 	});
 
