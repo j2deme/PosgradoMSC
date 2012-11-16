@@ -88,7 +88,7 @@
 									<label for="nmunicipio">Municipio:</label>
 									<select id="nmunicipio" name="nmunicipio" class="chzn-select" data-placeholder="Selecciona Municipio" >
 										<option></option>
-										{% for municipio in municipios %} 
+										{% for municipio in municipios %}
 										<option {% if ( um is not null) and (um.id==municipio.id) %} selected=""  {% endif %}  value="{{ municipio.id }}" class="{{ municipio.estado_id }}">{{ municipio.nombre }}</option>
 										{% endfor %}
 									</select>
@@ -97,7 +97,7 @@
 									<label for="nlocalidad">Localidad:</label>
 									<select id="nlocalidad" name="nlocalidad" class="chzn-select" data-placeholder="Selecciona Localidad" >
 										<option></option>
-										{% for localidad in localidades %} 
+										{% for localidad in localidades %}
 										<option {% if ( ul is not null) and (ul.id==localidad.id) %} selected="" {% endif %} value="{{ localidad.id }}" class="{{ localidad.municipio_id }}">{{ localidad.nombre }}</option>
 										{% endfor %}
 									</select>
@@ -173,12 +173,12 @@
 							<label for="institucion">Institucion de Procedencia:</label>
 							<select id="institucion" name="institucion" class="chzn-select" data-placeholder="Selecciona Institucion" >
 								<option></option>
-								
-								{% for institucion in instituciones %} 
-								<option {% if academico.institucion==institucion.id %} selected {% endif %} 
+
+								{% for institucion in instituciones %}
+								<option {% if academico.institucion==institucion.id %} selected {% endif %}
 										value="{{ institucion.id|default('') }}" >{{ institucion.nombre|default('') }}</option>
 								{% endfor %}
-					
+
 							</select>
 						</div>
 					</div>
@@ -347,7 +347,7 @@
 							{% endif %}
 							{% else %}
 							<input id="id" name="id" type="hidden" value="0" />
-							{% endif %} 
+							{% endif %}
 							<label class="checkbox" for="trabajo">
 								<input id="trabajo"name="trabajo"type="checkbox" {% if laboral.trabajado is defined %} {% if laboral.trabajado==1 %} checked {% endif %}{% endif %}/>
 								Ha trabajado</label>
@@ -386,53 +386,47 @@
 			</div>
 			<!-------------------------------------------------Quinta Tab-------------------------------------------------------------->
 			<div class="tab-pane fade active in" id="tab5">
-				<form id="editusuario" name="editusuario" class="" method="post" action="{{ urlFor('actualiza-usuario-post') }}">
-					<div class="row">
-						<div class="span10 offset1">
-							<div class="row">
-								<input id="perfil" name="perfil" type="hidden" value="1" />
-								<input id="id" name="id" type="hidden" value="{{ usuario.id }}" />
-								<div class="control-group">
-									<label class="control-label" for="login">Login:</label>
-									<div class="controls">
-										<input id="login"name="login" class="span3" type="text" placeholder="Login" value="{{ usuario.login|default('') }}"/>
-									</div>
-								</div>
-								<div class="control-group">
-									<label class="control-label" for="paspassword">Contraseña Actual:</label>
-									<div class="controls">
-										<input id="paspassword" name="paspassword" class="span3" type="text" placeholder="Password"/>
-									</div>
-								</div>
-								<div class="control-group">
-									<label class="control-label" for="password">Contraseña Nueva:</label>
-									<div class="controls">
-										<input id="password" name="password" class="span3" type="text" placeholder="Password"/>
-									</div>
-								</div>
-								<div class="control-group">
-									<label class="control-label" for="confirmacion">Confimacion Contraseña:</label>
-									<div class="controls">
-										<input id="confirmacion" name="confirmacion" class="span3" type="text" placeholder="Confirme Contraseña" />
-									</div>
-								</div>
-								<input id="email-edit" name="email-edit" class="span3" type="hidden"/>
-							</div>
-						</div>
-						<div class="row">
-							<div class="span10 offset1">
-								<div class="form-actions">
-									<button id="" name="" class="btn btn-primary" type="submit">
-										Guardar
-									</button>
-									<button id=""name="" class="btn"type="reset">
-										Cancelar
-									</button>
-								</div>
-							</div>
+			<div class="row">
+				<div class="span10 offset1">
+				<form id="editusuario" name="editusuario" class="form-horizontal not-enter" method="post" action="{{ urlFor('actualiza-acceso',{'tipo':'Alumno','id':usuario.id}) }}">
+					<input id="id" name="id" type="hidden" value="{{ usuario.id }}" />
+					<input id="blogin" name="blogin" type="hidden" value="{{ usuario.login|default('') }}"></input>
+					<legend>Cambiar usuario</legend>
+					<div class="control-group">
+						<label class="control-label" for="login">Usuario:</label>
+						<div class="controls">
+							<input id="login" name="login" class="span3" type="text" placeholder="Usuario" value="{{ usuario.login|default('') }}"/>
+							<span class="help-inline"></span>
 						</div>
 					</div>
+					<legend>Cambiar contraseña</legend>
+					<div class="control-group">
+						<label class="control-label" for="paspassword">Contraseña actual</label>
+						<div class="controls">
+							<input id="paspassword" name="paspassword" class="span3" type="password" placeholder="Contraseña" autocomplete="off"/>
+							<span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="password">Contraseña nueva</label>
+						<div class="controls">
+							<input id="newpassword" name="newpassword" class="span3" type="password" placeholder="Contraseña nueva" autocomplete="off"/>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="confirmacion">Confirmar contraseña</label>
+						<div class="controls">
+							<input id="confirmacion" name="confirmacion" class="span3" type="password" placeholder="Confirmar contraseña" autocomplete="off"/>
+							<span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="form-actions">
+						<button id="saveUserBtn" name="saveUserBtn" class="btn btn-primary" type="submit">Guardar</button>
+						<button id="" name="" class="btn" type="reset">Cancelar</button>
+					</div>
 				</form>
+				</div>
+			</div>
 			</div>
 			<!-----------------------------------------------------------------------Sexta Tab--------------------------------------------------------------->
 			<div class="tab-pane fade" id="tab6">
@@ -446,21 +440,21 @@
 									<select id="area" name="area[]" class="chzn-select" multiple="" data-placeholder="Selecciona Area de Interes" >
 										<option></option>
 										{% if areasusuario is not null %}
-										
+
 										{% for area in areas %}
 										{% for areausuario in areasusuario %}
 										 <option {% if areausuario==area.id %} selected="" {% endif %} value="{{ area.id }}">{{ area.nombre }}</option>
 										{% endfor %}
 										{% endfor %}
-										
+
 										{% else %}
-										
+
 										{% for area in areas %}
 										 <option value="{{ area.id }}">{{ area.nombre }}</option>
 										{% endfor %}
-										
+
 										{% endif %}
-										
+
 									</select>
 								</div>
 								<div class="span4 offset1">
@@ -469,14 +463,14 @@
 										<option></option>
 										{% for lenguaje in lenguajes %}
 										{% if lenguajesusuario is not null %}
-										
+
 										{% for lenguajeusuario in lenguajesusuario %} <option {% if lenguajeusuario.lenguaje_id==lenguaje.id %} selected="" {% endif %} value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
 										{% endfor %}
-											
+
 										{% else %}
-										
+
 										<option  value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
-										
+
 										{% endif %}
 										{% endfor %}
 									</select>
@@ -491,14 +485,14 @@
 										<option></option>
 										{% for herramienta in herramientas %}
 										{% if herramientasusuario is not null %}
-										
+
 										{% for herramientausuario in herramientasusuario %} <option {% if herramientausuario.herramienta_id==herramienta.id %} selected="" {% endif %} value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
 										{% endfor %}
-										
+
 										{% else%}
-										
+
 										<option value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
-										
+
 										{% endif %}
 										{% endfor %}
 									</select>
@@ -509,15 +503,15 @@
 										<option></option>
 										{% for plataforma in plataformas %}
 										{% if plataformasusuario is not null %}
-										
-										{% for plataformausuario in plataformasusuario %} 
+
+										{% for plataformausuario in plataformasusuario %}
 										<option {% if plataformausuario.plataforma_id==plataforma.id %} selected="" {% endif %} value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
 										{% endfor %}
-										
+
 										{% else %}
-										
+
 										<option value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
-										
+
 										{% endif %}
 										{% endfor %}
 									</select>
@@ -606,7 +600,7 @@
 					<input id="habla" name="habla" class="range" type="range" min="0" max="100" value="{{ idiomausuario.habla|default(0) }}" step="1" data-label="eh" data-texto="Habla: "/>
 					<label id="een" name="een" for="entiende">Entiende: {{ idiomausuario.entiende|default(0) }}%</label>
 					<input id="entiende" name="entiende" class="range" type="range" min="0" max="100" value="{{ idiomausuario.entiende|default(0) }}" step="1" data-label="een" data-texto="Entiende: "/>
-					
+
 				</div>
 			</div>
 			<div class="modal-footer">
@@ -631,13 +625,13 @@
 					<label for="idioma">Idioma:</label>
 					<select id="idioma" name="idioma" class="chzn-select" data-placeholder="Seleccione un idioma" >
 						<option></option>
-						{% for idioma in idiomas %} 
+						{% for idioma in idiomas %}
 						<option value="{{ idioma.id }}">{{ idioma.nombre }}</option>
 						{% endfor %}
 					</select>
 					<br />
-				
-					
+
+
 					<label id="elee" name="elee" for="lee">Lee:</label>
 					<input id="lee" name="lee"  class="range" type="range" min="0" max="100" value="0" step="1" data-label="elee" data-texto="Lee: "/>
 					<label id="eescribe" name="eescribe" for="escribe">Escribe:</label>
@@ -652,7 +646,7 @@
 								var value = $(this).val();
 								var tag = $(this).attr('data-label');
 								var text = $(this).attr('data-texto');
-								
+
 								showValue(value, tag, text);
 							});
 						});
@@ -673,11 +667,127 @@
 	</div>
 </div>
 <script>
-	head.ready("app", function() {
-		head.js({
+	head.js({
 			html5slider : "{{ urlFor('home') }}js/html5slider.js"
-		});
 	});
 
+	head.ready("app", function() {
+		$(function(){
+			$('#login').bind('blur', username_check);
+			$("#paspassword").bind('blur', validate_form);
+			$("#confirmacion").bind('blur', validate_form);
+			$("#editusuario button[type=reset]").click(function(){
+				$("#editusuario > .control-group").each(function(){
+					$(this).removeClass("success error");
+				});
+				$("#editusuario .help-inline").each(function(){
+					$(this).html("");
+				});
+
+			});
+			$(".not-enter").bind("keypress", function(e) {
+            	if (e.keyCode == 13) { return false;}
+         	});
+		});
+
+		function validate_form(){
+			var saveBtn = $("#saveUserBtn");
+			if(old_password() && passwords_match()){
+				saveBtn.removeAttr("disabled");
+			} else{
+				saveBtn.attr("disabled","disabled");
+			}
+		}
+
+		function old_password(){
+			var original    = $("#paspassword");
+			newPassword     = $("#newpassword");
+			confirmPassword = $("#confirmacion");
+			pass0           = original.val();
+			pass1           = $.trim(newPassword.val());
+			pass2           = $.trim(confirmPassword.val());
+			group           = original.closest(".control-group");
+			help            = original.next(".help-inline");
+			if(pass0 == "" && pass1 != "" && pass2 != ""){
+				group.removeClass("success").addClass("error");
+				help.html("<i class=\"icon-remove-sign\"></i> <b>Ingresa la contraseña original.</b>");
+				return false;
+			} else {
+				group.removeClass("error");
+				help.html("");
+				return true;
+			}
+		}
+		function passwords_match(){
+			var newPassword = $("#newpassword");
+			confirmPassword = $("#confirmacion");
+			pass1           = $.trim(newPassword.val());
+			pass2           = $.trim(confirmPassword.val());
+			group           = confirmPassword.closest(".control-group");
+			help            = confirmPassword.next(".help-inline");
+			if(pass1 == "" && pass2 == ""){
+				group.removeClass("success error");
+				help.html("");
+				return true;
+			} else if(pass2 != pass1){
+				group.removeClass("success").addClass("error");
+				help.html("<i class=\"icon-remove-sign\"></i> <b>Las contraseñas no coinciden.</b>");
+				return false;
+			} else {
+				group.removeClass("error").addClass("success");
+				help.html("<i class=\"icon-ok-sign\"></i> <b>Las contraseñas coinciden.</b>");
+				return true;
+			}
+		}
+
+		function username_check(){
+			var	login = $('#login');
+			blogin    = $('#blogin');
+			newName   = login.val();
+			oldName   = blogin.val();
+			group     = login.closest(".control-group");
+			help      = login.next(".help-inline");
+			icon      = "";
+			text      = "";
+			if (newName == oldName) {
+				group.removeClass("success error");
+				help.html("");
+				return true;
+			} else if(newName.length < 2){
+				group.removeClass("success").addClass("error");
+				icon = "icon-remove-sign";
+				text = "No debe ser menor a 2 caracteres";
+				return false;
+			} else {
+				request = superagent;
+				img = "{{ urlFor('home')}}img/loader.gif";
+				help.html('<img src="'+img+'">');
+				$.ajax({
+					url: "{{ urlFor('user-available') }}",
+					type:'POST',
+					data: "username=" + newName,
+					cache: false,
+        			timeout: 30000,
+					async: false,
+					success: function(data){
+						help.ajaxComplete(function(event, request, settings){
+							if(data == 1){
+								group.removeClass("success").addClass("error");
+								icon = "icon-remove-sign";
+								text = "No disponible";
+								return false;
+							} else {
+								group.removeClass("error").addClass("success");
+								icon = "icon-ok-sign";
+								text = "Disponible";
+								return true;
+							}
+						});
+					}
+				});
+			}
+			help.html('<i class="'+icon+'"></i> <b>'+text+'</b>');
+		}
+	});
 </script>
 {% endblock %}
