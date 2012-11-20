@@ -1,0 +1,177 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+
+	<div class="span12">
+		<div class="row">
+			<div class="span3">
+				<h2>Gestor de Catálogos</h2>
+			</div>
+			<div class="span3">
+				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal"> <i class="icon-plus-sign"> </i> Agregar Elemento </a>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span11">
+				<div id="results" class="hide">
+					<table id="areas-table" name="areas-table" class="table table-bordered table-condensed table-striped">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Nombre</th>
+								<th>Tipo</th>
+								<th>Opciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% if elementos is defined %}
+							{% for elemento in elementos %}
+							<tr>
+								<td>{{ loop.index }}</td>
+								<td>{{ elemento.nombre}}</td>
+								<td>{{ elemento.tipo }}</td>
+								<td><a href="#" data-toggle="modal" data-target="#editar-ainteres{{ elemento.id~elemento.tipo }}-modal" rel="tooltip" title="Editar" class="btn btn-success"> <i class="icon-edit"></i> </a><a href="{{ urlFor('gestor-catalogos-post',{'tipo': elemento.tipo,'id': elemento.id}) }}" rel="tooltip" title="Borrar" class="btn btn-danger"> <i class="icon-trash"></i> </a></td>
+							</tr>
+							{% endfor %}
+							{% else %}
+							<tr>
+								<td></td>
+								<td>No se encontraron resultados</td>
+								<td></td>
+								<td></td>
+							</tr>
+							{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-------------------------------------------Modal----------------------------------------------->
+{% for elemento in elementos %}
+<div class="modal hide fade" id="editar-ainteres{{ elemento.id~elemento.tipo }}-modal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">
+			&times;
+		</button>
+		<h3>Editar Elemento</h3>
+	</div>
+	<div class="modal-body">
+		<form id="editAIForm" name="editAIForm" class="form-horizontal" action="{{ urlFor('actualiza-ainteres-post', { 'id':elemento.id,'tipo': elemento.tipo }) }}" method="post">
+
+			<div class="control-group">
+				<label class="control-label" for="nombre">Nombre</label>
+				<div class="controls">
+					<input type="nombre" class="input-xlarge" id="nombre-edit" name="nombre-edit" value="{{ elemento.nombre }}">
+				</div>
+			</div>
+
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+		<button type="submit" class="btn btn-primary">
+			Guardar Datos
+		</button>
+	</div>
+	</form>
+</div>
+{% endfor %}
+
+<div class="modal hide fade" id="newUser">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">
+			&times;
+		</button>
+		<h3>Nuevo Elemento</h3>
+	</div>
+	<form id="newAIForm" name="newAIForm" action="{{ urlFor('gestor-catalogos-post') }}" method="post" class="form-horizontal">
+		<div class="modal-body">
+			<br />
+			<div class="control-group">
+				<label class="control-label" for="nombre">Nombre</label>
+				<div class="controls">
+					<input type="text"  class="" id="nombre" name="nombre" value="">
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="muestra">Tipo</label>
+				<div class="controls">
+					<input type="text" class="" id="muestra" name="muestra" value="">
+				</div>
+			</div>
+			<div class="control-group" align="center">
+			
+				<div class="btn-group" data-toggle="buttons-radio">
+						<button value="AreaInteres" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Area de Interes">
+						<i class="icon-comment-alt"></i>
+					</button>
+					<button value="Idioma" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Idioma">
+						<i class="icon-globe"></i>
+					</button>
+					<button value="LineaInvestigacion" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Linea de Investigación">
+						<i class="icon-beaker"></i>
+					</button>
+						<button value="Lenguaje" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Lenguaje">
+						<i class="">&lt;&#47;&gt;</i>
+					</button>
+					<button value="Plataforma" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Plataforma">
+						<i class="icon-tasks"></i>
+					</button>
+					<button value="FormaEnterado" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Forma de Enterado">
+						<i class="icon-bullhorn"></i>
+					</button>
+					<button value="Herramienta" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Herramienta">
+						<i class="icon-wrench"></i>
+					</button>
+	
+				</div>
+				<input type="hidden" value="" name="tipo" id="tipo" />
+			</div>
+			<br />
+
+			<div class="modal-footer">
+				<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
+				<button type="submit" class="btn btn-primary">
+					Guardar Datos
+				</button>
+			</div>
+	</form>
+</div>
+
+<script>
+	head.ready(function() {
+		$(function() {
+			
+			$('.Tipo').click(function(){
+				$('#tipo').attr('value',$(this).attr('value'));
+				$('#muestra').attr('value',$(this).attr('tittle'));
+				console.log($(this).attr('value'));
+				console.log($('#tipo').attr('value'));
+			});
+			
+			
+			$('#results').fadeIn(1500);
+			var usersTable = $('#areas-table').dataTable({
+				"oLanguage" : {
+					"sUrl" : "{{ urlFor('home')}}js/dataTables.spanish.txt"
+				},
+				"fnDrawCallback" : function() {
+				},
+				"sDom" : "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+				"sPaginationType" : "bootstrap"
+			});
+
+			$('#newAIForm').isHappy({
+				fields : {
+					'#nombre' : {
+						required : true,
+						message : 'nombre válido necesario',
+						test : happy.nombre
+					},
+				}
+			});
+		});
+	}); 
+</script>
+{% endblock %}
