@@ -674,7 +674,6 @@ $app -> get('/nuevo-evento/', function() use ($app) {
     );
     $data['user'] = $u = isAllowed('Docente',FALSE);
     $data['usuarios'] = Usuario::all(array('conditions' => array('id <> ?',$u->id),'include' => array('personal')));
-	//ladybug_dump_die($data['usuarios']);
     $app -> render('nuevoevento.html', $data);
 }) -> name('nuevo-evento');
 

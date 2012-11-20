@@ -62,3 +62,12 @@ function process(date){
    var parts = date.split("/");
    return new Date(parts[2], parts[1] - 1, parts[0]);
 }
+
+$.fn.hasAttr = function(name) {
+   var attr = $(this).attr('name');
+    if (typeof attr !== 'undefined' && attr !== false) {
+        return false;
+    } else {
+        return true;
+    }
+};
