@@ -541,7 +541,7 @@ $app -> get('/registro-aspirantes/', function() use ($app) {
 $app -> post('/formulario-registro-post/', function() use ($app) {
 	$validator = new GUMP();
 	$_POST = $validator -> sanitize($_POST);
-	$rules = array('nombre' => 'required|alpha', 'ap' => 'alpha', 'am' => 'alpha', 'email' => 'required|valid_email', 'usuario' => 'required|alpha', 'pass' => 'required', 'confirmacion' => 'required', );
+	$rules = array('nombre' => 'required|alpha', 'ap' => 'alpha', 'am' => 'alpha', 'email' => 'required|valid_email', 'login' => 'required|alpha_numeric', 'pass' => 'required', 'confirmacion' => 'required', );
 	$filters = array();
 	$_POST = $validator -> filter($_POST, $filters);
 
@@ -549,17 +549,17 @@ $app -> post('/formulario-registro-post/', function() use ($app) {
 
 	if ($validated === TRUE) {
 
-		$usuario = Usuario::find_by_usuario($_POST['usuario']);
+		$usuario = Usuario::find_by_usuario($_POST['login']);
 
 		if (count($usuario) == 0) {
-			ladybug_dump_die($_POST);
+			//ladybug_dump_die($_POST);
 			if ($_POST['pass'] == $_POST['confirmacion']) {
 				$personal = new Personal;
 				$us = new Usuario;
 				$contacto = new Contacto;
 
 				$usuariosroles = new UsuariosRoles;
-				$us -> login = $_POST['usuario'];
+				$us -> login = $_POST['login'];
 				$us -> password = $_POST['pass'];
 				$us -> activo = 1;
 				$us -> save();
@@ -584,7 +584,7 @@ $app -> post('/formulario-registro-post/', function() use ($app) {
 				$app -> redirect($app -> urlFor('registro-inicio'));
 			}
 		} else {
-			$flash = array("title" => "ERROR", "msg" => "El nombre de usuario " . $_POST['usuario'] . " ya se encuentra registrado actualmente.", "type" => "error", "fade" => 1);
+			$flash = array("title" => "ERROR", "msg" => "El nombre de usuario " . $_POST['login'] . " ya se encuentra registrado actualmente.", "type" => "error", "fade" => 1);
 			$app -> flash("flash", $flash);
 			$app -> flashKeep();
 			$app -> redirect($app -> urlFor('registro-inicio'));
@@ -1176,16 +1176,16 @@ $app -> post('/nuevo-conocimiento/', function() use ($app) {
 			ladybug_dump_die($_POST);
 		if (isset($_POST['area'])) {
 			foreach ($_POST['area'] as $area) {
-				
+
 				$are = UsuariosAreas::find_all_by_area_id($area);
-				
+
 				if (count($are) == 0) {
 					$areainteres = new UsuariosAreas;
 					$areainteres -> usuario_id = $data['user'] -> id;
 					$areainteres -> area_id = $_POST['area'];
 					$areainteres -> save();
 					$msg .= 'El area se agregó satisfactoriamente ';
-					
+
 
 				}
 			}
@@ -1194,7 +1194,7 @@ $app -> post('/nuevo-conocimiento/', function() use ($app) {
 			foreach ($_POST['lenguaje'] as $lenguaje) {
 				$leng = UsuariosLenguajes::all(array('Conditions' =>array('usuario_id AND lenguaje_id',$data['user']->id,$lenguaje)));
 				if (count($leng) == 0) {
-				
+
 					$lenguajes = new UsuariosLenguajes;
 					$lenguajes -> usuario_id = $data['user'] -> id;
 					$lenguajes -> lenguaje_id = $lenguaje;
