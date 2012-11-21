@@ -22,7 +22,7 @@ $app->post('/nuevo-usuario/', function() use ($app) {
     $validator = new GUMP();
     $_POST = $validator->sanitize($_POST);
     $rules = array(
-        'usuario'    => 'required|alpha_dash|max_len,100',
+        'usuario'    => 'required|alpha_dash|min_len,2|max_len,100',
         'email'    => 'required|valid_email',
     );
 
@@ -126,6 +126,14 @@ $app->post('/nuevo-usuario/', function() use ($app) {
         $app->redirect($app->urlFor('admin-usuarios'));
     }
 })->name('nuevo-usuario-post');
+
+$app->post('/user-available/', function() use($app) {
+    $nick = $_POST['username'];
+    $nick = trim($nick);
+    $usuario = Usuario::find_by_login($nick);
+    $num = (is_object($usuario)) ? 1 : 0;
+    echo $num;
+})->name('user-available');
 
 $app->post('/actualiza-usuario/:id/', function($id) use ($app) {
     $validator = new GUMP();
@@ -589,5 +597,57 @@ $app->get('/admin/eventos/', function() use($app) {
     $data['validados'] = Evento::find_all_by_validado(1);
     $app->render('validar.html',$data);
 })->name('admin-eventos');
-?>
 
+$app->post('/actualizar-acceso/:tipo/:id', function($tipo, $id) use($app){
+    //id,blogin,login,paspassword,newpassword, confirmacion
+    $redirect = ($tipo == "Docente") ? "perfil-docente" : "perfil";
+    $validator = new GUMP();
+    $_POST = $validator->sanitize($_POST);
+    $rules = array(
+        'login'    => 'alpha_dash|min_len,2|max_len,100',
+    );
+
+    $filters = array(
+        'login'     => 'trim|sanitize_string',
+        'paspassword' => 'trim|md5',
+        'newpassword' => 'trim|md5',
+        'confirmacion' => 'trim|md5'
+    );
+    $post = $_POST = $validator->filter($_POST, $filters);
+    $validated = $validator->validate($_POST, $rules);
+    if ($validated === true) {
+        $usuario = Usuario::find($id);
+        $users = Usuario::find_all_by_login($_POST['login']);
+        $exists = count($users);
+        $msg = "<ul>";
+        if($usuario->login != $_POST['login'] && $exists == 0){
+            $usuario->login = $_POST['login'];
+            $msg .= "<li>Nombre de usuario actualizado</li>";
+        }
+        if($usuario->password == $_POST['paspassword'] && $_POST['newpassword'] == $_POST['confirmacion']){
+            $usuario->password = $_POST['newpassword'];
+            $msg .= "<li>Contraseña actualizada</li>";
+        }
+        $msg .= "</ul>";
+        $usuario->save();
+        $flash = array(
+            "title" => "OK",
+            "msg" => $msg,
+            "type" => "success",
+            "fade" => 1
+        );
+        $app -> flash("flash", $flash);
+    } else {
+        $msgs = humanize_gump($validated);
+        $flash = array(
+            "title" => "ERROR",
+            "msg"   => $msgs,
+            "type"  => "error",
+            "fade"  => 0
+        );
+        $app -> flash("flash", $flash);
+    }
+    $app->flashKeep();
+    $app->redirect($app->urlFor($redirect));
+})->name('actualiza-acceso');
+?>

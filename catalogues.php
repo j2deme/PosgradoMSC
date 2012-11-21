@@ -709,13 +709,13 @@ $app -> get('/borrar-rol/:id/', function($id) use ($app) {
 }) -> name('borrar-rol');
 
 #XXX Eventos
-
-
-
 $app -> get('/nuevo-evento/', function() use ($app) {
-   $data['user']=isAllowed('Docente',FALSE);
-	$data['usuarios']=Usuario::all(array('conditions' => array('id <> ?',$data['user']->id),'include' => array('personal')));
-	ladybug_dump_die($data);
+    $data['breadcrumb'] = array(
+        array("name" => "Panel de Control","alias" => "docente"),
+        array("name" => "Nuevo Evento", "alias" => "nuevo-evento")
+    );
+    $data['user'] = $u = isAllowed('Docente',FALSE);
+    $data['usuarios'] = Usuario::all(array('conditions' => array('id <> ?',$u->id),'include' => array('personal')));
     $app -> render('nuevoevento.html', $data);
 }) -> name('nuevo-evento');
 

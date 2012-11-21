@@ -1,91 +1,184 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="page-header">
+    <h2>Registro de aspirantes</h2>
+</div>
 <div class="row">
 	<div class="span8">
-				<legend align="center"><strong>Creación de Cuenta</strong></legend>
-				<br />
-				<form id="registro" name="registro" method="post" action="{{ urlFor('registro-aspirante-post') }}" class="form-horizontal">
-					<div class="control-group">
-						<label class="control-label" for="nombre">Nombre:</label>
-						<div class="controls">
-							<input id="nombre" name="nombre" class="span3" type="text" placeholder="Ingrese su Nombre/s" />
-						</div>
-					</div>
-			
+		<form id="registro" name="registro" method="post" action="{{ urlFor('registro-aspirante-post') }}" class="form-horizontal">
 			<div class="control-group">
-				<label class="control-label" for="ap">Apellido Paterno:</label>
+				<label class="control-label" for="nombre">Nombre(s):</label>
+				<div class="controls">
+					<input id="nombre" name="nombre" class="span3" type="text" placeholder="Ingresa tu nombre(s)" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="ap">Apellido paterno:</label>
+				<div class="controls">
+					<input id="ap" name="ap" class="span3" type="text" placeholder="Ingresa tu apellido paterno" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="am">Apellido materno:</label>
+				<div class="controls">
+					<input id="am" name="am" class="span3" type="text" placeholder="Ingresa tu apellido materno" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="email">Correo electrónico:</label>
 					<div class="controls">
-						<input id="ap" name="ap" class="span3" type="text" placeholder="Ingrese su Apellido Paterno" />
+						<input id="email" name="email" class="span3" type="text" placeholder="usuario@dominio.com" />
 					</div>
 			</div>
-			
-			
-			
 			<div class="control-group">
-				<label class="control-label" for="am">Apellido Materno:</label>
-					<div class="controls">
-						<input id="am" name="am" class="span3" type="text" placeholder="Ingrese su Apellido Materno" />
-					</div>
+				<label class="control-label" for="usuario">Usuario</label>
+				<div class="controls">
+					<input id="login" name="login" class="span3" type="text" placeholder="Ingresa un usuario" autocomplete="off"/>
+					<span class="help-inline"></span>
+				</div>
 			</div>
-			
 			<div class="control-group">
-				<label class="control-label" for="email">Correo Electronico:</label>
-					<div class="controls">
-						<input id="email" name="email" class="span3" type="text" placeholder="Ingrese su Correo Electronico" />
-					</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="usuario">Nombre Usuario</label>
-					<div class="controls">
-						<input id="usuario" name="usuario" class="span3" type="text" placeholder="Ingrese el nombre del usuario" />
-					</div>
-			</div>
-			
-			
-			
-			<div class="control-group">
-				
 				<label class="control-label" for="pass">Contraseña:</label>
-					<div class="controls">
-						<input id="pass" name="pass" class="span3" placeholder="Ingrese Contraseña" type="password"/>
-					</div>
+				<div class="controls">
+					<input id="pass" name="pass" class="span3" placeholder="Ingresa tu contraseña" type="password" autocomplete="off"/>
+				</div>
 			</div>
-		
-			
-			
 			<div class="control-group">
-				<label class="control-label" for="confirmacion">Confirmar Contraseña:</label>
-			
-					<div class="controls">
-						<input id="confirmacion" name="confirmacion" class="span3" placeholder="Confirmar contraseña" type="password"/>
-					</div>
+				<label class="control-label" for="confirmacion">Confirmar contraseña:</label>
+				<div class="controls">
+					<input id="confirmacion" name="confirmacion" class="span3" placeholder="Confirmar contraseña" type="password" autocomplete="off"/>
+					<span class="help-inline"></span>
+				</div>
 			</div>
-			<br />
-			
 			<div class="form-actions">
-				<button class=" btn" type="reset">
-					<i class="icon-remove-sign"></i>
-					Cancelar
-				</button>
-				<button class=" btn btn-primary" type="submit">
-					<i class="icon-save"></i>	
-					Crear
-				</button>
+				<button class="btn" type="reset"><i class="icon-remove-sign"> </i> Cancelar</button>
+				<button id="saveBtn" name="saveBtn" class="btn btn-primary" type="submit"><i class="icon-save"> </i> Crear</button>
 			</div>
-			
 		</form>
 	</div>
 </div>
 
+<script>
+head.ready("app", function() {
+	$(function(){
+		$('#login').bind('blur', username_check);
+		//$("#paspassword").bind('blur', validate_form);
+		$("#confirmacion").bind('blur', validate_form);
+		$("#registro button[type=reset]").click(function(){
+			$("#registro > .control-group").each(function(){
+				$(this).removeClass("success error");
+			});
+			$("#registro .help-inline").each(function(){
+				$(this).html("");
+			});
 
+		});
+		$(".not-enter").bind("keypress", function(e) {
+        	if (e.keyCode == 13) { return false;}
+     	});
+	});
 
+	function validate_form(){
+		var saveBtn = $("#saveBtn");
+		if(passwords_match()){
+			saveBtn.removeAttr("disabled");
+		} else{
+			saveBtn.attr("disabled","disabled");
+		}
+	}
 
+	function old_password(){
+		var original    = $("#paspassword");
+		newPassword     = $("#pass");
+		confirmPassword = $("#confirmacion");
+		pass0           = original.val();
+		pass1           = $.trim(newPassword.val());
+		pass2           = $.trim(confirmPassword.val());
+		group           = original.closest(".control-group");
+		help            = original.next(".help-inline");
+		if(pass0 == "" && pass1 != "" && pass2 != ""){
+			group.removeClass("success").addClass("error");
+			help.html("<i class=\"icon-remove-sign\"></i> <b>Ingresa la contraseña original.</b>");
+			return false;
+		} else {
+			group.removeClass("error");
+			help.html("");
+			return true;
+		}
+	}
+	function passwords_match(){
+		var newPassword = $("#pass");
+		confirmPassword = $("#confirmacion");
+		pass1           = $.trim(newPassword.val());
+		pass2           = $.trim(confirmPassword.val());
+		group           = confirmPassword.closest(".control-group");
+		help            = confirmPassword.next(".help-inline");
+		if(pass1 == "" && pass2 == ""){
+			group.removeClass("success error");
+			help.html("");
+			return true;
+		} else if(pass2 != pass1){
+			group.removeClass("success").addClass("error");
+			help.html("<i class=\"icon-remove-sign\"></i> <b>Las contraseñas no coinciden.</b>");
+			return false;
+		} else {
+			group.removeClass("error").addClass("success");
+			help.html("<i class=\"icon-ok-sign\"></i> <b>Las contraseñas coinciden.</b>");
+			return true;
+		}
+	}
 
+	function username_check(){
+		var	login = $('#login');
+//			blogin    = $('#blogin');
+		newName   = login.val();
+//			oldName   = blogin.val();
+		group     = login.closest(".control-group");
+		help      = login.next(".help-inline");
+		icon      = "";
+		text      = "";
+		saveBtn   = $("#saveBtn");
 
-
-
-
-
-
+/*			if (newName == oldName) {
+			group.removeClass("success error");
+			help.html("");
+			return true;
+		} else */
+		if(newName.length < 2){
+			group.removeClass("success").addClass("error");
+			icon = "icon-remove-sign";
+			text = "No debe ser menor a 2 caracteres";
+			return false;
+		} else {
+			request = superagent;
+			img = "{{ urlFor('home')}}img/loader.gif";
+			help.html('<img src="'+img+'">');
+			$.ajax({
+				url: "{{ urlFor('user-available') }}",
+				type:'POST',
+				data: "username=" + newName,
+				cache: false,
+    			timeout: 30000,
+				async: false,
+				success: function(data){
+					help.ajaxComplete(function(event, request, settings){
+						if(data == 1){
+							group.removeClass("success").addClass("error");
+							icon = "icon-remove-sign";
+							text = "No disponible";
+							return false;
+						} else {
+							group.removeClass("error").addClass("success");
+							icon = "icon-ok-sign";
+							text = "Disponible";
+							return true;
+						}
+					});
+				}
+			});
+		}
+		help.html('<i class="'+icon+'"></i> <b>'+text+'</b>');
+	}
+});
+</script>
 {% endblock %}

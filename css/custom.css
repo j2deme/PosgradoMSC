@@ -42,7 +42,7 @@ table.table tbody tr.highlight td, table tbody tr.highlight td {
 	background-color: #ff4326;
 	color: #ffffff;
 }
-::-moz-selection {
+/*::-moz-selection {
 	background: #f89406;
 	color: #ffffff;
 	text-shadow: none;
@@ -51,7 +51,7 @@ table.table tbody tr.highlight td, table tbody tr.highlight td {
 	background: #f89406;
 	color: #ffffff;
 	text-shadow: none;
-}
+}*/
 
 #main {
 	padding-top: 10px;

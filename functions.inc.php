@@ -135,8 +135,8 @@ function isAllowed($roles,$redirect = TRUE,$permisos = array()){
 		} else {
 			$login = TRUE;
 		}
-		
-		return $user; 
+
+		return $user;
 	} else {
 		$login = TRUE;
 	}
@@ -152,13 +152,13 @@ function replace_hashes($content){
 		"@mision-y-vision",
 		"@objetivos",
 		"@logros-y-reconocimientos",
-		"@lineas-de-generacion-y-aplicacion-de-conocimiento",		
+		"@lineas-de-generacion-y-aplicacion-de-conocimiento",
 		"@vinculacion",
-		"@proceso-de-admision",		
-		"@perfil-de-ingreso",	
+		"@proceso-de-admision",
+		"@perfil-de-ingreso",
 		"@perfil-de-egreso",
-		"@curso-propedeutico",	
-		"@material-de-apoyo",		
+		"@curso-propedeutico",
+		"@material-de-apoyo",
 		"@relacion-aceptados",
 		"@plan-estudios",
 //		"@horarios",
