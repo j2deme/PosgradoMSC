@@ -20,25 +20,70 @@ $app->post('/admin/catalogos/gestor-catalogos-nuevo/', function() use($app){
 		
 		$validator = new GUMP();
     $_POST = $validator -> sanitize($_POST);
-    $rules = array('id' => 'required','nombre' => 'required','tipo' => 'required' );
+    $rules = array('nombre' => 'required','tipo' => 'required' );
     $filters = array();
     $post = $_POST = $validator -> filter($_POST, $filters);
     $validated = $validator -> validate($_POST, $rules);
     if ($validated === true) {
+    		if (isset($_POST['id'])) {
+				
+				$ele= $_POST['tipo']::find_by_id($_POST['id']);
+				$ele->nombre=$_POST['nombre'];
+				$ele->save();
+				$flash = array("title" => "OK", "msg" => "El elmento se modificó correctamente", "type" => "success", "fade" => 1);
+				$app -> flash("flash", $flash);
+        		$app -> flashKeep();
+        		$app -> redirect($app -> urlFor('gestor-catalogos'));
+				
+			} else {
+				
+				$ele= $_POST['tipo']::find_by_nombre($_POST['nombre']);
+		if (count($ele)==0) {
+			
+			$elemento=new $_POST['tipo'];
+		$elemento->nombre=$_POST['nombre'];
+		$elemento->save();
 		
-		
-		
-		$flash = array("title" => "OK", "msg" => "El elmento se borro correctamente", "type" => "success", "fade" => 1);
+		$flash = array("title" => "OK", "msg" => "El elmento se creo correctamente", "type" => "success", "fade" => 1);
 		$app -> flash("flash", $flash);
         $app -> flashKeep();
         $app -> redirect($app -> urlFor('gestor-catalogos'));
+			
+		} else {
+		
+			$flash = array("title" => "OK", "msg" => "El elmento ya existe", "type" => "error", "fade" => 0);
+		$app -> flash("flash", $flash);
+        $app -> flashKeep();
+        $app -> redirect($app -> urlFor('gestor-catalogos'));
+			
+		}
+				
+			}
+		
 	}else{
 		
-		
+		  $msgs = humanize_gump($validated);
+        $flash = array("title" => "ERROR", "msg" => $msgs, "type" => "error", "fade" => 0);
+        $app -> flash("flash", $flash);
+        $app -> flashKeep();
+        $app -> redirect($app -> urlFor('gestor-catalogos'));
 		
 	}
 	
-	})->name('gestor-catalogos-post');
+	})->name('gestor-catalogos-nuevo-post');
+	
+$app->post('/admin/catalogos/gestor-catalogos-eliminar/:id/:tipo/', function($id,$tipo) use($app){
+		
+	
+		$elemento=$tipo::find_all_by_id($id);
+		$elemento->sdelete();
+		
+		$flash = array("title" => "OK", "msg" => "El elmento se borró correctamente", "type" => "success", "fade" => 1);
+		$app -> flash("flash", $flash);
+        $app -> flashKeep();
+        $app -> redirect($app -> urlFor('gestor-catalogos'));
+	
+	})->name('gestor-catalogos-eliminar-post');
 
 
 #XXX Areas de Interes

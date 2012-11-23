@@ -4,15 +4,17 @@
 
 	<div class="span12">
 		<div class="row">
-			<div class="span3">
-				<h2>Gestor de Catálogos</h2>
-			</div>
+			
+				<h2 class="span5 offset4" >Gestor de Catálogos</h2>
+		</div>
+		<div class="row">
 			<div class="span3">
 				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal"> <i class="icon-plus-sign"> </i> Agregar Elemento </a>
 			</div>
 		</div>
 		<div class="row">
 			<div class="span11">
+				<br />
 				<div id="results" class="hide">
 					<table id="areas-table" name="areas-table" class="table table-bordered table-condensed table-striped">
 						<thead>
@@ -30,7 +32,7 @@
 								<td>{{ loop.index }}</td>
 								<td>{{ elemento.nombre}}</td>
 								<td>{{ elemento.tipo }}</td>
-								<td><a href="#" data-toggle="modal" data-target="#editar-ainteres{{ elemento.id~elemento.tipo }}-modal" rel="tooltip" title="Editar" class="btn btn-success"> <i class="icon-edit"></i> </a><a href="{{ urlFor('gestor-catalogos-post',{'tipo': elemento.tipo,'id': elemento.id}) }}" rel="tooltip" title="Borrar" class="btn btn-danger"> <i class="icon-trash"></i> </a></td>
+								<td><a href="#" data-toggle="modal" data-target="#editar-ainteres{{ elemento.id~elemento.tipo }}-modal" rel="tooltip" title="Editar" class="btn btn-success"> <i class="icon-edit"></i> </a><a href="{{ urlFor('gestor-catalogos-eliminar-post',{'tipo': elemento.tipo,'id': elemento.id}) }}" rel="tooltip" title="Borrar" class="btn btn-danger"> <i class="icon-trash"></i> </a></td>
 							</tr>
 							{% endfor %}
 							{% else %}
@@ -58,12 +60,14 @@
 		<h3>Editar Elemento</h3>
 	</div>
 	<div class="modal-body">
-		<form id="editAIForm" name="editAIForm" class="form-horizontal" action="{{ urlFor('actualiza-ainteres-post', { 'id':elemento.id,'tipo': elemento.tipo }) }}" method="post">
+		<form id="editAIForm" name="editAIForm" class="form-horizontal" action="{{ urlFor('gestor-catalogos-nuevo-post') }}" method="post">
 
 			<div class="control-group">
 				<label class="control-label" for="nombre">Nombre</label>
 				<div class="controls">
-					<input type="nombre" class="input-xlarge" id="nombre-edit" name="nombre-edit" value="{{ elemento.nombre }}">
+					<input type="text" class="" id="nombre" name="nombre" value="{{ elemento.nombre }}">
+					<input type="text" class="hidden" id="tipo" name="tipo" value="{{ elemento.tipo }}">
+					<input type="text" class="hidden" id="id" name="id" value="{{ elemento.id }}">
 				</div>
 			</div>
 
@@ -85,7 +89,7 @@
 		</button>
 		<h3>Nuevo Elemento</h3>
 	</div>
-	<form id="newAIForm" name="newAIForm" action="{{ urlFor('gestor-catalogos-post') }}" method="post" class="form-horizontal">
+	<form id="newAIForm" name="newAIForm" action="{{ urlFor('gestor-catalogos-nuevo-post') }}" method="post" class="form-horizontal">
 		<div class="modal-body">
 			<br />
 			<div class="control-group">
@@ -97,31 +101,32 @@
 			<div class="control-group">
 				<label class="control-label" for="muestra">Tipo</label>
 				<div class="controls">
-					<input type="text" class="" id="muestra" name="muestra" value="">
+					<input type="text" disabled="" id="muestra" name="muestra" value="">
 				</div>
 			</div>
+			<label  >Selecciones Tipo de Elemento</label>
 			<div class="control-group" align="center">
 			
 				<div class="btn-group" data-toggle="buttons-radio">
-						<button value="AreaInteres" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Area de Interes">
+						<button value="AreaInteres" type="button" class="btn btn-primary Tipo" rel="tooltip" tipo="Area de Interes" title="Area de Interes">
 						<i class="icon-comment-alt"></i>
 					</button>
-					<button value="Idioma" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Idioma">
+					<button value="Idioma" type="button" class="btn btn-primary Tipo" rel="tooltip" tipo="Idioma" title="Idioma">
 						<i class="icon-globe"></i>
 					</button>
-					<button value="LineaInvestigacion" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Linea de Investigación">
+					<button value="LineaInvestigacion" type="button" class="btn btn-primary Tipo" rel="tooltip" tipo="Linea de Investigación" title="Linea de Investigación">
 						<i class="icon-beaker"></i>
 					</button>
-						<button value="Lenguaje" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Lenguaje">
+						<button value="Lenguaje" type="button" class="btn btn-primary Tipo" rel="tooltip" tipo="Lenguaje" title="Lenguaje">
 						<i class="">&lt;&#47;&gt;</i>
 					</button>
-					<button value="Plataforma" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Plataforma">
+					<button value="Plataforma" type="button" class="btn btn-primary Tipo" rel="tooltip" tipo="Plataforma" title="Plataforma">
 						<i class="icon-tasks"></i>
 					</button>
-					<button value="FormaEnterado" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Forma de Enterado">
+					<button value="FormaEnterado" type="button" class="btn btn-primary Tipo" rel="tooltip" tipo="Forma de Enterado" title="Forma de Enterado">
 						<i class="icon-bullhorn"></i>
 					</button>
-					<button value="Herramienta" type="button" class="btn btn-primary Tipo" rel="tooltip" title="Herramienta">
+					<button value="Herramienta" type="button" class="btn btn-primary Tipo" rel="tooltip" tipo="Herramienta" title="Herramienta">
 						<i class="icon-wrench"></i>
 					</button>
 	
@@ -145,9 +150,7 @@
 			
 			$('.Tipo').click(function(){
 				$('#tipo').attr('value',$(this).attr('value'));
-				$('#muestra').attr('value',$(this).attr('tittle'));
-				console.log($(this).attr('value'));
-				console.log($('#tipo').attr('value'));
+				$('#muestra').attr('value',$(this).attr('tipo'));
 			});
 			
 			
