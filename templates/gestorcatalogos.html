@@ -4,7 +4,7 @@
 
 	<div class="span12">
 		<div class="row">
-			
+
 				<h2 class="span5 offset4" >Gestor de Catálogos</h2>
 		</div>
 		<div class="row">
@@ -66,7 +66,7 @@
 				<label class="control-label" for="nombre">Nombre</label>
 				<div class="controls">
 					<input type="text" class="" id="nombre" name="nombre" value="{{ elemento.nombre }}">
-					<input type="text" class="hidden" id="tipo" name="tipoo" value="{{ elemento.tipo }}">
+					<input type="text" class="hidden" id="tipo" name="tipo" value="{{ elemento.tipo }}">
 					<input type="text" class="hidden" id="id" name="id" value="{{ elemento.id }}">
 				</div>
 			</div>
@@ -104,11 +104,9 @@
 					<input type="text" disabled="" id="muestra" name="muestra" value="">
 				</div>
 			</div>
-			<div class="row">
-				<label class="span3 offset1"  >Seleccione Tipo de Elemento</label>
-			</div>
+			<label  >Selecciones Tipo de Elemento</label>
 			<div class="control-group" align="center">
-			
+
 				<div class="btn-group" data-toggle="buttons-radio">
 						<button value="AreaInteres" type="button" class="btn btn-primary Tipo" rel="tooltip" tipo="Area de Interes" title="Area de Interes">
 						<i class="icon-comment-alt"></i>
@@ -137,7 +135,7 @@
 					<button value="FormaTitulacion" type="button" class="btn btn-primary Tipo" rel="tooltip" tipo="Forma de Titulacion" title="Forma de Titulacion">
 						<i class="icon-bookmark-empty"></i>
 					</button>
-	
+
 				</div>
 				<input type="hidden" value="" name="tipoo" id="tipoo" />
 			</div>
@@ -155,16 +153,13 @@
 <script>
 	head.ready(function() {
 		$(function() {
-			
+
 			$('.Tipo').click(function(){
-				$('#tipoo').attr('value',$(this).attr('value'));
+				$('#tipo').attr('value',$(this).attr('value'));
 				$('#muestra').attr('value',$(this).attr('tipo'));
-				console.log($('#muestra').attr('value'));
-				console.log($('#tipoo').attr('value'));
-				
 			});
-			
-			
+
+
 			$('#results').fadeIn(1500);
 			var usersTable = $('#areas-table').dataTable({
 				"oLanguage" : {
@@ -186,6 +181,6 @@
 				}
 			});
 		});
-	}); 
+	});
 </script>
 {% endblock %}
