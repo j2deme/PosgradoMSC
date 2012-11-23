@@ -145,10 +145,10 @@ $app -> get('/productividad-academica/', function() use ($app) {
 }) -> name('productividad-academica');
 
 $app -> get('/publicaciones/', function() use ($app) {
-	$data['user'] = isAllowed("Administrador", false);
+	$data['user'] = isAllowed(array("Docente","Aspirante","Alumno","Administrador"), false);
 	$data['usuarios'] = Usuario::find('all', array('include' => array('personal', 'publicaciones')));
-
-	$app -> render('gestorpublicaciones.html');
+	ladybug_dump_die($data['usuarios']);
+	$app -> render('publicaciones.html');
 }) -> name('gestor-publicaciones');
 
 $app -> get('/calendario/(:year/(:month/))', function($year, $month) use ($app) {
@@ -267,7 +267,7 @@ $app -> get('/docente/publicaciones/', function() use ($app) {
 	$data['publicaciones'] = $data['usuario'] -> publicaciones;
 	$data['personal'] = $data['usuario'] -> personal;
 	//ladybug_dump_die($data['personal']);
-	$app -> render('publicaciones.html', $data);
+	$app -> render('docentepublicaciones.html', $data);
 }) -> name('docente-publicaciones');
 
 $app -> post('/docente/publicaciones-post', function() use ($app) {
