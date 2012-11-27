@@ -27,9 +27,16 @@ $app->post('/admin/catalogos/gestor-catalogos-nuevo/', function() use($app){
     $validated = $validator -> validate($_POST, $rules);
 
     if ($validated === true) {
+<<<<<<< HEAD
     		if (isset($_POST['id'])) {
 
 				$ele= $_POST['tipo']::find_by_id($_POST['id']);
+=======
+
+    		if (isset($_POST['id'])) {
+
+				$ele= $_POST['tipoo']::find_by_id($_POST['id']);
+>>>>>>> Visibilidad agregada a eventos (nuevamente)
 				$ele->nombre=$_POST['nombre'];
 				$ele->save();
 				$flash = array("title" => "OK", "msg" => "El elmento se modificó correctamente", "type" => "success", "fade" => 1);
@@ -39,10 +46,17 @@ $app->post('/admin/catalogos/gestor-catalogos-nuevo/', function() use($app){
 
 			} else {
 
+<<<<<<< HEAD
 				$ele= $_POST['tipo']::find_by_nombre($_POST['nombre']);
 		if (count($ele)==0) {
 
 			$elemento=new $_POST['tipo'];
+=======
+				$ele= $_POST['tipoo']::find_by_nombre($_POST['nombre']);
+		if (count($ele)==0) {
+
+			$elemento=new $_POST['tipoo'];
+>>>>>>> Visibilidad agregada a eventos (nuevamente)
 		$elemento->nombre=$_POST['nombre'];
 		$elemento->save();
 
@@ -107,6 +121,12 @@ $app->get('/admin/catalogos/gestor-catalogos-eliminar/:id/:tipo/', function($id,
 
 		}
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> Visibilidad agregada a eventos (nuevamente)
 	})->name('gestor-catalogos-eliminar-post');
 
 
@@ -784,6 +804,7 @@ $app -> get('/nuevo-evento/', function() use ($app) {
         array("name" => "Nuevo Evento", "alias" => "nuevo-evento")
     );
     $data['user'] = $u = isAllowed('Docente',FALSE);
+    $data['roles'] = Rol::all(array('conditions' => array('nombre <> ?',"Administrador")));
     $data['usuarios'] = Usuario::all(array('conditions' => array('id <> ?',$u->id),'include' => array('personal')));
     $app -> render('nuevoevento.html', $data);
 }) -> name('nuevo-evento');
