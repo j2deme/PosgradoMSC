@@ -76,6 +76,46 @@ function sendMail($to, $subject, $body, $from, $alias) {
 
 	return $status;
 }
+function sincBd($idPost,$user,$tabla){
+		echo "entre en la funcion";
+		foreach ($idPost as $key) {
+			$res=$tabla::find_all_by_usuario_id_and_conocimiento($user,$key);
+			if (count($res)==0) {
+				echo "no estoy en la bd";
+				$inc= new $tabla;
+				$inc->usuario_id=$user;
+				$inc->conocimiento=$key;
+				$inc->save();
+				echo "guarde";
+				unset($inc);
+			}
+		}
+		$db=$tabla::find_all_by_usuario_id($user);
+		foreach ($db as $obj) {
+			if (!(in_array($obj->conocimiento, $idPost))) {
+				echo "no estoy en el arreglo";
+				$obj->delete();
+				unset($obj);
+				echo "borre";
+			}
+		}
+		unset($db);
+		
+		echo "sali de la funcion";
+}
+
+function unionCat($objs){
+	$arr= array();
+	foreach ($objs as $obj) {
+		$objgen= new Generic;
+		$objgen->id=$obj->id;
+		$objgen->nombre=$obj->nombre;
+		$objgen->tipo=get_class($obj);
+		$arr[]=$objgen;
+		unset($objgen);
+	}
+	return $arr;
+}
 
 function isAllowed($roles,$redirect = TRUE,$permisos = array()){
 	$app = Slim::getInstance();
@@ -330,6 +370,4 @@ function mime($ext){
 
 	return $mime_types_map[$ext];
 }
-
-
 ?>

@@ -162,7 +162,8 @@
 				</form>
     </div>
 
-    <!--Segunda Tab-->
+    <!-----------------------------------------------Segunda Tab--------------------------------------------------------------------------------->
+
      <div class="tab-pane fade" id="tab2">
      	{% if (docente is defined) and (docente is not null) %}
     	<form id="datosdocente" name="datosdocente"method="post"action="{{ urlFor('nuevo-datosdocente-post') }}">
@@ -391,8 +392,8 @@
 										 <option value="{{ area.id }}">{{ area.nombre }}</option>
 										 {% endif %}
 										{% endfor %}
-
-
+										
+										
 
 									</select>
 								</div>
@@ -493,7 +494,8 @@
 										<td>{{ idioma.escribe }}%</td>
 										<td>{{ idioma.habla }}%</td>
 										<td>{{ idioma.entiende }}%</td>
-										<td><a data-toggle="modal" href="#modeditaridioma{{ idioma.id }}">Editar</a><a href="{{ urlFor('borrar-idioma-usuario-post',{'id': idioma.id,'perfil': 1}) }}">Borrar</a></td>
+										<td><a data-toggle="modal" href="#modeditaridioma{{ idioma.idioma_id }}" rel="tooltip" title="Editar" class="btn btn-success"><i class="icon-edit"></i></a>
+											<a data-toggle="modal" href="#modconfirmacion{{ idioma.idioma_id }}" rel="tooltip" title="Borrar" class="btn btn-danger"><i class="icon-trash"></i></a></td>
 									</tr>
 									{% endfor %}
 									{% else %} <td>No se han agregado idiomas en su perfil</td>
@@ -510,7 +512,33 @@
 <!--Modales-->
 
   {% for idiomausuario in idiomasusuario %}
-<div class="modal hide fade" id="modeditaridioma{{ idiomausuario.id }}">
+  
+  <!-- Confirmacion de borrado-->
+	<div class="modal hide fade" id="modconfirmacion{{ idiomausuario.idioma_id }}">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h3>Confirmacion de Borrado</h3>
+		</div>
+		<div class="modal-body">
+			{% for idioma in idiomas %}
+			{% if idioma.id==idiomausuario.idioma_id %}
+			<label>¿Esta seguro que desea borrar el idioma {{ idioma.nombre }} de su lista de idiomas? </label>
+			{% endif %}
+			{% endfor %}
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">
+				<i class="icon-remove-sign"></i>
+				No  
+				
+				</a><!---->
+			<a class="btn btn-danger" href="{{ urlFor('borrar-idioma-usuario-post',{'id': idiomausuario.id,'perfil': 2}) }}">
+				<i class="icon-trash"></i>
+				Si</a>
+		</div>
+	</div>
+  
+<div class="modal hide fade" id="modeditaridioma{{ idiomausuario.idioma_id }}">
 	<div class="modal-header">
 		<h3>Editar Idioma</h3>
 	</div>

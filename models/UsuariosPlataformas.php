@@ -11,6 +11,7 @@ class UsuariosPlataformas extends ActiveRecord\Model {
 	);
 	
 	static $alias_attribute = array(
+	'conocimiento' => 'plataforma_id'
 	);
 }
 ?>

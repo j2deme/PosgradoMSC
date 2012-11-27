@@ -13,6 +13,7 @@ class UsuariosHerramientas extends ActiveRecord\Model {
 	static $alias_attribute = array(
 //		'herramienta' => 'herramienta_id',
 //		'usuario' => 'usuario_id'
+		'conocimiento' => 'herramienta_id'
 	);
 }
 ?>

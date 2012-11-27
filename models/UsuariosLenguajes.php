@@ -11,6 +11,7 @@ class UsuariosLenguajes extends ActiveRecord\Model {
 	);
 	
 	static $alias_attribute = array(
+	'conocimiento' => 'lenguaje_id'
 	);
 }
 ?>

@@ -278,7 +278,7 @@
 					</div>
 				</form>
 			</div>
-			<!-----------------------------------------------Trecera Tab------------------------------------------------------------------------------------->
+			<!-----------------------------------------------Trecera Tab-------------------------------------------------------------------->
 			<div class="tab-pane fade" id="tab3">
 				<form id="infocontacto" name="infocontacto" method="post" action="{{ urlFor('nuevo-infocontacto-post') }}">
 					<div class="row">
@@ -439,21 +439,14 @@
 									<label for="area">Area de Interes:</label>
 									<select id="area" name="area[]" class="chzn-select" multiple="" data-placeholder="Selecciona Area de Interes" >
 										<option></option>
-										{% if areasusuario is not null %}
 
 										{% for area in areas %}
-										{% for areausuario in areasusuario %}
-										 <option {% if areausuario==area.id %} selected="" {% endif %} value="{{ area.id }}">{{ area.nombre }}</option>
-										{% endfor %}
-										{% endfor %}
-
+										{% if area.id in areasusuario|keys %}
+											<option selected="" value="{{ area.id }}">{{ area.nombre }}</option>
 										{% else %}
-
-										{% for area in areas %}
 										 <option value="{{ area.id }}">{{ area.nombre }}</option>
+										 {% endif %}
 										{% endfor %}
-
-										{% endif %}
 
 									</select>
 								</div>
@@ -461,18 +454,15 @@
 									<label for="lenguaje">Lenguaje:</label>
 									<select id="lenguaje" name="lenguaje[]" multiple="" class="chzn-select" data-placeholder="Selecciona Lenguaje" >
 										<option></option>
-										{% for lenguaje in lenguajes %}
-										{% if lenguajesusuario is not null %}
+											{% for lenguaje in lenguajes %}
+											{% if lenguaje.id in lenguajesusuario|keys %}
+												<option selected="" value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
+											{% else %}
+												<option value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
+											{% endif %}
 
-										{% for lenguajeusuario in lenguajesusuario %} <option {% if lenguajeusuario.lenguaje_id==lenguaje.id %} selected="" {% endif %} value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
 										{% endfor %}
-
-										{% else %}
-
-										<option  value="{{ lenguaje.id }}">{{ lenguaje.nombre }}</option>
-
-										{% endif %}
-										{% endfor %}
+					
 									</select>
 								</div>
 							</div>
@@ -484,16 +474,11 @@
 									<select id="herramienta" name="herramienta[]" class="chzn-select" multiple="" data-placeholder="Selecciona Herramienta" >
 										<option></option>
 										{% for herramienta in herramientas %}
-										{% if herramientasusuario is not null %}
-
-										{% for herramientausuario in herramientasusuario %} <option {% if herramientausuario.herramienta_id==herramienta.id %} selected="" {% endif %} value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
-										{% endfor %}
-
-										{% else%}
-
-										<option value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
-
-										{% endif %}
+											{% if herramienta.id in herramientasusuario|keys %}
+												<option selected="" value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
+											{% else %}
+												<option value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
+											{% endif %}
 										{% endfor %}
 									</select>
 								</div>
@@ -502,17 +487,11 @@
 									<select id="plataformas" name="plataformas[]" class="chzn-select" multiple="" data-placeholder="Selecciona Plataformas" >
 										<option></option>
 										{% for plataforma in plataformas %}
-										{% if plataformasusuario is not null %}
-
-										{% for plataformausuario in plataformasusuario %}
-										<option {% if plataformausuario.plataforma_id==plataforma.id %} selected="" {% endif %} value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
-										{% endfor %}
-
-										{% else %}
-
-										<option value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
-
-										{% endif %}
+											{% if plataforma.id in plataformasusuario|keys %}
+												<option selected="" value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
+											{% else %}
+												<option value="{{ plataforma.id }}">{{ plataforma.nombre }}</option>
+											{% endif %}
 										{% endfor %}
 									</select>
 								</div>
@@ -566,7 +545,8 @@
 										<td>{{ idioma.escribe }}%</td>
 										<td>{{ idioma.habla }}%</td>
 										<td>{{ idioma.entiende }}%</td>
-										<td><a data-toggle="modal" href="#modeditaridioma{{ idioma.id }}">Editar</a><a href="{{ urlFor('borrar-idioma-usuario-post',{'id': idioma.id,'perfil': 1}) }}">Borrar</a></td>
+										<td><a data-toggle="modal" href="#modeditaridioma{{ idioma.idioma_id }}" rel="tooltip" title="Editar" class="btn btn-success"><i class="icon-edit"></i></a>
+											<a data-toggle="modal" href="#modconfirmacion{{ idioma.idioma_id }}" rel="tooltip" title="Borrar" class="btn btn-danger"><i class="icon-trash"></i></a></td>
 									</tr>
 									{% endfor %}
 									{% else %} <td>No se han agregado idiomas en su perfil</td>
@@ -582,7 +562,34 @@
 </div>
 <!-------------------------------------------------------------Modales----------------------------------------------------------------->
 {% for idiomausuario in idiomasusuario %}
-<div class="modal hide fade" id="modeditaridioma{{ idiomausuario.id }}">
+
+
+	<!-- Confirmacion de borrado-->
+	<div class="modal hide fade" id="modconfirmacion{{ idiomausuario.idioma_id }}">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h3>Confirmacion de Borrado</h3>
+		</div>
+		<div class="modal-body">
+			{% for idioma in idiomas %}
+			{% if idioma.id==idiomausuario.idioma_id %}
+			<label>¿Esta seguro que desea borrar el idioma {{ idioma.nombre }} de su lista de idiomas? </label>
+			{% endif %}
+			{% endfor %}
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">
+				<i class="icon-remove-sign"></i>
+				No  
+				
+				</a><!---->
+			<a class="btn btn-danger" href="{{ urlFor('borrar-idioma-usuario-post',{'id': idiomausuario.id,'perfil': 1}) }}">
+				<i class="icon-trash"></i>
+				Si</a>
+		</div>
+	</div>
+
+<div class="modal hide fade" id="modeditaridioma{{ idiomausuario.idioma_id }}">
 	<div class="modal-header">
 		<h3>Editar Idioma</h3>
 	</div>
