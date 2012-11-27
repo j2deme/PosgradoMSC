@@ -49,28 +49,11 @@
 		<div class="control-group">
 			<label class="control-label" for="prioridad">Prioridad:</label>
 			<div class="controls">
-				<select id="prioridad" name="prioridad" class="chzn-select" data-placeholder="Seleccione la prioridad">
+				<select id="prioridad" name="prioridad" class="chzn-select" data-placeholder="Seleccione prioridad">
 					<option></option>
 					<option value="0">Alta</option>
 					<option value="1">Normal</option>
 					<option value="2">Baja</option>
-				</select>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="visibilidad">Visibilidad:</label>
-			<div class="controls">
-				<select id="visibilidad" name="visibilidad" class="chzn-select" data-placeholder="Seleccione la visibilidad">
-					<option></option>
-					<option value="0">Público</option>
-					{% for rol in roles %}
-					<option value="{{ rol.id }}">{{ rol.nombre }}s</option>
-					{% endfor %}
-{#					<option value="1">Docentes</option>
-					<option value="2">Alumnos</option>
-					<option value="3">Aspirantes</option>
-					<option value="4">Ex-alumnos</option>#}
-					<option value="p">Personalizado...</option>
 				</select>
 			</div>
 		</div>
