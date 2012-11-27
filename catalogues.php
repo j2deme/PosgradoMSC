@@ -673,6 +673,7 @@ $app -> get('/nuevo-evento/', function() use ($app) {
         array("name" => "Nuevo Evento", "alias" => "nuevo-evento")
     );
     $data['user'] = $u = isAllowed('Docente',FALSE);
+    $data['roles'] = Rol::all(array('conditions' => array('nombre <> ?',"Administrador")));
     $data['usuarios'] = Usuario::all(array('conditions' => array('id <> ?',$u->id),'include' => array('personal')));
     $app -> render('nuevoevento.html', $data);
 }) -> name('nuevo-evento');
