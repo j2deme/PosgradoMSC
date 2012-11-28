@@ -27,6 +27,7 @@
 					<span class="add-on"><i class="icon-calendar"></i></span>
 				</div>
 				&emsp;
+				<input id="horaInicio" name="horaInicio" class="timepicker2 span2" type="text">
 				<div class="input-append">
 					<input id="horaInicio" name="horaInicio" class="timepicker span2" type="text"><span class="add-on"><i class="icon-time"></i></span>
 				</div>
@@ -58,7 +59,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label" for="visibilidad">Visibilidad:</label>
+			<label class="control-label" for="visibilidad">Invitados:</label>
 			<div class="controls">
 				<select id="visibilidad" name="visibilidad" class="chzn-select" data-placeholder="Seleccione la visibilidad">
 					<option></option>
@@ -104,7 +105,13 @@
 <script>
 head.ready(function(){
 	$(function(){
-		 $(".multiselect").twosidedmultiselect();
+		$(".multiselect").twosidedmultiselect();
+		$('.timepicker2').timepicker({
+			minuteStep: 5,
+			showInputs: false,
+			disableFocus: true,
+			minuteStep: 5
+        });
 	});
 });
 </script>

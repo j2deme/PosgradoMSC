@@ -21,22 +21,16 @@ $app -> get('/admin/catalogos/gestor-catalogos/', function() use ($app) {
 $app->post('/admin/catalogos/gestor-catalogos-nuevo/', function() use($app){
 		$validator = new GUMP();
     $_POST = $validator -> sanitize($_POST);
-    $rules = array('nombre' => 'required','tipo' => 'required' );
+    $rules = array('nombre' => 'required','tipoo' => 'required' );
     $filters = array();
     $post = $_POST = $validator -> filter($_POST, $filters);
     $validated = $validator -> validate($_POST, $rules);
 
     if ($validated === true) {
-<<<<<<< HEAD
-    		if (isset($_POST['id'])) {
-
-				$ele= $_POST['tipo']::find_by_id($_POST['id']);
-=======
 
     		if (isset($_POST['id'])) {
 
 				$ele= $_POST['tipoo']::find_by_id($_POST['id']);
->>>>>>> Visibilidad agregada a eventos (nuevamente)
 				$ele->nombre=$_POST['nombre'];
 				$ele->save();
 				$flash = array("title" => "OK", "msg" => "El elmento se modificó correctamente", "type" => "success", "fade" => 1);
@@ -46,17 +40,10 @@ $app->post('/admin/catalogos/gestor-catalogos-nuevo/', function() use($app){
 
 			} else {
 
-<<<<<<< HEAD
-				$ele= $_POST['tipo']::find_by_nombre($_POST['nombre']);
-		if (count($ele)==0) {
-
-			$elemento=new $_POST['tipo'];
-=======
 				$ele= $_POST['tipoo']::find_by_nombre($_POST['nombre']);
 		if (count($ele)==0) {
 
 			$elemento=new $_POST['tipoo'];
->>>>>>> Visibilidad agregada a eventos (nuevamente)
 		$elemento->nombre=$_POST['nombre'];
 		$elemento->save();
 
@@ -120,13 +107,6 @@ $app->get('/admin/catalogos/gestor-catalogos-eliminar/:id/:tipo/', function($id,
         $app -> redirect($app -> urlFor('gestor-catalogos'));
 
 		}
-
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> Visibilidad agregada a eventos (nuevamente)
 	})->name('gestor-catalogos-eliminar-post');
 
 
@@ -804,7 +784,7 @@ $app -> get('/nuevo-evento/', function() use ($app) {
         array("name" => "Nuevo Evento", "alias" => "nuevo-evento")
     );
     $data['user'] = $u = isAllowed('Docente',FALSE);
-    $data['roles'] = Rol::all(array('conditions' => array('nombre <> ?',"Administrador")));
+    $data['roles'] = Rol::all(array('conditions' => array('nombre not in (?)',array("Administrador","Desertor","Media manager","No aspirante"))));
     $data['usuarios'] = Usuario::all(array('conditions' => array('id <> ?',$u->id),'include' => array('personal')));
     $app -> render('nuevoevento.html', $data);
 }) -> name('nuevo-evento');

@@ -1428,6 +1428,7 @@ $app -> get('/(:slug/)', function($slug = "") use ($app) {
 	$app -> render('index.html', $data);
 }) -> name('home');
 
+require 'load_data.php';
 require 'functions.inc.php';
 
 $app -> run();
