@@ -1,13 +1,13 @@
 $(function(){
 	$('.datepicker').datepicker({
 		'language': 'es',
-		'autoclose':true,
+		'autoclose':true
 //		'startDate': 'd'
 	});
 	$("a[rel=popover]")
     .popover()
     .click(function(e) {
-        e.preventDefault()
+        e.preventDefault();
 	});
 	$('.carousel').carousel();
 	$('.timepicker').timepicker({
@@ -15,6 +15,7 @@ $(function(){
         disableFocus: true
     });
     $(".chzn-select").chosen();
+//    $(".chzn-select").select2();
     $('[rel=tooltip]').tooltip();
 
 	var fullDate = new Date();
@@ -25,7 +26,7 @@ $(function(){
 	$('#start-date')
 	.datepicker()
     .on('changeDate', function(ev){
-    	var startDate = process($('#start-date').val());
+        var startDate = process($('#start-date').val());
 		var endDate = process($('#end-date').val());
         if (ev.date.valueOf() > endDate.valueOf()){
             $('#alert').show().find('strong').text('La fecha de inicio debe ser anterior a la fecha de fin.');
@@ -42,7 +43,7 @@ $(function(){
 	$('#end-date')
     .datepicker()
     .on('changeDate', function(ev){
-    	var startDate = process($('#start-date').val());
+        var startDate = process($('#start-date').val());
 		var endDate = process($('#end-date').val());
         if (ev.date.valueOf() < startDate.valueOf()){
             $('#alert').show().find('strong').text('La fecha de fin debe ser posterior a la fecha de inicio.');

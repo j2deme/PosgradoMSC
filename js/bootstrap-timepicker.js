@@ -55,6 +55,11 @@
 
         , init: function () {
             if (this.$element.parent().hasClass('input-append')) {
+                this.$element.on({
+                    focus: $.proxy(this.showWidget, this),
+                    click: $.proxy(this.showWidget, this),
+                    blur: $.proxy(this.updateFromElementVal, this)
+                });
                 this.$element.parent('.input-append').find('.add-on').on('click', $.proxy(this.showWidget, this));
                 this.$element.on({
                     focus: $.proxy(this.highlightUnit, this),
@@ -79,10 +84,10 @@
                     });
                 }
             }
-            
+
 
             this.$widget = $(this.getTemplate()).appendTo('body');
-            
+
             this.$widget.on('click', $.proxy(this.widgetClick, this));
 
             if (this.showInputs) {
@@ -91,7 +96,7 @@
                     keypress: $.proxy(this.widgetKeypress, this),
                     change: $.proxy(this.updateFromWidgetInputs, this)
                 });
-            } 
+            }
 
             this.setDefaultTime(this.defaultTime);
         }
@@ -139,7 +144,7 @@
 
         , hideWidget: function(){
             this.$element.trigger('hide');
-            
+
             if (this.template === 'modal') {
                 this.$widget.modal('hide');
             } else {
@@ -166,11 +171,11 @@
             switch (e.keyCode) {
                 case 9: //tab
                     if (this.showMeridian) {
-                        if (input == 'meridian') { 
+                        if (input == 'meridian') {
                             this.hideWidget();
                         }
                     } else {
-                        if (this.showSeconds) { 
+                        if (this.showSeconds) {
                             if (input == 'second') {
                                 this.hideWidget();
                             }
@@ -234,7 +239,7 @@
                             this.highlightNextUnit();
                         }
                     } else {
-                        if (this.showSeconds) { 
+                        if (this.showSeconds) {
                             if (this.highlightedUnit != 'second') {
                                 e.preventDefault();
                                 this.highlightNextUnit();
@@ -293,7 +298,7 @@
                     this.updateElement();
                 break;
             }
-            
+
             if (e.keyCode !== 0 && e.keyCode !== 8 && e.keyCode !== 9 && e.keyCode !== 46) {
                 e.preventDefault();
             }
@@ -314,7 +319,7 @@
 
             if (isNaN(this.hour)) {
                 this.hour = 1;
-            } 
+            }
             if (isNaN(this.minute)) {
                 this.minute = 0;
             }
@@ -330,7 +335,7 @@
                     this.meridian = 'AM';
                 } else if (this.meridian == 'pm' || this.meridian == 'p') {
                     this.meridian = 'PM';
-                } 
+                }
 
                 if (this.meridian != 'AM' && this.meridian != 'PM') {
                     this.meridian = 'AM';
@@ -480,13 +485,13 @@
         }
 
         , updateFromWidgetInputs: function () {
-            var time = $('input.bootstrap-timepicker-hour').val() + ':' + 
+            var time = $('input.bootstrap-timepicker-hour').val() + ':' +
                        $('input.bootstrap-timepicker-minute').val() +
-                       (this.showSeconds ? 
-                           ':' + $('input.bootstrap-timepicker-second').val() 
+                       (this.showSeconds ?
+                           ':' + $('input.bootstrap-timepicker-second').val()
                         : '') +
-                       (this.showMeridian ? 
-                           ' ' + $('input.bootstrap-timepicker-meridian').val() 
+                       (this.showMeridian ?
+                           ' ' + $('input.bootstrap-timepicker-meridian').val()
                         : '');
 
             this.setValues(time);
@@ -572,25 +577,25 @@
 
         , highlightHour: function() {
             this.highlightedUnit = 'hour';
-            this.$element.get(0).setSelectionRange(0,2); 
+            this.$element.get(0).setSelectionRange(0,2);
         }
 
         , highlightMinute: function() {
             this.highlightedUnit = 'minute';
-            this.$element.get(0).setSelectionRange(3,5); 
+            this.$element.get(0).setSelectionRange(3,5);
         }
 
         , highlightSecond: function() {
             this.highlightedUnit = 'second';
-            this.$element.get(0).setSelectionRange(6,8); 
+            this.$element.get(0).setSelectionRange(6,8);
         }
 
         , highlightMeridian: function() {
             this.highlightedUnit = 'meridian';
             if (this.showSeconds) {
-                this.$element.get(0).setSelectionRange(9,11); 
+                this.$element.get(0).setSelectionRange(9,11);
             } else {
-                this.$element.get(0).setSelectionRange(6,8); 
+                this.$element.get(0).setSelectionRange(6,8);
             }
         }
 
@@ -612,7 +617,7 @@
             if (this.showMeridian) {
                 if (this.hour === 1) {
                     return this.hour = 12;
-                } 
+                }
                 else if (this.hour === 12) {
                     this.toggleMeridian();
                 }
@@ -689,11 +694,11 @@
                                            '<td><a href="#" data-action="incrementHour"><i class="icon-chevron-up"></i></a></td>'+
                                            '<td class="separator">&nbsp;</td>'+
                                            '<td><a href="#" data-action="incrementMinute"><i class="icon-chevron-up"></i></a></td>'+
-                                           (this.showSeconds ? 
+                                           (this.showSeconds ?
                                                '<td class="separator">&nbsp;</td>'+
                                                '<td><a href="#" data-action="incrementSecond"><i class="icon-chevron-up"></i></a></td>'
                                            : '') +
-                                           (this.showMeridian ? 
+                                           (this.showMeridian ?
                                                '<td class="separator">&nbsp;</td>'+
                                                '<td class="meridian-column"><a href="#" data-action="toggleMeridian"><i class="icon-chevron-up"></i></a></td>'
                                            : '') +
@@ -702,11 +707,11 @@
                                            '<td>'+ hourTemplate +'</td> '+
                                            '<td class="separator">:</td>'+
                                            '<td>'+ minuteTemplate +'</td> '+
-                                           (this.showSeconds ? 
+                                           (this.showSeconds ?
                                                 '<td class="separator">:</td>'+
                                                 '<td>'+ secondTemplate +'</td>'
                                            : '') +
-                                           (this.showMeridian ? 
+                                           (this.showMeridian ?
                                                 '<td class="separator">&nbsp;</td>'+
                                                 '<td>'+ meridianTemplate +'</td>'
                                            : '') +
@@ -715,11 +720,11 @@
                                            '<td><a href="#" data-action="decrementHour"><i class="icon-chevron-down"></i></a></td>'+
                                            '<td class="separator"></td>'+
                                            '<td><a href="#" data-action="decrementMinute"><i class="icon-chevron-down"></i></a></td>'+
-                                           (this.showSeconds ? 
+                                           (this.showSeconds ?
                                                 '<td class="separator">&nbsp;</td>'+
-                                                '<td><a href="#" data-action="decrementSecond"><i class="icon-chevron-down"></i></a></td>' 
+                                                '<td><a href="#" data-action="decrementSecond"><i class="icon-chevron-down"></i></a></td>'
                                            : '') +
-                                           (this.showMeridian ? 
+                                           (this.showMeridian ?
                                                 '<td class="separator">&nbsp;</td>'+
                                                 '<td><a href="#" data-action="toggleMeridian"><i class="icon-chevron-down"></i></a></td>'
                                            : '') +
@@ -741,14 +746,14 @@
                                        '<a href="#" class="btn btn-primary" data-dismiss="modal">Ok</a>'+
                                    '</div>'+
                                '</div>';
-                    
+
                 break;
                 case 'dropdown':
                     template = '<div class="bootstrap-timepicker dropdown-menu">'+
                                     templateContent +
                                '</div>';
                 break;
-                
+
             }
             return template;
         }
