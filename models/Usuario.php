@@ -23,9 +23,11 @@ class Usuario extends ActiveRecord\Model {
 		array('lenguajes', 'class_name' => 'Lenguaje', 'through' => 'ul'),
 		array('up', 'class_name' => 'UsuariosPlataformas'),
 		array('plataformas', 'class_name' => 'Plataforma', 'through' => 'up'),
-		array('publicaciones', 'class_name' => 'Publicacion'),
 		array('ur', 'class_name' => 'UsuariosRoles'),
-		array('roles', 'class_name' => 'Rol', 'through' => 'ur')
+		array('upu', 'class_name' => 'UsuariosPublicaciones'),
+		array('roles', 'class_name' => 'Rol', 'through' => 'ur'),
+		array('publicaciones', 'class_name' => 'Publicacion')
+//		array('publicaciones', 'class_name' => 'Publicacion'),
 	);
 	static $belongs_to = array(
 	);

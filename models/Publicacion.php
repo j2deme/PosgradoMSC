@@ -4,9 +4,11 @@ class Publicacion extends ActiveRecord\Model {
 	static $has_one = array(		
 	);
 	static $has_many = array(
+		array('upu', 'class_name' => 'UsuariosPublicaciones'),
+		array('usuarios', 'class_name' => 'Usuario','through' => 'upu')
 	);
 	static $belongs_to = array(
-		array('usuario', 'class_name' => 'Usuario')
+		
 	);
 	
 	static $alias_attribute = array(

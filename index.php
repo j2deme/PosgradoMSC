@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 header('Content-Type: text/html; charset=UTF-8');
 //ini_set("display_errors",1);
 ini_set("memory_limit", "1024M");
@@ -145,11 +146,166 @@ $app -> get('/productividad-academica/', function() use ($app) {
 }) -> name('productividad-academica');
 
 $app -> get('/publicaciones/', function() use ($app) {
-	$data['user'] = isAllowed(array("Docente","Aspirante","Alumno","Administrador"), false);
-	$data['usuarios'] = Usuario::find('all', array('include' => array('personal', 'publicaciones')));
-	ladybug_dump_die($data['usuarios']);
-	$app -> render('publicaciones.html');
-}) -> name('gestor-publicaciones');
+	$data['user'] = isAllowed(array("Docente", "Aspirante", "Alumno", "Administrador"), false);
+	$rol = Rol::find_by_nombre('Docente', array('select' => 'id'));
+	$ur = UsuariosRoles::find_all_by_rol_id($rol -> id);
+	$ids = array();
+	foreach ($ur as $u) {
+		$ids[] = $u -> usuario_id;
+	}
+	//$data['usuarios'] = $usuarios = Usuario::find($ids, array('include' => array('personal')));
+	$data['usuarios'] = $usuarios = Publicacion::find('all', array('include' => array('upu')));
+	ladybug_dump_die($usuarios);
+
+	//$data['usuarios'] = Rol::find_by_nombre('Docente', array('include' => array('ur'=>array('usuario'=>array('personal')))));
+
+	$libros = array();
+	$trabajos = array();
+	$revistas = array();
+	$memorias = array();
+	$arr=array();
+	
+	if (is_array($usuarios)) {
+		foreach ($usuarios as $us) {
+				
+				$personal[] = $us->personal;
+			
+			if (is_array($us -> publicaciones)) {
+				$autores=array();
+				foreach ($us->publicaciones as $pub) {
+					if ($pub -> tipo=='Libro') {
+						$libros[] = $pub;
+
+					} else {
+						if ($pub -> tipo=='Trabajo') {
+							$trabajos[] = $pub;
+
+						} else {
+							if ($pub -> tipo =='Revista') {
+								$revistas[] = $pub;
+
+							} else {
+								if ($pub -> tipo =='Memoria') {
+									$memorias[] = $pub;
+
+								}
+
+							}
+
+						}
+
+					}
+					$autores[]=$usuarios->personal->nombre." ".$usuarios->personal->paterno." ".$usuarios->personal->materno;
+				$autores[]=$pub->coautores;
+				natcasesort($autores);
+				}
+				$arr[$pub->id]=$autores;
+			} else {
+				$autores=array();
+				if ($pub -> tipo == 'Libro') {
+					$libros[] = $pub;
+
+				} else {
+					if ($pub -> tipo == 'Trabajo') {
+						$trabajos[] = $pub;
+
+					} else {
+						if ($pub -> tipo == 'Revista') {
+							$revistas[] = $pub;
+
+						} else {
+							if ($pub -> tipo == 'Memoria') {
+								$memorias[] = $pub;
+
+							}
+
+						}
+
+					}
+
+				}
+				$autores[]=$usuarios->personal->nombre." ".$usuarios->personal->paterno." ".$usuarios->personal->materno;
+				$autores[]=$pub->coautores;
+				natcasesort($autores);
+				$arr[$pub->id]=$autores;
+			}
+
+		}
+			
+	} else {
+
+
+		if (is_array($usuarios -> publicaciones)) {
+			foreach ($usuarios->publicaciones as $pub) {
+					$autores=array();
+				if ($pub->tipo == 'Libro') {
+					$libros[] = $pub;
+
+				} else {
+					if ($pub -> tipo == 'Trabajo') {
+						$trabajos[] = $pub;
+
+					} else {
+						if ($pub -> tipo == 'Revista') {
+							$revistas[] = $pub;
+
+						} else {
+							if ($pub -> tipo == 'Memoria') {
+								$memorias[] = $pub;
+
+							}
+
+						}
+
+					}
+
+				}
+				//ladybug_dump_die($libros);
+				$autores[]=$usuarios->personal->nombre." ".$usuarios->personal->paterno." ".$usuarios->personal->materno;
+				$autores[]=$pub->coautores;
+				natcasesort($autores);
+				$arr[$pub->id]=$autores;
+			}
+			//ladybug_dump_die($libros);
+		} else {
+
+			$autores=array();
+			if ($pub -> tipo == 'Libro') {
+				$libros[] = $usuarios -> publicaciones;
+
+			} else {
+				if ($pub -> tipo == 'Trabajo') {
+					$trabajos[] = $usuarios -> publicaciones;
+
+				} else {
+					if ($pub -> tipo == 'Revista') {
+						$revistas[] = $usuarios -> publicaciones;
+
+					} else {
+						if ($pub -> tipo == 'Memoria') {
+							$memorias[] = $usuarios -> publicaciones;
+
+						}
+
+					}
+
+				}
+
+			}
+			$autores[]=$usuarios->personal->nombre." ".$usuarios->personal->paterno." ".$usuarios->personal->materno;
+				$autores[]=$pub->coautores;
+				natcasesort($autores);
+				$arr[$pub->id]=$autores;
+		}
+	}
+	$data['libros'] = $libros;
+	$data['trabajos'] = $trabajos;
+	$data['revistas'] = $revistas;
+	$data['memorias'] = $memorias;
+	$data['autores'] = $arr;
+	//ladybug_dump_die($data['autores']);
+	$app -> render('publicaciones.html', $data);
+}) -> name('publicaciones');
 
 $app -> get('/calendario/(:year/(:month/))', function($year, $month) use ($app) {
 	$data['user'] = isAllowed("Administrador", false);
@@ -263,10 +419,26 @@ $app -> get('/docente/borrar-publicacion/:id/', function($id) use ($app) {
 
 $app -> get('/docente/publicaciones/', function() use ($app) {
 	$data['user'] = isAllowed('Docente', FALSE);
-	$data['usuario'] = Usuario::find_by_id($data['user'] -> id, array('include' => array('personal', 'publicaciones')));
-	$data['publicaciones'] = $data['usuario'] -> publicaciones;
-	$data['personal'] = $data['usuario'] -> personal;
-	//ladybug_dump_die($data['personal']);
+	$data['usuario'] = Usuario::find_by_id($data['user'] -> id, array('include' => array('personal', 'upu'=>array('publicacion'))));
+			//ladybug_dump_die($data['usuario']);
+	$rol=Rol::find_all_by_nombre(array('Docente','Alumno','Ex-alumno'));
+	$ids=array();
+	foreach ($rol as $id) {
+		$ids[]=$id->id;
+	}
+	$ur=UsuariosRoles::find_all_by_id($ids,array('include'=>array('usuario'=>array('personal'))));
+	$uss=array();
+	foreach ($ur as $urs) {
+		if (($urs->usuario->personal->nombre=="")&&($urs->usuario->personal->paterno=="")) {
+			$uss[$ur->usuario->id]=$ur->usuario->usuario;
+		}else{
+			$uss[$urs->usuario->id]=$urs->usuario->personal->nombre." ".$urs->usuario->personal->paterno." ".$urs->usuario->personal->paterno;
+		}
+	}
+	$data['autores']=$uss;
+	//$data['publicaciones'] = $data['usuario'] -> publicaciones;
+	//ladybug_dump_die($data['autores']);
+	//$data['personal'] = $data['usuario'] -> personal;
 	$app -> render('docentepublicaciones.html', $data);
 }) -> name('docente-publicaciones');
 
@@ -561,7 +733,7 @@ $app -> post('/formulario-registro-post/', function() use ($app) {
 				$us -> login = $_POST['login'];
 				$us -> password = $_POST['pass'];
 				$us -> activo = 1;
-				$us->actualizado = time();
+				$us -> actualizado = time();
 				$us -> save();
 
 				$personal -> nombre = $_POST['nombre'];
@@ -773,10 +945,10 @@ $app -> get('/docente/perfil/', function() use ($app) {
 	$data['personal'] = $data['usuario'] -> personal;
 	$data['docente'] = $data['usuario'] -> docente;
 	if (is_null($data['docente'])) {
-		$docente= new Docente;
-		$docente->usuario_id=$data['user'] -> id;
-		$docente->save();
-		$data['docente']=Docente::find_by_usuario_id($data['user'] -> id);
+		$docente = new Docente;
+		$docente -> usuario_id = $data['user'] -> id;
+		$docente -> save();
+		$data['docente'] = Docente::find_by_usuario_id($data['user'] -> id);
 	}
 	$data['laboral'] = $data['usuario'] -> laboral;
 	$data['posgrado'] = $data['usuario'] -> pg;
@@ -959,11 +1131,10 @@ $app -> post('/nuevo-datos-personales/', function() use ($app) {
 			$perfilpersonal -> colonia = $_POST['colonia'];
 			$perfilpersonal -> cp = $_POST['cp'];
 			$perfilpersonal -> save();
-			
-			
-			$usuario=$data['user'];
-			$usuario->actualizado = time();
-			$usuario->save();
+
+			$usuario = $data['user'];
+			$usuario -> actualizado = time();
+			$usuario -> save();
 		}
 		$flash = array("title" => "OK", "msg" => "Datos personales guardados correctamente.", "type" => "success", "fade" => 1);
 
@@ -1018,10 +1189,10 @@ $app -> post('/nuevo-datos-academicos/', function() use ($app) {
 			$perfilacademico -> titulacion = $_POST['forma'];
 			$perfilacademico -> ubicacion = $_POST['localidad'];
 			$perfilacademico -> save();
-			
-			$usuario=$data['user'];
-			$usuario->actualizado = time();
-			$usuario->save();
+
+			$usuario = $data['user'];
+			$usuario -> actualizado = time();
+			$usuario -> save();
 		}
 		$flash = array("title" => "OK", "msg" => "Datos académicos guardados correctamente.", "type" => "success", "fade" => 1);
 
@@ -1082,10 +1253,10 @@ $app -> post('/nuevo-info-contacto/', function() use ($app) {
 			$perfilinfo -> forma = $_POST['enterado'];
 			$perfilinfo -> save();
 		}
-		
-		$usuario=$data['user'];
-			$usuario->actualizado = time();
-			$usuario->save();
+
+		$usuario = $data['user'];
+		$usuario -> actualizado = time();
+		$usuario -> save();
 
 		$flash = array("title" => "OK", "msg" => "Datos de contacto guardados correctamente.", "type" => "success", "fade" => 1);
 
@@ -1139,9 +1310,9 @@ $app -> post('/nuevo-experiencia-laboral/', function() use ($app) {
 			$perfillaboral -> usuario_id = $data['user'] -> id;
 			$perfillaboral -> save();
 		}
-		$usuario=$data['user'];
-			$usuario->actualizado = time();
-			$usuario->save();
+		$usuario = $data['user'];
+		$usuario -> actualizado = time();
+		$usuario -> save();
 
 		$flash = array("title" => "OK", "msg" => "Datos de experiencia laboral guardados correctamente.", "type" => "success", "fade" => 1);
 
@@ -1190,9 +1361,9 @@ $app -> post('/nuevo-datos-docente/', function() use ($app) {
 			$perfldocente -> promep = $_POST['promep'];
 			$perfldocente -> save();
 		}
-			$usuario=$data['user'];
-			$usuario->actualizado = time();
-			$usuario->save();
+		$usuario = $data['user'];
+		$usuario -> actualizado = time();
+		$usuario -> save();
 		$flash = array("title" => "OK", "msg" => "Datos de docente guardados correctamente.", "type" => "success", "fade" => 1);
 
 		$app -> flash("flash", $flash);
@@ -1218,7 +1389,7 @@ $app -> post('/nuevo-conocimiento/', function() use ($app) {
 	if ($validated === TRUE) {
 		$msg = "";
 
-			ladybug_dump_die($_POST);
+		ladybug_dump_die($_POST);
 		if (isset($_POST['area'])) {
 			foreach ($_POST['area'] as $area) {
 
@@ -1231,13 +1402,12 @@ $app -> post('/nuevo-conocimiento/', function() use ($app) {
 					$areainteres -> save();
 					$msg .= 'El area se agregó satisfactoriamente ';
 
-
 				}
 			}
 		}
 		if (isset($_POST['lenguaje'])) {
 			foreach ($_POST['lenguaje'] as $lenguaje) {
-				$leng = UsuariosLenguajes::all(array('Conditions' =>array('usuario_id AND lenguaje_id',$data['user']->id,$lenguaje)));
+				$leng = UsuariosLenguajes::all(array('Conditions' => array('usuario_id AND lenguaje_id', $data['user'] -> id, $lenguaje)));
 				if (count($leng) == 0) {
 
 					$lenguajes = new UsuariosLenguajes;
@@ -1274,7 +1444,7 @@ $app -> post('/nuevo-conocimiento/', function() use ($app) {
 				}
 			}
 		}
-		
+
 		$flash = array("title" => "OK", "msg" => $msg, "type" => "success", "fade" => 1);
 
 		$app -> flash("flash", $flash);
@@ -1307,9 +1477,8 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
 	$validated = $validator -> validate($_POST, $rules);
 	if ($validated === TRUE) {
 		$iu = UsuariosIdiomas::find_by_usuario_id_and_idioma_id($data['user'] -> id, $_POST['idioma']);
-	//	ladybug_dump_die(count($iu));
-		if (!count($iu)==0) {
-			
+		//	ladybug_dump_die(count($iu));
+		if (!count($iu) == 0) {
 
 			$flash = array("title" => "ERROR", "msg" => "El Idioma que esta tratando de guardar ya existe en su perfil .", "type" => "error", "fade" => 0);
 
@@ -1332,10 +1501,10 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
 			$ui -> habla = $_POST['habla'];
 			$ui -> entiende = $_POST['entiende'];
 			$ui -> save();
-			
-			$usuario=$data['user'];
-			$usuario->actualizado = time();
-			$usuario->save();
+
+			$usuario = $data['user'];
+			$usuario -> actualizado = time();
+			$usuario -> save();
 			$flash = array("title" => "OK", "msg" => "El idioma se ha guardado correctamente.", "type" => "success", "fade" => 1);
 
 			$app -> flash("flash", $flash);
@@ -1377,10 +1546,10 @@ $app -> post('/actualizar-idioma-usuario/', function() use ($app) {
 		$iu -> habla = $_POST['habla'];
 		$iu -> entiende = $_POST['entiende'];
 		$iu -> save();
-		
-		$usuario=$data['user'];
-			$usuario->actualizado = time();
-			$usuario->save();
+
+		$usuario = $data['user'];
+		$usuario -> actualizado = time();
+		$usuario -> save();
 		$flash = array("title" => "OK", "msg" => "El idioma se ha actualizado correctamente.", "type" => "success", "fade" => 1);
 
 		$app -> flash("flash", $flash);
@@ -1407,10 +1576,10 @@ $app -> get('/borrar-idioma-usuario/:id/:perfil/', function($id, $perfil) use ($
 	$data['user'] = isAllowed(array("Docente", "Alumno", "Aspirante"), FALSE);
 	$iu = UsuariosIdiomas::find($id);
 	$iu -> delete();
-	
-	$usuario=Usuario::find_by_usuario_id($user['user']->id);
-			$usuario->actualizado = time();
-			$usuario->save();
+
+	$usuario = Usuario::find_by_usuario_id($user['user'] -> id);
+	$usuario -> actualizado = time();
+	$usuario -> save();
 	$flash = array("title" => "OK", "msg" => "El idioma se ha borrado correctamente.", "type" => "success", "fade" => 1);
 
 	$app -> flash("flash", $flash);
