@@ -809,15 +809,14 @@ $app -> post('/nuevo-evento/', function() use ($app) {
         );
     $post = $_POST = $validator -> filter($_POST, $filters);
     $validated = $validator -> validate($_POST, $rules);
-    ladybug_dump($post);
     if ($validated === TRUE) {
         $ok = Evento::transaction(function() use ($post) {
             $evento = new Evento();
             $evento -> nombre = $_POST['nombre'];
             $evento -> autor = $_POST['autor'];
             $evento -> descripcion = $_POST['descripcion'];
-            $evento -> fecha_inicio = $_POST['fechaInicio'];
-            $evento -> fecha_fin = $_POST['fechaFin'];
+            $evento -> fecha_inicio = DateTime::createFromFormat('d/m/Y', $_POST['fechaInicio'])->getTimestamp();
+            $evento -> fecha_fin = DateTime::createFromFormat('d/m/Y', $_POST['fechaFin'])->getTimestamp();
             $evento -> hora_inicio = $_POST['horaInicio'];
             $evento -> hora_fin = $_POST['horaFin'];
             $evento -> prioridad = $_POST['prioridad'];
@@ -831,42 +830,40 @@ $app -> post('/nuevo-evento/', function() use ($app) {
                 foreach ($_POST['invitados'] as $key) {
                     $ids[] = $key;
                 }
-            }
-            $tables = array('roles' => 'Rol','usuarios' => 'Usuario');
-            $obj = $tables[$_POST['visibilidad']];
-            $include = array(
-                'Rol' => array('ur' => array('usuario')),
-                'Usuario' => array()
-                );
-            $invitados = $obj::find($ids, array('include' => $include[$obj]));
-            $relaciones = array();
-            if($obj == 'Rol'){
-                foreach ($invitados as $inv) {
-                    foreach ($inv->ur as $ur) {
-                        $relaciones[] = $ur->usuario_id;
-                    }
-                }
-            } else {
-                foreach ($invitados as $inv) {
-                    $relaciones[] = $inv->id;
-                }
-                $relaciones[] = $evento->autor;
-                sort($relaciones);
-            }
 
-            foreach ($relaciones as $id) {
-                $rel = new UsuariosEventos();
-                $rel -> evento_id = $evento -> id;
-                $rel -> usuario_id = $id;
-                $rel -> save();
-                if(!$rel) return false;
-                unset($rel);
+                $tables = array('roles' => 'Rol','usuarios' => 'Usuario');
+                $obj = $tables[$_POST['visibilidad']];
+                $include = array('Rol' => array('ur' => array('usuario')),'Usuario' => array());
+                $invitados = $obj::find($ids, array('include' => $include[$obj]));
+                $relaciones = array();
+                if($obj == 'Rol'){
+                    foreach ($invitados as $inv) {
+                        foreach ($inv->ur as $ur) {
+                            $relaciones[] = $ur->usuario_id;
+                        }
+                    }
+                } else {
+                    foreach ($invitados as $inv) {
+                        $relaciones[] = $inv->id;
+                    }
+                    $relaciones[] = $evento->autor;
+                    sort($relaciones);
+                }
+
+                foreach ($relaciones as $id) {
+                    $rel = new UsuariosEventos();
+                    $rel -> evento_id = $evento -> id;
+                    $rel -> usuario_id = $id;
+                    $rel -> save();
+                    if(!$rel) return false;
+                    unset($rel);
+                }
             }
 
             return true;
         });
         if ($ok) {
-            $flash = array("title" => "OK", "msg" => "El evento se agregó satisfactoriamente .", "type" => "success", "fade" => 1);
+            $flash = array("title" => "OK", "msg" => "Evento agregado.", "type" => "success", "fade" => 1);
             $app -> flash("flash", $flash);
             $app -> flashKeep();
             $app -> redirect($app -> urlFor('eventosDoc'));

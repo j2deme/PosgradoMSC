@@ -239,16 +239,24 @@ $app -> get('/estadisticas/matriculacion/', function() use ($app) {
  * ======= DOCENTE =======
  * =======================*/
 
-$app -> get('/docente/eventos/', function() use ($app) {
-	$data['user'] = isAllowed('Docente', 'Administrador', FALSE);
-	$data['eventos'] = Evento::find_all_by_autor($data['user'] -> id);
-	$app -> render('eventosDoc.html', $data);
-}) -> name('eventosDoc');
-
 $app -> get('/docente/', function() use ($app) {
 	$data['user'] = isAllowed('Docente', FALSE);
 	$app -> render('docente.html', $data);
 }) -> name('docente');
+
+$app -> get('/docente/eventos/', function() use ($app) {
+    $data['breadcrumb'] = array(
+        array("name" => "Panel de Control","alias" => "docente"),
+        array("name" => "Eventos", "alias" => "eventosDoc")
+    );
+    $data['user'] = isAllowed('Docente', FALSE);
+    $data['eventos'] = Evento::find_all_by_autor($data['user'] -> id);
+    $visibility = array('publico'=>'Público','roles'=>'Grupos','usuarios'=>'Personalizado');
+    foreach ($data['eventos'] as &$evento) {
+        $evento->visibilidad = $visibility[$evento->visibilidad];
+    }
+    $app -> render('eventosDoc.html', $data);
+}) -> name('eventosDoc');
 
 $app -> get('/docente/borrar-publicacion/:id/', function($id) use ($app) {
 

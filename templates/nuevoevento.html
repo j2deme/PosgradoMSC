@@ -74,15 +74,6 @@
                     <option value="roles">Grupos</option>
                     <option value="usuarios">Personalizado</option>
                 </select>
-{#              <label class="radio inline">
-                    <input type="radio" id="view1" name="visibilidad" value="publico" checked="checked"> <i class="icon-globe"></i> Público
-                </label>
-                <label class="radio inline">
-                    <input type="radio" id="view2" name="visibilidad" value="roles"> <i class="icon-group"></i> Grupos
-                </label>
-                <label class="radio inline">
-                    <input type="radio" id="view3" name="visibilidad" value="usuarios"> <i class="icon-user"></i> Personalizado
-                </label>#}
             </div>
         </div>
         <div class="control-group hide" id="invitadosCG">
@@ -96,13 +87,6 @@
                     {% for usuario in usuarios %}
                     <option value="{{ usuario.id }}" class="usuarios">{{ usuario.personal.nombre~" "~usuario.personal.paterno~" "~usuario.personal.materno }}</option>
                     {% endfor %}
-                    {#{% for herramienta in herramientas %}
-                        {% if herramienta.id in herramientasusuario|keys %}
-                            <option selected="" value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
-                        {% else %}
-                            <option value="{{ herramienta.id }}">{{ herramienta.nombre }}</option>
-                        {% endif %}
-                    {% endfor %}#}
                 </select>
             </div>
         </div>
@@ -113,13 +97,13 @@
             </div>
         </div>
         <div class="form-actions">
-            {% if user is defined and user is not null %}
+        {% if user is defined and user is not null %}
             {% if user.ur[0].rol.nombre=='Docente' %}
             <a href="{{ urlFor('docente') }}" class="btn" >Cancelar</a>
             {% else %}
             <a href="{{ urlFor('admin') }}" class="btn" >Cancelar</a>
             {% endif %}
-            {% endif %}
+        {% endif %}
             <button type="submit" class="btn btn-primary">Guardar Datos</button>
         </div>
     </form>
@@ -164,8 +148,6 @@ head.ready(function(){
             } else {
                 $('#alert').hide();
                 $('#save').removeAttr("disabled");
-                /*startDate = new Date(ev.date);
-                $('#date-start-display').text($('#date-start').data('date'));*/
             }
             $('#fechaInicio').datepicker('hide');
         });
@@ -180,8 +162,6 @@ head.ready(function(){
             } else {
                 $('#alert').hide();
                 $('#save').removeAttr("disabled");
-                /*endDate = new Date(ev.date);
-                $('#date-end-display').text($('#date-end').data('date'));*/
             }
             $('#fechaFin').datepicker('hide');
         });
