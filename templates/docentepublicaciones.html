@@ -1,346 +1,6 @@
 {% extends 'admin-base.html' %}
 {% block content %}
 
-<!-------Modal Editar-->
-
-<div class="modal hide fade" id="modEditMemoria">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">&times;</button>
-		<h3>Editar Publicacion</h3>
-	</div>
-	<form id="formm" name="formm" class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
-		<div class="modal-body">
-		
-			<div class="control-group">
-				<label class="control-label" for="mtitulo">Titulo de memoria: </label>
-				<div class="controls">
-					<input id="mtitulo" name="mtitulo" class="span3" type="text" value="" >
-				</div>
-			</div>
-	
-			<div class="control-group">
-				<label class="control-label" for="mautor">Autores: </label>
-				<div class="controls">
-					<input id="mautor" name="mautor" class="span3"  type="text" value="">
-					<a data-content="Se deben ingrese los autores tal y como aparecen en la publicación." rel="popover" data-original-title="Atención" class="mute">
-      				<i class="icon-info-sign"> </i>
-      				</a>
-				</div>
-			</div>
-
-
-			<div class="control-group">
-				<label class="control-label" for="mpublicacion">Lugar de publicacion: </label>
-				<div class="controls">
-					<input id="mpublicacion" name="mpublicacion" class="span3"  type="text" value="">
-				</div>
-			</div>
-
-			<div class="control-group">
-				<label class="control-label" for="mfechapublicacion">Fecha de publicación:</label>
-				<div class="controls">
-					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-						<input id="mfechapublicacion" name="mfechapublicacion" class=" span2 datepicker" size="16" type="text" value="">
-						<span class="add-on" ><i class="icon-calendar"></i></span>
-					</div>
-					<input id="tipo" name="tipo" type="hidden" value="1" />
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="mautores">Compartir Edición: </label>
-				<div class="controls">
-					<select id="mautores" name="mautores[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
-						<option></option>
-						{% for key, autor in autores %} 
-						<option  value="{{ key }}">{{ autor }}</option>
-						{% endfor %}
-					</select>
-					<a data-content="Este campo sirve para compartir la edición con otro usuario registrado en el sistema." rel="popover" data-original-title="Atención" class="mute">
-      				<i class="icon-info-sign"> </i>
-      				</a>
-      				<br />
-      				<br />
-				</div>
-			</div>
-
-			
-			<input id="id" name="id" type="hidden" value="" />
-			<input id="modif" name="modif" type="hidden" value="1" />
-		</div>
-		<div class="modal-footer">
-			<button class="btn btn-primary" type="submit" >
-				<i class="icon-save"></i>
-				Guardar
-			</button>
-		</div>
-	</form>
-</div>
-
-
-<div class="modal hide fade" id="modEditLibro">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">&times;</button>
-		<h3>Editar Publicacion</h3>
-	</div>
-	<form id="forml" name="forml" class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
-		<div class="modal-body">
-			
-			<div class="control-group">
-				<label class="control-label" for="ltitulo">Titulo: </label>
-				<div class="controls">
-					<input id="ltitulo" name="ltitulo" class="span3" type="text" value="">
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="lautor">Autores: </label>
-				<div class="controls">
-					<input id="lautor" name="lautor" class="span3"  type="text" value="">
-					<a data-content="Se deben ingrese los autores tal y como aparecen en la publicación." rel="popover" data-original-title="Atención" class="mute">
-      				<i class="icon-info-sign"> </i>
-      				</a>
-				</div>
-			</div>
-
-
-			<div class="control-group">
-				<label class="control-label" for="editorial">Editorial: </label>
-				<div class="controls">
-					<input id="editorial" name="editorial" class="span3"  type="text" value="">
-				</div>
-			</div>
-
-			<div class="control-group">
-				<label class="control-label" for="isbn">ISBN: </label>
-				<div class="controls">
-					<input id="isbn" name="isbn" class="span3"  type="text" value="">
-				</div>
-			</div> 
-
-			<div class="control-group">
-				<label class="control-label" for="lfechapublicacion">Fecha de publicación:</label>
-				<div class="controls">
-					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-						<input id="lfechapublicacion" name="lfechapublicacion" class="span2 datepicker" size="16" type="text" value="">
-						<span class="add-on" ><i class="icon-calendar"></i></span>
-						<input id="tipo" name="tipo" type="hidden" value="3" />
-					</div>
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="lcompartir">Compartir Edición: </label>
-				<div class="controls">
-					<select id="lcompartir" name="lcompartir[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
-						<option></option>
-						{% for key, autor in autores %} 
-						<option  value="{{ key}}">{{ autor }}</option>
-						{% endfor %}
-					</select>
-					<a data-content="Este campo sirve para compartir la edición con otro usuario registrado en el sistema." rel="popover" data-original-title="Atención" class="mute">
-      				<i class="icon-info-sign"> </i>
-      				</a>
-      				<br />
-      				<br />
-				</div>
-			</div>
-
-			<input id="id" name="id" type="hidden" value="" />
-			<input id="modif" name="modif" type="hidden" value="1" />
-		</div>
-		<div class="modal-footer">
-			<button class="btn btn-primary" type="submit" >
-				<i class="icon-save"></i>
-				Guardar
-			</button>
-		</div>
-	</form>
-</div>
-
-<div class="modal hide fade" id="modEditTrabajo">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">&times;</button>
-		<h3>Editar Publicacion</h3>
-	</div>
-	<form id="formt" name="formt" class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
-		<div class="modal-body">
-			
-			<div class="control-group">
-				<label class="control-label" for="ttitulo">Titulo: </label>
-				<div class="controls">
-					<input id="ttitulo" name="ttitulo" class="span3" type="text" value="">
-				</div>
-			</div>
-			
-			<div class="control-group">
-				<label class="control-label" for="tautor">Autores: </label>
-				<div class="controls">
-					<input id="tautor" name="tautor" class="span3"  type="text" value="">
-					<a data-content="Se deben ingrese los autores tal y como aparecen en la publicación." rel="popover" data-original-title="Atención" class="mute">
-      				<i class="icon-info-sign"> </i>
-      				</a>
-				</div>
-			</div>
-
-			<div class="control-group">
-				<label class="control-label" for="nacionalidad">Nacionalidad: </label>
-				<div class="controls">
-					<input id="nacionalidad" name="nacionalidad" class="span3" type="text" value="">
-				</div>
-			</div>
-
-			<div class="control-group">
-				<label class="control-label" for="ttipo">Tipo de trabajo:</label>
-				<div class="controls">
-					<select id="ttipo" name="ttipo">
-						<option value="">Tipo Trabajo</option>
-						<option value="Nacional">Nacional</option>
-						<option value="Internacional">Internacional</option>
-					</select>
-				</div>
-			</div>
-
-			<div class="control-group">
-				<label class="control-label" for="tfechapublicacion">Fecha de publicación:</label>
-				<div class="controls">
-					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-						<input id="tfechapublicacion" name="tfechapublicacion" class="span2 datepicker" size="16" type="text" value="">
-						<span class="add-on" ><i class="icon-calendar"></i></span>
-						<input id="tipo" name="tipo" type="hidden" value="4" />
-					</div>
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="tcompartir">Compartir Edición: </label>
-				<div class="controls">
-					<select id="tcompartir" name="tcompartir[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
-						<option></option>
-						{% for key, autor in autores %} 
-						<option  value="{{ key}}">{{ autor }}</option>
-						{% endfor %}
-					</select>
-					<a data-content="Este campo sirve para compartir la edición con otro usuario registrado en el sistema." rel="popover" data-original-title="Atención" class="mute">
-      				<i class="icon-info-sign"> </i>
-      				</a>
-      				<br />
-      				<br />
-				</div>
-			</div>
-			
-			<input id="id" name="id" type="hidden" value="" />
-			<input id="modif" name="modif" type="hidden" value="1" />
-		</div>
-		<div class="modal-footer">
-			<button class="btn btn-primary" type="submit" >
-				<i class="icon-save"></i>
-				Guardar
-			</button>
-		</div>
-	</form>
-</div>
-
-<div class="modal hide fade" id="modEditRevista">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal">&times;</button>
-		<h3>Editar Publicacion</h3>
-	</div>
-	<form id="formr" name="formr" class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
-		<div class="modal-body">
-
-			<div class="control-group">
-				<label class="control-label" for="rtitulo">Titulo: </label>
-				<div class="controls">
-					<input id="rtitulo" name="rtitulo" class="span3" type="text" value="">
-				</div>
-			</div>
-			
-			
-
-			<div class="control-group">
-				<label class="control-label" for="revista">Revista: </label>
-				<div class="control-label">
-					<input id="revista" name="revista" class="span3"  type="text" value="">
-				</div>
-			</div>
-
-			<div class="control-group">
-				<label class="control-label" for="rtipo">Tipo de revista:</label>
-				<div class="controls">
-					<select id="rtipo" name="rtipo">
-						<option value=""></option>
-						<option value="Arbitradas">Arbitrada</option>
-						<option value="Indizadas">Indizadas</option>
-					</select>
-				</div>
-			</div>
-
-			<div class="control-group">
-				<label class="control-label" for="rfechapublicacion">Fecha de publicación:</label>
-				<div class="controls">
-					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-						<input id="rfechapublicacion" name="rfechapublicacion" class="span2 datepicker" size="16" type="text" value="">
-						<span class="add-on" ><i class="icon-calendar"></i></span>
-
-					</div>
-					<input id="tipo" name="tipo" type="hidden" value="2" />
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label" for="rcompartir">Compartir Edición: </label>
-				<div class="controls">
-					<select id="rcompartir" name="rcompartir[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
-						<option></option>
-						{% for key, autor in autores %} 
-						<option  value="{{ key}}">{{ autor }}</option>
-						{% endfor %}
-					</select>
-					<a data-content="Este campo sirve para compartir la edición con otro usuario registrado en el sistema." rel="popover" data-original-title="Atención" class="mute">
-      				<i class="icon-info-sign"> </i>
-      				</a>
-      				<br />
-      				<br />
-				</div>
-			</div>
-			<input id="id" name="id" type="hidden" value="" />
-			<input id="modif" name="modif" type="hidden" value="1" />
-		</div>
-		<div class="modal-footer">
-			<button class="btn btn-primary" type="submit" >
-				<i class="icon-save"></i>
-				Guardar
-			</button>
-		</div>
-	</form>
-</div>
-
-
-{% for upu in usuario.upu %}
-
-
-<!-- Confirmacion de borrado-->
-
-	<div class="modal hide fade" id="modconfirmacion{{ upu.publicacion.id }}">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">&times;</button>
-			<h3>Confirmacion de Borrado</h3>
-		</div>
-		<div class="modal-body">
-			<label>¿Esta seguro que desea borrar {% if upu.publicacion.tipo=="Libro" or upu.publicacion.tipo=="Trabajo" %} el {% else %} la {% endif %} {{ upu.publicacion.tipo }}  <strong>{{ upu.publicacion.nombre }}</strong> ?  </label>
-		</div>
-		<div class="modal-footer">
-			<a href="#" class="btn" data-dismiss="modal">
-				<i class="icon-remove-sign"></i>
-				No
-				</a><!---->
-			<a class="btn btn-primary" href="{{ urlFor('borrar-publicacion',{'id': upu.publicacion.id}) }}">
-				<i class="icon-trash"></i>
-				Si
-				</a>
-		</div>
-	</div>
-
-{% endfor %}
-<br />
-
 <legend align="center"" ">
 	<strong> Gestor de Publicaciones</strong>
 </legend>
@@ -409,10 +69,10 @@
 							<td align="center">{{ upu.publicacion.fecha_publicacion }}</td>
 							<td align="center">
 								<div class="btn-group">
-									<a class="btn btn-success memoriaedit" rel="tooltip" title="Editar" data-toggle="modal" href="#modEditPublicacion{{ upu.publicacion.id }}">
+									<a class="btn btn-success memoriaedit" rel="tooltip" title="Editar" data-toggle="modal" href="">
 										<i class="icon-edit"></i>
 										<span id="memoria-{{ upu.publicacion.id }}" data-nombre="{{ upu.publicacion.nombre }}" data-coatores="{{ upu.publicacion.coautores }}" data-evento="{{ upu.publicacion.evento }}" data-fecha="{{ upu.publicacion.fecha_publicacion }}" 
-						data-autores="[{% for keys,autor in autores %}'{{ keys }}',{% endfor  %}]"></span>
+						data-autores="[{% for usuario in usuarios[ upu.publicacion.id ] %}'{{ usuario }}',{% endfor %}]"></span>
 									</a>
 									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ upu.publicacion.id }}">
 										<i class="icon-trash"></i>
@@ -517,8 +177,10 @@
 							<td align="center">{{  upu.publicacion.fecha_publicacion }}</td>
 							<td align="center">
 								<div class="btn-group">
-									<a class="btn btn-success" rel="tooltip" title="Editar" data-toggle="modal" href="#modEditPublicacion{{  upu.publicacion.id }}">
+									<a class="btn btn-success revistaedit" rel="tooltip" title="Editar" data-toggle="modal" href="">
 										<i class="icon-edit"></i>
+										<span id="revista-{{ upu.publicacion.id }}" data-nombre="{{ upu.publicacion.nombre }}" data-coatores="{{ upu.publicacion.coautores }}" data-evento="{{ upu.publicacion.evento }}" data-fecha="{{ upu.publicacion.fecha_publicacion }}" 
+						data-tipo="{{  upu.publicacion.tipo_trabajo }}" data-autores="[{% for usuario in usuarios[ upu.publicacion.id ] %}'{{ usuario }}',{% endfor  %}]"></span>
 									</a>
 									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{  upu.publicacion.id }}">
 										<i class="icon-trash"></i>
@@ -550,6 +212,44 @@
 						},
 						"sDom" : "<'row'<'span8'lf>r>t<'row'<'span3'i><'span4'p>>",
 						"sPaginationType" : "bootstrap"
+					});
+					$('.revistaedit').live("click",function(){
+						var span=$(this).children('span');
+						var nombre=span.data('nombre');
+						var coautores=span.data('coautores');
+						var evento=span.data('evento');
+						var tipo=span.data('tipo');
+						var fecha=span.data('fecha');
+						var autores=span.data('autores');
+						
+						var form=$('#formr');
+						var fnombre=form.find('#rtitulo');
+						var fcoautores=form.find('#rautor');
+						var fevento=form.find('#revista');
+						var ftipo=form.find('#rtipo');
+						var ffecha=form.find('#rfechapublicacion');
+						var select=form.find('##rautores');
+						var fautores=form.find('#rautores option');
+						fnombre.val(nombre);
+						fcoautores.val(coautores);
+						fevento.val(evento);
+						ffecha.val(fecha);
+						ftipo.val(tipo);
+						
+						
+						console.log(fautores);
+						fautores.each(function(){
+						console.log(fnombre.val());
+							var e=$(this);
+							if($.inArray(e.val(),autores)>-1){
+								console.log(e.val())
+								e.attr('selected','selected');
+							}
+							
+						});
+						 select.trigger("liszt:updated");
+						
+						$('#modEditRevista').modal('show');
 					});
 				});
 			});
@@ -587,8 +287,12 @@
 							<td align="center">{{ upu.publicacion.fecha_publicacion }}</td>
 							<td align="center">
 								<div class="btn-group">
-									<a class="btn btn-success" rel="tooltip" title="Editar" data-toggle="modal" href="#modEditPublicacion{{ upu.publicacion.id }}">
+									<a class="btn btn-success libroedit" rel="tooltip" title="Editar" data-toggle="modal" href="">
 										<i class="icon-edit"></i>
+										<span id="libro-{{ upu.publicacion.id }}" data-nombre="{{ upu.publicacion.nombre }}" data-coatores="{{ upu.publicacion.coautores }}" data-editorial="{{ upu.publicacion.editorial }}" 
+										data-fecha="{{ upu.publicacion.fecha_publicacion }}" data-isbn="{{  upu.publicacion.isbn }}" 
+										data-autores="[{% for usuario in usuarios[ upu.publicacion.id ] %}'{{ usuario }}',{% endfor %}]"></span>
+									
 									</a>
 									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ upu.publicacion.id }}">
 										<i class="icon-trash"></i>
@@ -621,6 +325,44 @@
 						},
 						"sDom" : "<'row'<'span8'lf>r>t<'row'<'span3'i><'span4'p>>",
 						"sPaginationType" : "bootstrap"
+					});
+					$('.libroedit').live("click",function(){
+						var span=$(this).children('span');
+						var nombre=span.data('nombre');
+						var coautores=span.data('coautores');
+						var editorial=span.data('editorial');
+						var isbn=span.data('isbn');
+						var fecha=span.data('fecha');
+						var autores=span.data('autores');
+						
+						var form=$('#forml');
+						var fnombre=form.find('#ltitulo');
+						var fcoautores=form.find('#lautor');
+						var feditorial=form.find('#editorial');
+						var fisbn=form.find('#isbn');
+						var ffecha=form.find('#lfechapublicacion');
+						var fautores=form.find('#lautores option');
+						var select=form.find('##lautores');
+						//console.log(nombre);
+						fnombre.val(nombre);
+						fcoautores.val(coautores);
+						feditorial.val(editorial);
+						ffecha.val(fecha);
+						fisbn.val(isbn);
+						
+						
+						//console.log(fnombre.val());
+						fautores.each(function(){
+							var e=$(this);
+							if($.inArray(e.val(),autores)>-1){
+								console.log(e.val())
+								e.attr('selected','selected');
+							}
+							
+						});
+						 select.trigger("liszt:updated");
+						
+						$('#modEditLibro').modal('show');
 					});
 				});
 			});
@@ -657,8 +399,10 @@
 							<td align="center">{{ upu.publicacion.fecha_publicacion }}</td>
 							<td align="center">
 								<div class="btn-group">
-									<a class="btn btn-success" rel="tooltip" title="Editar" data-toggle="modal" href="#modEditPublicacion{{ upu.publicacion.id }}">
+									<a class="btn btn-success trabajoedit" rel="tooltip" title="Editar" data-toggle="modal" href="">
 										<i class="icon-edit"></i>
+										<span id="libro-{{ upu.publicacion.id }}" data-nombre="{{ upu.publicacion.nombre }}" data-coatores="{{ upu.publicacion.coautores }}" data-nacionalidad="{{ upu.publicacion.nacionalidad }}" data-fecha="{{ upu.publicacion.fecha_publicacion }}" 
+						data-tipo="{{  upu.publicacion.tipo_trabajo }}" data-autores="[{% for usuario in usuarios[ upu.publicacion.id ] %}'{{ usuario }}',{% endfor  %}]"></span>
 									</a>
 									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ upu.publicacion.id }}">
 										<i class="icon-trash"></i>
@@ -690,6 +434,44 @@
 						},
 						"sDom" : "<'row'<'span8'lf>r>t<'row'<'span3'i><'span4'p>>",
 						"sPaginationType" : "bootstrap"
+					});
+					$('.trabajoedit').live("click",function(){
+						var span=$(this).children('span');
+						var nombre=span.data('nombre');
+						var coautores=span.data('coautores');
+						var nacionalidad=span.data('nacionalidad');
+						var tipo=span.data('tipo');
+						var fecha=span.data('fecha');
+						var autores=span.data('autores');
+						
+						var form=$('#formt');
+						var fnombre=form.find('#ttitulo');
+						var fcoautores=form.find('#tautor');
+						var fnacionalidad=form.find('#nacionalidad');
+						var ftipo=form.find('#ttipo');
+						var ffecha=form.find('#tfechapublicacion');
+						var fautores=form.find('#tautores option');
+						var select=form.find('#tautores');
+						console.log(tipo);
+						fnombre.val(nombre);
+						fcoautores.val(coautores);
+						fnacionalidad.val(nacionalidad);
+						ffecha.val(fecha);
+						ftipo.val(tipo);
+						
+						
+						//console.log(fnombre.val());
+						fautores.each(function(){
+							var e=$(this);
+							if($.inArray(e.val(),autores)>-1){
+								console.log(e.val())
+								e.attr('selected','selected');
+							}
+							
+						});
+						 select.trigger("liszt:updated");
+						
+						$('#modEditTrabajo').modal('show');
 					});
 				});
 			});
@@ -740,9 +522,9 @@
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label" for="mncompartir">Compartir Edición: </label>
+				<label class="control-label" for="mnautores">Compartir Edición: </label>
 				<div class="controls">
-					<select id="mncompartir" name="mncompartir[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
+					<select id="mnautores" name="mnautores[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
 						<option></option>
 						{% for key, autor in autores %} 
 						<option  value="{{ key}}">{{ autor }}</option>
@@ -814,9 +596,9 @@
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label" for="lcompartir">Compartir Edición: </label>
+				<label class="control-label" for="lnautores">Compartir Edición: </label>
 				<div class="controls">
-					<select id="lcompartir" name="lcompartir[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
+					<select id="lnautores" name="lnautores[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
 						<option></option>
 						{% for key, autor in autores %} 
 						<option  value="{{ key}}">{{ autor }}</option>
@@ -892,9 +674,9 @@
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label" for="tncompartir">Compartir Edición: </label>
+				<label class="control-label" for="tnautores">Compartir Edición: </label>
 				<div class="controls">
-					<select id="tncompartir" name="tncompartir[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
+					<select id="tnautores" name="tnautores[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
 						<option></option>
 						{% for key, autor in autores %} 
 						<option  value="{{ key}}">{{ autor }}</option>
@@ -971,9 +753,9 @@
 				</div>
 			</div>
 			<div class="control-group">
-				<label class="control-label" for="rcompartir">Compartir Edición: </label>
+				<label class="control-label" for="rnautores">Compartir Edición: </label>
 				<div class="controls">
-					<select id="rcompartir" name="rcompartir[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
+					<select id="rnautores" name="rnautores[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
 						<option></option>
 						{% for key, autor in autores %} 
 						<option  value="{{ key}}">{{ autor }}</option>
@@ -997,4 +779,352 @@
 	</form>
 </div>
 
+
+<!-------Modal Editar-->
+
+<div class="modal hide fade" id="modEditMemoria">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Editar Memoria</h3>
+	</div>
+	<form id="formm" name="formm" class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
+		<div class="modal-body">
+		
+			<div class="control-group">
+				<label class="control-label" for="mtitulo">Titulo de memoria: </label>
+				<div class="controls">
+					<input id="mtitulo" name="mtitulo" class="span3" type="text" value="" >
+				</div>
+			</div>
+	
+			<div class="control-group">
+				<label class="control-label" for="mautor">Autores: </label>
+				<div class="controls">
+					<input id="mautor" name="mautor" class="span3"  type="text" value="">
+					<a data-content="Se deben ingrese los autores tal y como aparecen en la publicación." rel="popover" data-original-title="Atención" class="mute">
+      				<i class="icon-info-sign"> </i>
+      				</a>
+				</div>
+			</div>
+
+
+			<div class="control-group">
+				<label class="control-label" for="mpublicacion">Lugar de publicacion: </label>
+				<div class="controls">
+					<input id="mpublicacion" name="mpublicacion" class="span3"  type="text" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="mfechapublicacion">Fecha de publicación:</label>
+				<div class="controls">
+					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+						<input id="mfechapublicacion" name="mfechapublicacion" class=" span2 datepicker" size="16" type="text" value="">
+						<span class="add-on" ><i class="icon-calendar"></i></span>
+					</div>
+					<input id="tipo" name="tipo" type="hidden" value="1" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="mautores">Compartir Edición: </label>
+				<div class="controls">
+					<select id="mautores" name="mautores[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
+						<option></option>
+						{% for key, autor in autores %} 
+						<option  value="{{ key }}">{{ autor }}</option>
+						{% endfor %}
+					</select>
+					<a data-content="Este campo sirve para compartir la edición con otro usuario registrado en el sistema." rel="popover" data-original-title="Atención" class="mute">
+      				<i class="icon-info-sign"> </i>
+      				</a>
+      				<br />
+      				<br />
+				</div>
+			</div>
+
+			
+			<input id="id" name="id" type="hidden" value="" />
+			<input id="modif" name="modif" type="hidden" value="1" />
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" type="submit" >
+				<i class="icon-save"></i>
+				Guardar
+			</button>
+		</div>
+	</form>
+</div>
+
+
+<div class="modal hide fade" id="modEditLibro">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Editar Libro</h3>
+	</div>
+	<form id="forml" name="forml" class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
+		<div class="modal-body">
+			
+			<div class="control-group">
+				<label class="control-label" for="ltitulo">Titulo: </label>
+				<div class="controls">
+					<input id="ltitulo" name="ltitulo" class="span3" type="text" value="">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="lautor">Autores: </label>
+				<div class="controls">
+					<input id="lautor" name="lautor" class="span3"  type="text" value="">
+					<a data-content="Se deben ingrese los autores tal y como aparecen en la publicación." rel="popover" data-original-title="Atención" class="mute">
+      				<i class="icon-info-sign"> </i>
+      				</a>
+				</div>
+			</div>
+
+
+			<div class="control-group">
+				<label class="control-label" for="editorial">Editorial: </label>
+				<div class="controls">
+					<input id="editorial" name="editorial" class="span3"  type="text" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="isbn">ISBN: </label>
+				<div class="controls">
+					<input id="isbn" name="isbn" class="span3"  type="text" value="">
+				</div>
+			</div> 
+
+			<div class="control-group">
+				<label class="control-label" for="lfechapublicacion">Fecha de publicación:</label>
+				<div class="controls">
+					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+						<input id="lfechapublicacion" name="lfechapublicacion" class="span2 datepicker" size="16" type="text" value="">
+						<span class="add-on" ><i class="icon-calendar"></i></span>
+						<input id="tipo" name="tipo" type="hidden" value="3" />
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="lautores">Compartir Edición: </label>
+				<div class="controls">
+					<select id="lautores" name="lautores[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
+						<option></option>
+						{% for key, autor in autores %} 
+						<option  value="{{ key}}">{{ autor }}</option>
+						{% endfor %}
+					</select>
+					<a data-content="Este campo sirve para compartir la edición con otro usuario registrado en el sistema." rel="popover" data-original-title="Atención" class="mute">
+      				<i class="icon-info-sign"> </i>
+      				</a>
+      				<br />
+      				<br />
+				</div>
+			</div>
+
+			<input id="id" name="id" type="hidden" value="" />
+			<input id="modif" name="modif" type="hidden" value="1" />
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" type="submit" >
+				<i class="icon-save"></i>
+				Guardar
+			</button>
+		</div>
+	</form>
+</div>
+
+<div class="modal hide fade" id="modEditTrabajo">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Editar Trabajo</h3>
+	</div>
+	<form id="formt" name="formt" class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
+		<div class="modal-body">
+			
+			<div class="control-group">
+				<label class="control-label" for="ttitulo">Titulo: </label>
+				<div class="controls">
+					<input id="ttitulo" name="ttitulo" class="span3" type="text" value="">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="tautor">Autores: </label>
+				<div class="controls">
+					<input id="tautor" name="tautor" class="span3"  type="text" value="">
+					<a data-content="Se deben ingrese los autores tal y como aparecen en la publicación." rel="popover" data-original-title="Atención" class="mute">
+      				<i class="icon-info-sign"> </i>
+      				</a>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="nacionalidad">Nacionalidad: </label>
+				<div class="controls">
+					<input id="nacionalidad" name="nacionalidad" class="span3" type="text" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="ttipo">Tipo de trabajo:</label>
+				<div class="controls">
+					<select id="ttipo" name="ttipo">
+						<option value="">Tipo Trabajo</option>
+						<option value="Nacional">Nacional</option>
+						<option value="Internacional">Internacional</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="tfechapublicacion">Fecha de publicación:</label>
+				<div class="controls">
+					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+						<input id="tfechapublicacion" name="tfechapublicacion" class="span2 datepicker" size="16" type="text" value="">
+						<span class="add-on" ><i class="icon-calendar"></i></span>
+						<input id="tipo" name="tipo" type="hidden" value="4" />
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="tautores">Compartir Edición: </label>
+				<div class="controls">
+					<select id="tautores" name="tautores[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
+						<option></option>
+						{% for key, autor in autores %} 
+						<option  value="{{ key}}">{{ autor }}</option>
+						{% endfor %}
+					</select>
+					<a data-content="Este campo sirve para compartir la edición con otro usuario registrado en el sistema." rel="popover" data-original-title="Atención" class="mute">
+      				<i class="icon-info-sign"> </i>
+      				</a>
+      				<br />
+      				<br />
+				</div>
+			</div>
+			
+			<input id="id" name="id" type="hidden" value="" />
+			<input id="modif" name="modif" type="hidden" value="1" />
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" type="submit" >
+				<i class="icon-save"></i>
+				Guardar
+			</button>
+		</div>
+	</form>
+</div>
+
+<div class="modal hide fade" id="modEditRevista">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<h3>Editar Revista</h3>
+	</div>
+	<form id="formr" name="formr" class="form-horizontal" method="post" action="{{ urlFor('publicaciones-post') }}">
+		<div class="modal-body">
+
+			<div class="control-group">
+				<label class="control-label" for="rtitulo">Titulo: </label>
+				<div class="controls">
+					<input id="rtitulo" name="rtitulo" class="span3" type="text" value="">
+				</div>
+			</div>
+			
+			<div class="control-group">
+				<label class="control-label" for="rautor">Autores: </label>
+				<div class="controls">
+					<input id="rautor" name="rautor" class="span3"  type="text" value="">
+					<a data-content="Se deben ingrese los autores tal y como aparecen en la publicación." rel="popover" data-original-title="Atención" class="mute">
+      				<i class="icon-info-sign"> </i>
+      				</a>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="revista">Revista: </label>
+				<div class="controls">
+					<input id="revista" name="revista" class="span3"  type="text" value="">
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="rtipo">Tipo de revista:</label>
+				<div class="controls">
+					<select id="rtipo" name="rtipo" class="">
+						<option value=""></option>
+						<option value="Arbitradas">Arbitrada</option>
+						<option value="Indizadas">Indizadas</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="rfechapublicacion">Fecha de publicación:</label>
+				<div class="controls">
+					<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+						<input id="rfechapublicacion" name="rfechapublicacion" class="span2 datepicker" size="16" type="text" value="">
+						<span class="add-on" ><i class="icon-calendar"></i></span>
+
+					</div>
+					<input id="tipo" name="tipo" type="hidden" value="2" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="rautores">Compartir Edición: </label>
+				<div class="controls">
+					<select id="rautores" name="rautores[]" multiple="" class="chzn-select" data-placeholder="Selecciona Usuario" >
+						<option></option>
+						{% for key, autor in autores %} 
+						<option  value="{{ key}}">{{ autor }}</option>
+						{% endfor %}
+					</select>
+					<a data-content="Este campo sirve para compartir la edición con otro usuario registrado en el sistema." rel="popover" data-original-title="Atención" class="mute">
+      				<i class="icon-info-sign"> </i>
+      				</a>
+      				<br />
+      				<br />
+				</div>
+			</div>
+			<input id="id" name="id" type="hidden" value="" />
+			<input id="modif" name="modif" type="hidden" value="1" />
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" type="submit" >
+				<i class="icon-save"></i>
+				Guardar
+			</button>
+		</div>
+	</form>
+</div>
+
+
+{% for upu in usuario.upu %}
+
+
+<!-- Confirmacion de borrado-->
+
+	<div class="modal hide fade" id="modconfirmacion{{ upu.publicacion.id }}">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h3>Confirmacion de Borrado</h3>
+		</div>
+		<div class="modal-body">
+			<label>¿Esta seguro que desea borrar {% if upu.publicacion.tipo=="Libro" or upu.publicacion.tipo=="Trabajo" %} el {% else %} la {% endif %} {{ upu.publicacion.tipo }}  <strong>{{ upu.publicacion.nombre }}</strong> ?  </label>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">
+				<i class="icon-remove-sign"></i>
+				No
+				</a><!---->
+			<a class="btn btn-primary" href="{{ urlFor('borrar-publicacion',{'id': upu.publicacion.id}) }}">
+				<i class="icon-trash"></i>
+				Si
+				</a>
+		</div>
+	</div>
+
+{% endfor %}
+<br />
 {% endblock %}

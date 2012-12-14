@@ -420,7 +420,20 @@ $app -> get('/docente/borrar-publicacion/:id/', function($id) use ($app) {
 $app -> get('/docente/publicaciones/', function() use ($app) {
 	$data['user'] = isAllowed('Docente', FALSE);
 	$data['usuario'] = Usuario::find_by_id($data['user'] -> id, array('include' => array('personal', 'upu'=>array('publicacion'))));
-			//ladybug_dump_die($data['usuario']);
+	$publicaciones=Publicacion::find('all',array('include'=>array('upu')));
+	//ladybug_dump($publicaciones);
+	$publ=array();
+	foreach ($publicaciones as $pub) {
+		$autores=array();
+		foreach ($pub->upu as $upu) {
+			$autores[]=$upu->usuario_id;	
+	//ladybug_dump($publ);
+		}
+			$publ[$upu->publicacion_id]=$autores;
+		
+	}
+		//	ladybug_dump_die($publ);
+	$data['usuarios']=$publ;
 	$rol=Rol::find_all_by_nombre(array('Docente','Alumno','Ex-alumno'));
 	$ids=array();
 	foreach ($rol as $id) {
@@ -437,7 +450,6 @@ $app -> get('/docente/publicaciones/', function() use ($app) {
 	}
 	$data['autores']=$uss;
 	//$data['publicaciones'] = $data['usuario'] -> publicaciones;
-	//ladybug_dump_die($data['autores']);
 	//$data['personal'] = $data['usuario'] -> personal;
 	$app -> render('docentepublicaciones.html', $data);
 }) -> name('docente-publicaciones');
@@ -449,14 +461,14 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 	if (isset($_POST['modif'])) {
 
 		if ($_POST['tipo'] == 1) {
-			$rules = array('mtitulo' => 'required', 'mpublicacion' => 'required', 'mfechapublicacion' => 'required', );
+			$rules = array('mtitulo' => 'required','mautor' => 'required', 'mpublicacion' => 'required', 'mfechapublicacion' => 'required', );
 			$filters = array();
 			$_POST = $validator -> filter($_POST, $filters);
 			$validated = $validator -> validate($_POST, $rules);
 			if ($validated === TRUE) {
 				$pub = Publicacion::find_by_id($_POST['id']);
+				//$pub -> usuario_id = $data['user']->id;
 				$pub -> nombre = $_POST['mtitulo'];
-				$pub -> usuario_id = $userid -> id;
 				$pub -> coautores = $_POST['mautor'];
 				$pub -> evento = $_POST['mpublicacion'];
 				$pub -> fecha_publicacion = $_POST['mfechapublicacion'];
@@ -479,14 +491,13 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 			}
 		} else {
 			if ($_POST['tipo'] == 2) {
-				$rules = array('rtitulo' => 'required', 'revista' => 'required', 'rtipo' => 'required', 'rfechapublicacion' => 'required');
+				$rules = array('rtitulo' => 'required','rautor' => 'required', 'revista' => 'required', 'rtipo' => 'required', 'rfechapublicacion' => 'required');
 				$filters = array();
 				$_POST = $validator -> filter($_POST, $filters);
 				$validated = $validator -> validate($_POST, $rules);
 				if ($validated === TRUE) {
 					$pub = Publicacion::find_by_id($_POST['id']);
 					$pub -> nombre = $_POST['rtitulo'];
-					$pub -> usuario_id = $userid -> id;
 					$pub -> coautores = $_POST['rautor'];
 					$pub -> evento = $_POST['revista'];
 					$pub -> tipo_trabajo = $_POST['rtipo'];
@@ -510,14 +521,13 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 				}
 			} else {
 				if ($_POST['tipo'] == 3) {
-					$rules = array('ltitulo' => 'required', 'editorial' => 'required', 'isbn' => 'required', 'lfechapublicacion' => 'required', );
+					$rules = array('ltitulo' => 'required','lautor' => 'required', 'editorial' => 'required', 'isbn' => 'required', 'lfechapublicacion' => 'required', );
 					$filters = array();
 					$_POST = $validator -> filter($_POST, $filters);
 					$validated = $validator -> validate($_POST, $rules);
 					if ($validated === TRUE) {
 						$pub = Publicacion::find_by_id($_POST['id']);
 						$pub -> nombre = $_POST['ltitulo'];
-						$pub -> usuario_id = $userid -> id;
 						$pub -> coautores = $_POST['lautor'];
 						$pub -> editorial = $_POST['editorial'];
 						$pub -> isbn = $_POST['isbn'];
@@ -541,14 +551,13 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 					}
 				} else {
 					if ($_POST['tipo'] == 4) {
-						$rules = array('ttitulo' => 'required', 'nacionalidad' => 'required', 'ttipo' => 'required', 'tfechapublicacion' => 'required', );
+						$rules = array('ttitulo' => 'required','tautor' => 'required', 'nacionalidad' => 'required', 'ttipo' => 'required', 'tfechapublicacion' => 'required', );
 						$filters = array();
 						$_POST = $validator -> filter($_POST, $filters);
 						$validated = $validator -> validate($_POST, $rules);
 						if ($validated === TRUE) {
 							$pub = Publicacion::find_by_id($_POST['id']);
 							$pub -> nombre = $_POST['ttitulo'];
-							$pub -> usuario_id = $userid -> id;
 							$pub -> coautores = $_POST['tautor'];
 							$pub -> nacionalidad = $_POST['nacionalidad'];
 							$pub -> fecha_publicacion = $_POST['tfechapublicacion'];
@@ -581,20 +590,37 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 			$_POST = $validator -> filter($_POST, $filters);
 			$validated = $validator -> validate($_POST, $rules);
 			if ($validated === TRUE) {
-				$pub = new Publicacion;
+				$pub=Publicacion::find_by_nombre($_POST['mtitulo']);
+				if (count($pub)==0) {
+					$pub = new Publicacion;
 				$pub -> nombre = $_POST['mtitulo'];
-				$pub -> usuario_id = $userid -> id;
 				$pub -> coautores = $_POST['mautor'];
 				$pub -> evento = $_POST['mpublicacion'];
 				$pub -> fecha_publicacion = $_POST['mfechapublicacion'];
 				$pub -> tipo = "Memoria";
 				$pub -> save();
+				
+				$pu=Publicacion::find_by_nombre($_POST['mtitulo']);
+				if (isset($_POST['mautores'])) {
+					foreach ($_POST['mautores'] as $autor) {
+						$upu= new UsuariosPublicaciones;
+						$upu->usuario_id=$autor;
+						$upu->publicacion_id=$pu->id;
+						$upu->save();
+					}
+				}
 
 				$flash = array("title" => "OK", "msg" => "Se ha guardado la memoria.", "type" => "success", "fade" => 1);
 				$app -> flash("flash", $flash);
 				$app -> flashKeep();
 				$app -> redirect($app -> urlFor('docente-publicaciones'));
-
+					
+				}else{
+					$flash = array("title" => "ERROR", "msg" => "Ya existe una memoria con el nombre ".$_POST['mtitulo']."", "type" => "error", "fade" => 1);
+				$app -> flash("flash", $flash);
+				$app -> flashKeep();
+				$app -> redirect($app -> urlFor('docente-publicaciones'));
+				}
 			} else {
 
 				$msgs = humanize_gump($validated);
@@ -606,26 +632,43 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 			}
 		} else {
 			if ($_POST['tipo'] == 2) {
-				$rules = array('rtitulo' => 'required', 'revista' => 'required', 'rtipo' => 'required', 'rfechapublicacion' => 'required');
+				$rules = array('rtitulo' => 'required','rautor' => 'required', 'revista' => 'required', 'rtipo' => 'required', 'rfechapublicacion' => 'required');
 				$filters = array();
 				$_POST = $validator -> filter($_POST, $filters);
 				$validated = $validator -> validate($_POST, $rules);
 				if ($validated === TRUE) {
-					$pub = new Publicacion;
+						$pub=Publicacion::find_by_nombre($_POST['rtitulo']);
+					if (count($pub)==0) {
+						$pub = new Publicacion;
 					$pub -> nombre = $_POST['rtitulo'];
-					$pub -> usuario_id = $userid -> id;
 					$pub -> coautores = $_POST['rautor'];
 					$pub -> evento = $_POST['revista'];
 					$pub -> tipo_trabajo = $_POST['rtipo'];
 					$pub -> fecha_publicacion = $_POST['rfechapublicacion'];
 					$pub -> tipo = "Revista";
 					$pub -> save();
+				
+					$pu=Publicacion::find_by_nombre($_POST['rtitulo']);
+				if (isset($_POST['rautores'])) {
+					foreach ($_POST['rautores'] as $autor) {
+						$upu= new UsuariosPublicaciones;
+						$upu->usuario_id=$autor;
+						$upu->publicacion_id=$pu->id;
+						$upu->save();
+					}
+				}
 
 					$flash = array("title" => "OK", "msg" => "Se ha guardado la revista.", "type" => "success", "fade" => 1);
 					$app -> flash("flash", $flash);
 					$app -> flashKeep();
 					$app -> redirect($app -> urlFor('docente-publicaciones'));
-
+							
+					}else{
+						$flash = array("title" => "ERROR", "msg" => "Ya existe una revista con el nombre ".$_POST['rtitulo']."", "type" => "error", "fade" => 1);
+				$app -> flash("flash", $flash);
+				$app -> flashKeep();
+				$app -> redirect($app -> urlFor('docente-publicaciones'));
+					}
 				} else {
 
 					$msgs = humanize_gump($validated);
@@ -642,9 +685,10 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 					$_POST = $validator -> filter($_POST, $filters);
 					$validated = $validator -> validate($_POST, $rules);
 					if ($validated === TRUE) {
-						$pub = new Publicacion;
+						$pub =Publicacion::find_by_nombre($_POST['ltitulo']);;
+						if (count($pub)==0) {
+							$pub = new Publicacion;
 						$pub -> nombre = $_POST['ltitulo'];
-						$pub -> usuario_id = $userid -> id;
 						$pub -> coautores = $_POST['lautor'];
 						$pub -> editorial = $_POST['editorial'];
 						$pub -> isbn = $_POST['isbn'];
@@ -652,10 +696,27 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 						$pub -> tipo = "Libro";
 						$pub -> save();
 
+						$pu=Publicacion::find_by_nombre($_POST['ltitulo']);
+				if (isset($_POST['lautores'])) {
+					foreach ($_POST['lautores'] as $autor) {
+						$upu= new UsuariosPublicaciones;
+						$upu->usuario_id=$autor;
+						$upu->publicacion_id=$pu->id;
+						$upu->save();
+					}
+				}
 						$flash = array("title" => "OK", "msg" => "Se ha guardado el libro.", "type" => "success", "fade" => 1);
 						$app -> flash("flash", $flash);
 						$app -> flashKeep();
 						$app -> redirect($app -> urlFor('docente-publicaciones'));
+						
+						} else {
+							$flash = array("title" => "ERROR", "msg" => "Ya existe un libro con el nombre ".$_POST['ltitulo']."", "type" => "error", "fade" => 1);
+				$app -> flash("flash", $flash);
+				$app -> flashKeep();
+				$app -> redirect($app -> urlFor('docente-publicaciones'));
+						}
+						
 
 					} else {
 
@@ -668,25 +729,43 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 					}
 				} else {
 					if ($_POST['tipo'] == 4) {
-						$rules = array('ttitulo' => 'required', 'nacionalidad' => 'required', 'ttipo' => 'required', 'tfechapublicacion' => 'required', );
+						$rules = array('ttitulo' => 'required','tautor' => 'required', 'nacionalidad' => 'required', 'ttipo' => 'required', 'tfechapublicacion' => 'required', );
 						$filters = array();
 						$_POST = $validator -> filter($_POST, $filters);
 						$validated = $validator -> validate($_POST, $rules);
 						if ($validated === TRUE) {
-							$pub = new Publicacion;
+								$pub = Publicacion::find_by_nombre($_POST['ttitulo']);
+							if (count($pub)==0) {
+								$pub = new Publicacion;
 							$pub -> nombre = $_POST['ttitulo'];
-							$pub -> usuario_id = $userid -> id;
 							$pub -> coautores = $_POST['tautor'];
 							$pub -> nacionalidad = $_POST['nacionalidad'];
 							$pub -> fecha_publicacion = $_POST['tfechapublicacion'];
 							$pub -> tipo_trabajo = $_POST['ttipo'];
 							$pub -> tipo = "Trabajo";
 							$pub -> save();
+							
+								$pu=Publicacion::find_by_nombre($_POST['ttitulo']);
+				if (isset($_POST['tautores'])) {
+					foreach ($_POST['tautores'] as $autor) {
+						$upu= new UsuariosPublicaciones;
+						$upu->usuario_id=$autor;
+						$upu->publicacion_id=$pu->id;
+						$upu->save();
+					}
+				}
 
 							$flash = array("title" => "OK", "msg" => "Se ha guardado el trabajo.", "type" => "success", "fade" => 1);
 							$app -> flash("flash", $flash);
 							$app -> flashKeep();
 							$app -> redirect($app -> urlFor('docente-publicaciones'));
+							} else {
+								$flash = array("title" => "ERROR", "msg" => "Ya existe un libro con el nombre ".$_POST['ttitulo']."", "type" => "error", "fade" => 1);
+				$app -> flash("flash", $flash);
+				$app -> flashKeep();
+				$app -> redirect($app -> urlFor('docente-publicaciones'));
+							}
+							
 
 						} else {
 
