@@ -71,7 +71,7 @@
 								<div class="btn-group">
 									<a class="btn btn-success memoriaedit" rel="tooltip" title="Editar" data-toggle="modal" href="">
 										<i class="icon-edit"></i>
-										<span id="memoria-{{ upu.publicacion.id }}" data-nombre="{{ upu.publicacion.nombre }}" data-coatores="{{ upu.publicacion.coautores }}" data-evento="{{ upu.publicacion.evento }}" data-fecha="{{ upu.publicacion.fecha_publicacion }}" 
+										<span id="memoria-{{ upu.publicacion.id }}" data-id="{{ upu.publicacion.id }}" data-nombre="{{ upu.publicacion.nombre }}" data-coautores="{{ upu.publicacion.coautores }}" data-evento="{{ upu.publicacion.evento }}" data-fecha="{{ upu.publicacion.fecha_publicacion }}" 
 						data-autores="[{% for usuario in usuarios[ upu.publicacion.id ] %}'{{ usuario }}',{% endfor %}]"></span>
 									</a>
 									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ upu.publicacion.id }}">
@@ -108,6 +108,7 @@
 					
 					$('.memoriaedit').live("click",function(){
 						var span=$(this).children('span');
+						var id=span.data('id');
 						var nombre=span.data('nombre');
 						var coautores=span.data('coautores');
 						var evento=span.data('evento');
@@ -115,6 +116,7 @@
 						var autores=span.data('autores');
 						
 						var form=$('#formm');
+						var fid=form.find('#id');
 						var fnombre=form.find('#mtitulo');
 						var fcoautores=form.find('#mautor');
 						var fevento=form.find('#mpublicacion');
@@ -122,6 +124,7 @@
 						var select=form.find('#mautores');
 						var fautores=form.find('#mautores option');
 						//console.log(nombre);
+						fid.val(id);
 						fnombre.val(nombre);
 						fcoautores.val(coautores);
 						fevento.val(evento);
@@ -179,7 +182,7 @@
 								<div class="btn-group">
 									<a class="btn btn-success revistaedit" rel="tooltip" title="Editar" data-toggle="modal" href="">
 										<i class="icon-edit"></i>
-										<span id="revista-{{ upu.publicacion.id }}" data-nombre="{{ upu.publicacion.nombre }}" data-coatores="{{ upu.publicacion.coautores }}" data-evento="{{ upu.publicacion.evento }}" data-fecha="{{ upu.publicacion.fecha_publicacion }}" 
+										<span id="revista-{{ upu.publicacion.id }}" data-id="{{ upu.publicacion.id }}" data-nombre="{{ upu.publicacion.nombre }}" data-coautores="{{ upu.publicacion.coautores }}" data-evento="{{ upu.publicacion.evento }}" data-fecha="{{ upu.publicacion.fecha_publicacion }}" 
 						data-tipo="{{  upu.publicacion.tipo_trabajo }}" data-autores="[{% for usuario in usuarios[ upu.publicacion.id ] %}'{{ usuario }}',{% endfor  %}]"></span>
 									</a>
 									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{  upu.publicacion.id }}">
@@ -215,6 +218,7 @@
 					});
 					$('.revistaedit').live("click",function(){
 						var span=$(this).children('span');
+						var id=span.data('id');
 						var nombre=span.data('nombre');
 						var coautores=span.data('coautores');
 						var evento=span.data('evento');
@@ -223,6 +227,7 @@
 						var autores=span.data('autores');
 						
 						var form=$('#formr');
+						var fid=form.find('#id');
 						var fnombre=form.find('#rtitulo');
 						var fcoautores=form.find('#rautor');
 						var fevento=form.find('#revista');
@@ -230,6 +235,7 @@
 						var ffecha=form.find('#rfechapublicacion');
 						var select=form.find('##rautores');
 						var fautores=form.find('#rautores option');
+						fid.val(id);
 						fnombre.val(nombre);
 						fcoautores.val(coautores);
 						fevento.val(evento);
@@ -289,7 +295,7 @@
 								<div class="btn-group">
 									<a class="btn btn-success libroedit" rel="tooltip" title="Editar" data-toggle="modal" href="">
 										<i class="icon-edit"></i>
-										<span id="libro-{{ upu.publicacion.id }}" data-nombre="{{ upu.publicacion.nombre }}" data-coatores="{{ upu.publicacion.coautores }}" data-editorial="{{ upu.publicacion.editorial }}" 
+										<span id="libro-{{ upu.publicacion.id }}" data-id="{{ upu.publicacion.id }}" data-nombre="{{ upu.publicacion.nombre }}" data-coautores="{{ upu.publicacion.coautores }}" data-editorial="{{ upu.publicacion.editorial }}" 
 										data-fecha="{{ upu.publicacion.fecha_publicacion }}" data-isbn="{{  upu.publicacion.isbn }}" 
 										data-autores="[{% for usuario in usuarios[ upu.publicacion.id ] %}'{{ usuario }}',{% endfor %}]"></span>
 									
@@ -328,6 +334,7 @@
 					});
 					$('.libroedit').live("click",function(){
 						var span=$(this).children('span');
+						var id=span.data('id');
 						var nombre=span.data('nombre');
 						var coautores=span.data('coautores');
 						var editorial=span.data('editorial');
@@ -336,6 +343,7 @@
 						var autores=span.data('autores');
 						
 						var form=$('#forml');
+						var fid=form.find('#id');
 						var fnombre=form.find('#ltitulo');
 						var fcoautores=form.find('#lautor');
 						var feditorial=form.find('#editorial');
@@ -344,6 +352,7 @@
 						var fautores=form.find('#lautores option');
 						var select=form.find('##lautores');
 						//console.log(nombre);
+						fid.val(id);
 						fnombre.val(nombre);
 						fcoautores.val(coautores);
 						feditorial.val(editorial);
@@ -401,7 +410,7 @@
 								<div class="btn-group">
 									<a class="btn btn-success trabajoedit" rel="tooltip" title="Editar" data-toggle="modal" href="">
 										<i class="icon-edit"></i>
-										<span id="libro-{{ upu.publicacion.id }}" data-nombre="{{ upu.publicacion.nombre }}" data-coatores="{{ upu.publicacion.coautores }}" data-nacionalidad="{{ upu.publicacion.nacionalidad }}" data-fecha="{{ upu.publicacion.fecha_publicacion }}" 
+										<span id="libro-{{ upu.publicacion.id }}" data-id="{{upu.publicacion.id}}" data-nombre="{{ upu.publicacion.nombre }}" data-coautores="{{ upu.publicacion.coautores }}" data-nacionalidad="{{ upu.publicacion.nacionalidad }}" data-fecha="{{ upu.publicacion.fecha_publicacion }}" 
 						data-tipo="{{  upu.publicacion.tipo_trabajo }}" data-autores="[{% for usuario in usuarios[ upu.publicacion.id ] %}'{{ usuario }}',{% endfor  %}]"></span>
 									</a>
 									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ upu.publicacion.id }}">
@@ -437,6 +446,7 @@
 					});
 					$('.trabajoedit').live("click",function(){
 						var span=$(this).children('span');
+						var id=span.data('id');
 						var nombre=span.data('nombre');
 						var coautores=span.data('coautores');
 						var nacionalidad=span.data('nacionalidad');
@@ -445,6 +455,7 @@
 						var autores=span.data('autores');
 						
 						var form=$('#formt');
+						var fid=form.find('#id');
 						var fnombre=form.find('#ttitulo');
 						var fcoautores=form.find('#tautor');
 						var fnacionalidad=form.find('#nacionalidad');
@@ -452,9 +463,10 @@
 						var ffecha=form.find('#tfechapublicacion');
 						var fautores=form.find('#tautores option');
 						var select=form.find('#tautores');
-						console.log(tipo);
+						fid.val(id);
 						fnombre.val(nombre);
 						fcoautores.val(coautores);
+						console.log(coautores);
 						fnacionalidad.val(nacionalidad);
 						ffecha.val(fecha);
 						ftipo.val(tipo);

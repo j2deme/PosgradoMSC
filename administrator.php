@@ -321,29 +321,7 @@ $app->get('/admin/secciones/', function() use ($app) {
     );
     $data['user'] = isAllowed("Administrador", false);
     $data['secciones'] = $sections = Seccion::find('all', array('order' => 'nombre asc'));
-/*  $baseSections = array('Antecedentes','Misión y Visión','Objetivos','Logros y Reconocimientos',
-    'Líneas de Generación y Aplicación de Conocimiento','Vinculación','Proceso de Admisión',
-    'Perfil de Ingreso','Perfil de Egreso','Curso Propedéutico','Material de Apoyo',
-    'Requisitos para Obtención de Grado','Líneas de Investigación');
-    $secs = array();
-    foreach ($sections as $s) {
-        $secs[] = $s->nombre;
-    }
-    if (count($baseSections) != count($secs)) {
-        $tb = new Toolbox();
-        foreach ($baseSections as $bs) {
-            if (!in_array($bs,$secs)) {
-                $s = new Seccion();
-                $s->nombre = $bs;
-                $s->slug = $tb->slugify($bs);
-                $s->contenido = "";
-                $s->actualizado = time();
-                $s->save();
-                unset($s);
-            }
-        }
-    }
-*/
+
     foreach ($sections as $seccion) {
         $contenido = (array) json_decode($seccion->contenido);
         $data['sections'][$seccion->id] = replace_hashes($contenido['data']);

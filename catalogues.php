@@ -1,7 +1,7 @@
 <?php
 #XXX Gestor de Catálogos
 $app -> get('/admin/catalogos/gestor-catalogos/', function() use ($app) {
-    
+
     $idiomas = Idioma::all();
     $lineas = LineaInvestigacion::all();
     $lenguajes = Lenguaje::all();
@@ -25,11 +25,11 @@ $app->post('/admin/catalogos/gestor-catalogos-nuevo/', function() use($app){
     $filters = array();
     $post = $_POST = $validator -> filter($_POST, $filters);
     $validated = $validator -> validate($_POST, $rules);
-	
+
     if ($validated === true) {
-    	
+
     		if (isset($_POST['id'])) {
-				
+
 				$ele= $_POST['tipoo']::find_by_id($_POST['id']);
 				$ele->nombre=$_POST['nombre'];
 				$ele->save();
@@ -37,44 +37,44 @@ $app->post('/admin/catalogos/gestor-catalogos-nuevo/', function() use($app){
 				$app -> flash("flash", $flash);
         		$app -> flashKeep();
         		$app -> redirect($app -> urlFor('gestor-catalogos'));
-				
+
 			} else {
-				
+
 				$ele= $_POST['tipoo']::find_by_nombre($_POST['nombre']);
 		if (count($ele)==0) {
-			
+
 			$elemento=new $_POST['tipoo'];
 		$elemento->nombre=$_POST['nombre'];
 		$elemento->save();
-		
+
 		$flash = array("title" => "OK", "msg" => "El elmento se creo correctamente", "type" => "success", "fade" => 1);
 		$app -> flash("flash", $flash);
         $app -> flashKeep();
         $app -> redirect($app -> urlFor('gestor-catalogos'));
-			
+
 		} else {
-		
+
 			$flash = array("title" => "OK", "msg" => "El elmento ya existe", "type" => "error", "fade" => 0);
 		$app -> flash("flash", $flash);
         $app -> flashKeep();
         $app -> redirect($app -> urlFor('gestor-catalogos'));
-			
+
 		}
-				
+
 			}
-		
+
 	}else{
-		
+
 		  $msgs = humanize_gump($validated);
         $flash = array("title" => "ERROR", "msg" => $msgs, "type" => "error", "fade" => 0);
         $app -> flash("flash", $flash);
         $app -> flashKeep();
         $app -> redirect($app -> urlFor('gestor-catalogos'));
-		
+
 	}
-	
+
 	})->name('gestor-catalogos-nuevo-post');
-	
+
 $app->get('/admin/catalogos/gestor-catalogos-eliminar/:id/:tipo/', function($id,$tipo) use($app){
 		$arr = array(
 			"Herramienta" => array("UsuariosHerramientas","find_by_herramienta_id"),
@@ -86,31 +86,27 @@ $app->get('/admin/catalogos/gestor-catalogos-eliminar/:id/:tipo/', function($id,
 			"Carrera" => array("Academico","find_by_carrera"),
 			"FormaEnterado" => array("Contacto","find_by_forma_enterado"),
 			"FormaTitulacion" => array("Academico","find_by_forma_titulacion"),
-			
+
 			);
-		$el=$arr[$tipo][0]::$arr[$tipo][1]($id);	
+		$el=$arr[$tipo][0]::$arr[$tipo][1]($id);
 		if (count($el)==0) {
 			$elemento=$tipo::find_by_id($id);
 			$elemento->delete();
 			//ladybug_dump_die($elemento);
-		
+
 		$flash = array("title" => "OK", "msg" => "El elmento se borró correctamente", "type" => "success", "fade" => 1);
 		$app -> flash("flash", $flash);
         $app -> flashKeep();
         $app -> redirect($app -> urlFor('gestor-catalogos'));
-			
+
 		} else {
-			
+
 			$flash = array("title" => "ERROR", "msg" => "El elmento no puede ser eliminado debido a que esta relacionado algún usuario", "type" => "error", "fade" => 1);
 		$app -> flash("flash", $flash);
         $app -> flashKeep();
         $app -> redirect($app -> urlFor('gestor-catalogos'));
-			
+
 		}
-		
-	
-		
-	
 	})->name('gestor-catalogos-eliminar-post');
 
 
@@ -788,6 +784,7 @@ $app -> get('/nuevo-evento/', function() use ($app) {
         array("name" => "Nuevo Evento", "alias" => "nuevo-evento")
     );
     $data['user'] = $u = isAllowed('Docente',FALSE);
+    $data['roles'] = Rol::all(array('conditions' => array('nombre not in (?)',array("Administrador","Desertor","Media manager","No aspirante"))));
     $data['usuarios'] = Usuario::all(array('conditions' => array('id <> ?',$u->id),'include' => array('personal')));
     $app -> render('nuevoevento.html', $data);
 }) -> name('nuevo-evento');
@@ -795,26 +792,84 @@ $app -> get('/nuevo-evento/', function() use ($app) {
 $app -> post('/nuevo-evento/', function() use ($app) {
     $validator = new GUMP();
     $_POST = $validator -> sanitize($_POST);
-    $rules = array('nombre' => 'required|max_len,100|min_len,1', 'autor' => 'required|max_len,50|min_len,1', 'descripcion' => 'required|max_len,100|min_len,1', 'fecha_inicio' => 'required|max_len,100|min_len,1', 'fecha_fin' => 'required|max_len,100|min_len,1', 'prioridad' => 'required|max_len,100|min_len,1', 'hora_inicio' => 'required|max_len,10|min_len,1', 'hora_fin' => 'required|max_len,100|min_len,1' );
-    $filters = array('nombre' => 'trim|sanitize_string', );
+    $rules = array(
+        'nombre'      => 'required|max_len,100|min_len,1',
+        'descripcion' => 'max_len,250',
+        'fechaInicio' => 'required',
+        'fechaFin'    => 'required',
+        'prioridad'   => 'required',
+        'horaInicio'  => 'required',
+        'horaFin'     => 'required',
+        'prioridad'   => 'required',
+        'visibilidad' => 'required'
+        );
+    $filters = array(
+        'nombre' => 'trim|sanitize_string',
+        'descripcion' => 'trim|sanitize_string'
+        );
     $post = $_POST = $validator -> filter($_POST, $filters);
     $validated = $validator -> validate($_POST, $rules);
     if ($validated === TRUE) {
-        $evento = new Evento();
-        $evento -> nombre = $_POST['nombre'];
-        $evento -> autor = $_POST['autor'];
-        $evento -> descripcion = $_POST['descripcion'];
-        $evento -> fecha_inicio = $_POST['fecha_inicio'];
-        $evento -> fecha_fin = $_POST['fecha_fin'];
-        $evento -> prioridad = $_POST['prioridad'];
-        $evento -> fecha_creado = time();
-        $evento -> hora_inicio = $_POST['hora_inicio'];
-        $evento -> hora_fin = $_POST['hora_fin'];
-        $evento -> save();
-        $flash = array("title" => "OK", "msg" => "El evento se agregó satisfactoriamente .", "type" => "success", "fade" => 1);
-        $app -> flash("flash", $flash);
-        $app -> flashKeep();
-        $app -> redirect($app -> urlFor('eventosDoc'));
+        $ok = Evento::transaction(function() use ($post) {
+            $evento = new Evento();
+            $evento -> nombre = $_POST['nombre'];
+            $evento -> autor = $_POST['autor'];
+            $evento -> descripcion = $_POST['descripcion'];
+            $evento -> fecha_inicio = DateTime::createFromFormat('d/m/Y', $_POST['fechaInicio'])->getTimestamp();
+            $evento -> fecha_fin = DateTime::createFromFormat('d/m/Y', $_POST['fechaFin'])->getTimestamp();
+            $evento -> hora_inicio = $_POST['horaInicio'];
+            $evento -> hora_fin = $_POST['horaFin'];
+            $evento -> prioridad = $_POST['prioridad'];
+            $evento -> visibilidad = $_POST['visibilidad'];
+            $evento -> fecha_creado = time();
+            $evento -> save();
+            if(!$evento) return false;
+
+            if(isset($_POST['invitados'])){
+                $ids = array();
+                foreach ($_POST['invitados'] as $key) {
+                    $ids[] = $key;
+                }
+
+                $tables = array('roles' => 'Rol','usuarios' => 'Usuario');
+                $obj = $tables[$_POST['visibilidad']];
+                $include = array('Rol' => array('ur' => array('usuario')),'Usuario' => array());
+                $invitados = $obj::find($ids, array('include' => $include[$obj]));
+                $relaciones = array();
+                if($obj == 'Rol'){
+                    foreach ($invitados as $inv) {
+                        foreach ($inv->ur as $ur) {
+                            $relaciones[] = $ur->usuario_id;
+                        }
+                    }
+                } else {
+                    foreach ($invitados as $inv) {
+                        $relaciones[] = $inv->id;
+                    }
+                    $relaciones[] = $evento->autor;
+                    sort($relaciones);
+                }
+
+                foreach ($relaciones as $id) {
+                    $rel = new UsuariosEventos();
+                    $rel -> evento_id = $evento -> id;
+                    $rel -> usuario_id = $id;
+                    $rel -> save();
+                    if(!$rel) return false;
+                    unset($rel);
+                }
+            }
+
+            return true;
+        });
+        if ($ok) {
+            $flash = array("title" => "OK", "msg" => "Evento agregado.", "type" => "success", "fade" => 1);
+            $app -> flash("flash", $flash);
+            $app -> flashKeep();
+            $app -> redirect($app -> urlFor('eventosDoc'));
+        } else {
+
+        }
     } else {
         $msgs = humanize_gump($validated);
         $flash = array("title" => "ERROR", "msg" => $msgs, "type" => "error", "fade" => 0);

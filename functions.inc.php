@@ -100,8 +100,30 @@ function sincBd($idPost,$user,$tabla){
 			}
 		}
 		unset($db);
-		
+
 		echo "sali de la funcion";
+}
+
+function sincUsuariosPublicacion($idU,$publicacion){
+	foreach ($idU as $usuario) {
+		$cons=UsuariosPublicaciones::find_by_usuario_id_and_publicacion_id($usuario,$publicacion);
+		if (count($cons)==0) {
+			$pub=new UsuariosPublicaciones;
+			$pub->usuario_id=$usuario;
+			$pub->publicacion_id=$publicacion;
+			$pub->save();
+		}
+			unset($cons);
+	}
+	
+	$db=UsuariosPublicaciones::find_all_by_publicacion_id($publicacion);
+	foreach ($db as $usuario) {
+		if (!(in_array($usuario->usuario_id,$idU))) {
+		//	ladybug_dump_die($usuario);
+			$usuario->delete();
+		}
+		unset($db);
+	}	
 }
 
 function unionCat($objs){

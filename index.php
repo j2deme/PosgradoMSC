@@ -307,6 +307,7 @@ $app -> get('/publicaciones/', function() use ($app) {
 	$app -> render('publicaciones.html', $data);
 }) -> name('publicaciones');
 
+
 $app -> get('/calendario/(:year/(:month/))', function($year, $month) use ($app) {
 	$data['user'] = isAllowed("Administrador", false);
 	$year = (is_null($year)) ? date('Y') : $year;
@@ -394,16 +395,24 @@ $app -> get('/estadisticas/matriculacion/', function() use ($app) {
  * ======= DOCENTE =======
  * =======================*/
 
-$app -> get('/docente/eventos/', function() use ($app) {
-	$data['user'] = isAllowed('Docente', 'Administrador', FALSE);
-	$data['eventos'] = Evento::find_all_by_autor($data['user'] -> id);
-	$app -> render('eventosDoc.html', $data);
-}) -> name('eventosDoc');
-
 $app -> get('/docente/', function() use ($app) {
 	$data['user'] = isAllowed('Docente', FALSE);
 	$app -> render('docente.html', $data);
 }) -> name('docente');
+
+$app -> get('/docente/eventos/', function() use ($app) {
+    $data['breadcrumb'] = array(
+        array("name" => "Panel de Control","alias" => "docente"),
+        array("name" => "Eventos", "alias" => "eventosDoc")
+    );
+    $data['user'] = isAllowed('Docente', FALSE);
+    $data['eventos'] = Evento::find_all_by_autor($data['user'] -> id);
+    $visibility = array('publico'=>'Público','roles'=>'Grupos','usuarios'=>'Personalizado');
+    foreach ($data['eventos'] as &$evento) {
+        $evento->visibilidad = $visibility[$evento->visibilidad];
+    }
+    $app -> render('eventosDoc.html', $data);
+}) -> name('eventosDoc');
 
 $app -> get('/docente/borrar-publicacion/:id/', function($id) use ($app) {
 
@@ -455,7 +464,7 @@ $app -> get('/docente/publicaciones/', function() use ($app) {
 }) -> name('docente-publicaciones');
 
 $app -> post('/docente/publicaciones-post', function() use ($app) {
-	$userid = isAllowed('Docente', FALSE);
+	$data['user'] = isAllowed('Docente', FALSE);
 	$validator = new GUMP;
 	$_POST = $validator -> sanitize($_POST);
 	if (isset($_POST['modif'])) {
@@ -467,13 +476,17 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 			$validated = $validator -> validate($_POST, $rules);
 			if ($validated === TRUE) {
 				$pub = Publicacion::find_by_id($_POST['id']);
-				//$pub -> usuario_id = $data['user']->id;
+				$pub -> creador = $data['user']->id;
 				$pub -> nombre = $_POST['mtitulo'];
 				$pub -> coautores = $_POST['mautor'];
 				$pub -> evento = $_POST['mpublicacion'];
 				$pub -> fecha_publicacion = $_POST['mfechapublicacion'];
 				$pub -> tipo = "Memoria";
 				$pub -> save();
+				$autores=$_POST['mautores'];
+							$autores[]=$data['user']->id;
+							sincUsuariosPublicacion($autores,$_POST['id']);
+				
 
 				$flash = array("title" => "OK", "msg" => "Se ha actualizado la memoria.", "type" => "success", "fade" => 1);
 				$app -> flash("flash", $flash);
@@ -497,6 +510,7 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 				$validated = $validator -> validate($_POST, $rules);
 				if ($validated === TRUE) {
 					$pub = Publicacion::find_by_id($_POST['id']);
+					$pub -> creador = $data['user']->id;
 					$pub -> nombre = $_POST['rtitulo'];
 					$pub -> coautores = $_POST['rautor'];
 					$pub -> evento = $_POST['revista'];
@@ -504,6 +518,9 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 					$pub -> fecha_publicacion = $_POST['rfechapublicacion'];
 					$pub -> tipo = "Revista";
 					$pub -> save();
+					$autores=$_POST['rautores'];
+							$autores[]=$data['user']->id;
+							sincUsuariosPublicacion($autores,$_POST['id']);
 
 					$flash = array("title" => "OK", "msg" => "Se ha actualizado la revista.", "type" => "success", "fade" => 1);
 					$app -> flash("flash", $flash);
@@ -528,12 +545,17 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 					if ($validated === TRUE) {
 						$pub = Publicacion::find_by_id($_POST['id']);
 						$pub -> nombre = $_POST['ltitulo'];
+						$pub -> creador = $data['user']->id;
 						$pub -> coautores = $_POST['lautor'];
 						$pub -> editorial = $_POST['editorial'];
 						$pub -> isbn = $_POST['isbn'];
 						$pub -> fecha_publicacion = $_POST['lfechapublicacion'];
 						$pub -> tipo = "Libro";
 						$pub -> save();
+						$autores=$_POST['lautores'];
+						$autores[]=$data['user']->id;
+						sincUsuariosPublicacion($autores,$_POST['id']);
+						//ladybug_dump_die($_POST['id']);
 
 						$flash = array("title" => "OK", "msg" => "Se ha actualizado el libro.", "type" => "success", "fade" => 1);
 						$app -> flash("flash", $flash);
@@ -558,12 +580,16 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 						if ($validated === TRUE) {
 							$pub = Publicacion::find_by_id($_POST['id']);
 							$pub -> nombre = $_POST['ttitulo'];
+							$pub -> creador = $data['user']->id;
 							$pub -> coautores = $_POST['tautor'];
 							$pub -> nacionalidad = $_POST['nacionalidad'];
 							$pub -> fecha_publicacion = $_POST['tfechapublicacion'];
 							$pub -> tipo_trabajo = $_POST['ttipo'];
 							$pub -> tipo = "Trabajo";
 							$pub -> save();
+							$autores=$_POST['tautores'];
+							$autores[]=$data['user']->id;
+							sincUsuariosPublicacion($autores,$_POST['id']);
 
 							$flash = array("title" => "OK", "msg" => "Se ha actualizado el trabajo.", "type" => "success", "fade" => 1);
 							$app -> flash("flash", $flash);
@@ -594,21 +620,16 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 				if (count($pub)==0) {
 					$pub = new Publicacion;
 				$pub -> nombre = $_POST['mtitulo'];
+				$pub -> creador = $data['user']->id;
 				$pub -> coautores = $_POST['mautor'];
 				$pub -> evento = $_POST['mpublicacion'];
 				$pub -> fecha_publicacion = $_POST['mfechapublicacion'];
 				$pub -> tipo = "Memoria";
 				$pub -> save();
-				
-				$pu=Publicacion::find_by_nombre($_POST['mtitulo']);
-				if (isset($_POST['mautores'])) {
-					foreach ($_POST['mautores'] as $autor) {
-						$upu= new UsuariosPublicaciones;
-						$upu->usuario_id=$autor;
-						$upu->publicacion_id=$pu->id;
-						$upu->save();
-					}
-				}
+				$cons=Publicacion::find_by_nombre_and_creador($_POST['mtitulo'],$data['user']->id);
+						$autores=$_POST['mnautores'];
+						$autores[]=$data['user']->id;
+						sincUsuariosPublicacion($autores,$cons->id);
 
 				$flash = array("title" => "OK", "msg" => "Se ha guardado la memoria.", "type" => "success", "fade" => 1);
 				$app -> flash("flash", $flash);
@@ -642,21 +663,17 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 						$pub = new Publicacion;
 					$pub -> nombre = $_POST['rtitulo'];
 					$pub -> coautores = $_POST['rautor'];
+					$pub -> creador = $data['user']->id;
 					$pub -> evento = $_POST['revista'];
 					$pub -> tipo_trabajo = $_POST['rtipo'];
 					$pub -> fecha_publicacion = $_POST['rfechapublicacion'];
 					$pub -> tipo = "Revista";
 					$pub -> save();
-				
-					$pu=Publicacion::find_by_nombre($_POST['rtitulo']);
-				if (isset($_POST['rautores'])) {
-					foreach ($_POST['rautores'] as $autor) {
-						$upu= new UsuariosPublicaciones;
-						$upu->usuario_id=$autor;
-						$upu->publicacion_id=$pu->id;
-						$upu->save();
-					}
-				}
+					
+					$cons=Publicacion::find_by_nombre_and_creador($_POST['rtitulo'],$data['user']->id);
+						$autores=$_POST['rnautores'];
+						$autores[]=$data['user']->id;
+						sincUsuariosPublicacion($autores,$cons->id);
 
 					$flash = array("title" => "OK", "msg" => "Se ha guardado la revista.", "type" => "success", "fade" => 1);
 					$app -> flash("flash", $flash);
@@ -690,21 +707,18 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 							$pub = new Publicacion;
 						$pub -> nombre = $_POST['ltitulo'];
 						$pub -> coautores = $_POST['lautor'];
+						$pub -> creador = $data['user']->id;
 						$pub -> editorial = $_POST['editorial'];
 						$pub -> isbn = $_POST['isbn'];
 						$pub -> fecha_publicacion = $_POST['lfechapublicacion'];
 						$pub -> tipo = "Libro";
 						$pub -> save();
 
-						$pu=Publicacion::find_by_nombre($_POST['ltitulo']);
-				if (isset($_POST['lautores'])) {
-					foreach ($_POST['lautores'] as $autor) {
-						$upu= new UsuariosPublicaciones;
-						$upu->usuario_id=$autor;
-						$upu->publicacion_id=$pu->id;
-						$upu->save();
-					}
-				}
+						$cons=Publicacion::find_by_nombre_and_creador($_POST['ltitulo'],$data['user']->id);
+						$autores=$_POST['lnautores'];
+						$autores[]=$data['user']->id;
+						sincUsuariosPublicacion($autores,$cons->id);
+						
 						$flash = array("title" => "OK", "msg" => "Se ha guardado el libro.", "type" => "success", "fade" => 1);
 						$app -> flash("flash", $flash);
 						$app -> flashKeep();
@@ -739,21 +753,17 @@ $app -> post('/docente/publicaciones-post', function() use ($app) {
 								$pub = new Publicacion;
 							$pub -> nombre = $_POST['ttitulo'];
 							$pub -> coautores = $_POST['tautor'];
+							$pub -> usuario_id = $data['user']->id;
 							$pub -> nacionalidad = $_POST['nacionalidad'];
 							$pub -> fecha_publicacion = $_POST['tfechapublicacion'];
 							$pub -> tipo_trabajo = $_POST['ttipo'];
 							$pub -> tipo = "Trabajo";
 							$pub -> save();
 							
-								$pu=Publicacion::find_by_nombre($_POST['ttitulo']);
-				if (isset($_POST['tautores'])) {
-					foreach ($_POST['tautores'] as $autor) {
-						$upu= new UsuariosPublicaciones;
-						$upu->usuario_id=$autor;
-						$upu->publicacion_id=$pu->id;
-						$upu->save();
-					}
-				}
+								$cons=Publicacion::find_by_nombre_and_creador($_POST['ttitulo'],$data['user']->id);
+						$autores=$_POST['tnautores'];
+						$autores[]=$data['user']->id;
+						sincUsuariosPublicacion($autores,$cons->id);
 
 							$flash = array("title" => "OK", "msg" => "Se ha guardado el trabajo.", "type" => "success", "fade" => 1);
 							$app -> flash("flash", $flash);
@@ -1211,9 +1221,11 @@ $app -> post('/nuevo-datos-personales/', function() use ($app) {
 			$perfilpersonal -> cp = $_POST['cp'];
 			$perfilpersonal -> save();
 
+
 			$usuario = $data['user'];
 			$usuario -> actualizado = time();
 			$usuario -> save();
+
 		}
 		$flash = array("title" => "OK", "msg" => "Datos personales guardados correctamente.", "type" => "success", "fade" => 1);
 
@@ -1269,9 +1281,11 @@ $app -> post('/nuevo-datos-academicos/', function() use ($app) {
 			$perfilacademico -> ubicacion = $_POST['localidad'];
 			$perfilacademico -> save();
 
+
 			$usuario = $data['user'];
 			$usuario -> actualizado = time();
 			$usuario -> save();
+
 		}
 		$flash = array("title" => "OK", "msg" => "Datos académicos guardados correctamente.", "type" => "success", "fade" => 1);
 
@@ -1336,6 +1350,7 @@ $app -> post('/nuevo-info-contacto/', function() use ($app) {
 		$usuario = $data['user'];
 		$usuario -> actualizado = time();
 		$usuario -> save();
+
 
 		$flash = array("title" => "OK", "msg" => "Datos de contacto guardados correctamente.", "type" => "success", "fade" => 1);
 
@@ -1467,6 +1482,18 @@ $app -> post('/nuevo-conocimiento/', function() use ($app) {
 	$validated = $validator -> validate($_POST, $rules);
 	if ($validated === TRUE) {
 		$msg = "";
+		$arr = (isset($_POST['area'])) ? $_POST['area'] : array();
+		sincBd($arr, $data['user'] -> id, "UsuariosAreas");
+		$msg .= 'El Area de Interes se edito satisfactoriamente <br />';
+		$arr = (isset($_POST['lenguaje'])) ? $_POST['lenguaje'] : array();
+		sincBd($_POST['lenguaje'], $data['user'] -> id, "UsuariosLenguajes");
+		$msg .= 'El Lenguaje se edito satisfactoriamente <br />';
+		$arr = (isset($_POST['area'])) ? $_POST['area'] : array();
+		sincBd($_POST['herramienta'], $data['user'] -> id, "UsuariosHerramientas");
+		$msg .= 'La Herramienta se edito satisfactoriamente <br />';
+		$arr = (isset($_POST['plataformas'])) ? $_POST['plataformas'] : array();
+		sincBd($_POST['plataformas'], $data['user'] -> id, "UsuariosPlataformas");
+		$msg .= 'La Plataforma se edito satisfactoriamente <br />';
 
 		ladybug_dump_die($_POST);
 		if (isset($_POST['area'])) {
@@ -1524,6 +1551,11 @@ $app -> post('/nuevo-conocimiento/', function() use ($app) {
 			}
 		}
 
+		$usuario=$data['user'];
+			$usuario->actualizado = time();
+			//ladybug_dump_die($usuario);
+			$usuario->save();
+
 		$flash = array("title" => "OK", "msg" => $msg, "type" => "success", "fade" => 1);
 
 		$app -> flash("flash", $flash);
@@ -1559,6 +1591,7 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
 		//	ladybug_dump_die(count($iu));
 		if (!count($iu) == 0) {
 
+
 			$flash = array("title" => "ERROR", "msg" => "El Idioma que esta tratando de guardar ya existe en su perfil .", "type" => "error", "fade" => 0);
 
 			$app -> flash("flash", $flash);
@@ -1584,6 +1617,7 @@ $app -> post('/nuevo-idioma-usuario/', function() use ($app) {
 			$usuario = $data['user'];
 			$usuario -> actualizado = time();
 			$usuario -> save();
+
 			$flash = array("title" => "OK", "msg" => "El idioma se ha guardado correctamente.", "type" => "success", "fade" => 1);
 
 			$app -> flash("flash", $flash);
@@ -1629,6 +1663,7 @@ $app -> post('/actualizar-idioma-usuario/', function() use ($app) {
 		$usuario = $data['user'];
 		$usuario -> actualizado = time();
 		$usuario -> save();
+
 		$flash = array("title" => "OK", "msg" => "El idioma se ha actualizado correctamente.", "type" => "success", "fade" => 1);
 
 		$app -> flash("flash", $flash);
@@ -1659,6 +1694,7 @@ $app -> get('/borrar-idioma-usuario/:id/:perfil/', function($id, $perfil) use ($
 	$usuario = Usuario::find_by_usuario_id($user['user'] -> id);
 	$usuario -> actualizado = time();
 	$usuario -> save();
+
 	$flash = array("title" => "OK", "msg" => "El idioma se ha borrado correctamente.", "type" => "success", "fade" => 1);
 
 	$app -> flash("flash", $flash);
@@ -1716,6 +1752,7 @@ $app -> get('/(:slug/)', function($slug = "") use ($app) {
 	$app -> render('index.html', $data);
 }) -> name('home');
 
+require 'load_data.php';
 require 'functions.inc.php';
 
 $app -> run();

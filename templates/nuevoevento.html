@@ -1,94 +1,171 @@
 {% extends 'admin-base.html' %}
 {% block content %}
 <div class="row">
-	<div class="span10 offset1">
-	<form id="neweventoForm" name="neweventoForm" action="{{ urlFor('nuevo-evento-post') }}" method="post" class="form-horizontal">
-		<legend>Nuevo Evento</legend>
-		<input type="hidden"  id="autor" name="autor" value="{{ user.id|default('') }}">
-		<div class="control-group">
-			<label class="control-label" for="nombre">Nombre</label>
-			<div class="controls">
-				<input type="text" id="nombre" name="nombre" value="">
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="descripcion">Descripción</label>
-			<div class="controls">
-				<textarea id="descripcion" name="descripcion" rows="4" class="span5"></textarea>
-			</div>
-		</div>
-		{% set today = 'now'|date('d/m/Y') %}
-		{% set time = 'now'|date('h:i A')%}
-		<div class="control-group">
-			<label class="control-label" for="fechaInicio">Fecha y hora de inicio</label>
-			<div class="controls control-row">
-				<div class="input-append">
-					<input id="fechaInicio" name="fechaInicio"  type="text" class="datepicker span2" value="{{ today }}">
-					<span class="add-on"><i class="icon-calendar"></i></span>
-				</div>
-				&emsp;
-				<div class="input-append">
-					<input id="horaInicio" name="horaInicio" class="timepicker span2" type="text"><span class="add-on"><i class="icon-time"></i></span>
-				</div>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="fechaFin">Fecha y hora de fin</label>
-			<div class="controls control-row">
-				<div class="input-append">
-					<input id="fechaFin" name="fechaFin" type="text" class="datepicker span2" value="{{ today }}">
-					<span class="add-on"><i class="icon-calendar"></i></span>
-				</div>
-				&emsp;
-				<div class="input-append" >
-					<input type="text" id="horaFin" name="horaFin" class="timepicker span2">
-					<span class="add-on"><i class="icon-time"></i></span>
-				</div>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="prioridad">Prioridad:</label>
-			<div class="controls">
-				<select id="prioridad" name="prioridad" class="chzn-select" data-placeholder="Seleccione prioridad">
-					<option></option>
-					<option value="0">Alta</option>
-					<option value="1">Normal</option>
-					<option value="2">Baja</option>
-				</select>
-			</div>
-		</div>
-		<div class="control-group" >
-			<label class="control-label">Invitados:</label>
-			<div class="controls">
-				<select id="principal" name="principal[]" multiple="" class="multiselect" >
-				{% for usuario in usuarios %}
-					<option value="{{ usuario.id }}">{{ usuario.personal.nombre~" "~usuario.personal.paterno~" "~usuario.personal.materno }}</option>
-				{% endfor %}
-				</select>
-			</div>
-		</div>
-			<div class="form-actions">
-				{% if user is defined and user is not null %}
-				{% if user.ur[0].rol.nombre=='Docente' %}
-				<a href="{{ urlFor('docente') }}" class="btn" >Cancelar</a>
-				{% else %}
-				<a href="{{ urlFor('admin') }}" class="btn" >Cancelar</a>
-				{% endif %}
-				{% endif %}
-
-				<button type="submit" class="btn btn-primary">
-					Guardar Datos
-				</button>
-			</div>
-	</form>
+    <div class="span11">
+        <div class="page-header">
+            <h3>Nuevo Evento</h3>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="span10 offset1">
+        <div id="loader" name="loader" class="">
+            <img src="{{ urlFor('home') }}img/loader.gif">
+        </div>
+        <div class="alert alert-error" id="alert">
+            <strong>Oh snap!</strong>
+        </div>
+    <form id="neweventForm" name="neweventForm" action="{{ urlFor('nuevo-evento-post') }}" method="post" class="form-horizontal hide">
+        <input type="hidden"  id="autor" name="autor" value="{{ user.id|default('') }}">
+        <div class="control-group">
+            <label class="control-label" for="nombre">Nombre</label>
+            <div class="controls">
+                <input type="text" id="nombre" name="nombre" class="span4">
+            </div>
+        </div>
+        {% set today = 'now'|date('d/m/Y') %}
+        {% set time = 'now'|date('h:i A')%}
+        <div class="control-group">
+            <label class="control-label" for="fechaInicio">Inicio</label>
+            <div class="controls control-row">
+                <div class="input-append">
+                    <input id="fechaInicio" name="fechaInicio"  type="text" class="datepicker2 span2" value="{{ today }}" data-date-format="dd/mm/yyyy" data-date="{{ today }}">
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
+                &emsp;
+                <div class="input-append">
+                    <input id="horaInicio" name="horaInicio" class="timepicker2 span2" type="text"><span class="add-on"><i class="icon-time"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="fechaFin">Fin</label>
+            <div class="controls control-row">
+                <div class="input-append">
+                    <input id="fechaFin" name="fechaFin" type="text" class="datepicker2 span2" value="{{ today }}" data-date-format="dd/mm/yyyy" data-date="{{ today }}">>
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
+                &emsp;
+                <div class="input-append" >
+                    <input type="text" id="horaFin" name="horaFin" class="timepicker2 span2">
+                    <span class="add-on"><i class="icon-time"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="prioridad">Prioridad:</label>
+            <div class="controls">
+                <label class="radio inline">
+                    <input type="radio" id="prioridad1" name="prioridad" value="1"> Alta
+                </label>
+                <label class="radio inline">
+                    <input type="radio" id="prioridad2" name="prioridad" value="2" checked="checked"> Normal
+                </label>
+                <label class="radio inline">
+                    <input type="radio" id="prioridad3" name="prioridad" value="3"> Baja
+                </label>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="visibilidad">Visibilidad:</label>
+            <div class="controls">
+                <select id="visibilidad" name="visibilidad" class="chzn-select span4" data-placeholder="Selecciona la visibilidad">
+                    <option value="publico">Público</option>
+                    <option value="roles">Grupos</option>
+                    <option value="usuarios">Personalizado</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group hide" id="invitadosCG">
+            <label class="control-label" for="invitados">Invitados</label>
+            <div class="controls">
+                <select id="invitados" name="invitados[]" class="chzn-select span4" multiple data-placeholder="Selecciona los invitados">
+                    <option value=""></option>
+                    {% for rol in roles %}
+                    <option value="{{ rol.id }}" class="roles">{{ rol.nombre }}s</option>
+                    {% endfor %}
+                    {% for usuario in usuarios %}
+                    <option value="{{ usuario.id }}" class="usuarios">{{ usuario.personal.nombre~" "~usuario.personal.paterno~" "~usuario.personal.materno }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="descripcion">Descripción</label>
+            <div class="controls">
+                <textarea id="descripcion" name="descripcion" rows="4" class="span4"></textarea>
+            </div>
+        </div>
+        <div class="form-actions">
+        {% if user is defined and user is not null %}
+            {% if user.ur[0].rol.nombre=='Docente' %}
+            <a href="{{ urlFor('docente') }}" class="btn" >Cancelar</a>
+            {% else %}
+            <a href="{{ urlFor('admin') }}" class="btn" >Cancelar</a>
+            {% endif %}
+        {% endif %}
+            <button type="submit" class="btn btn-primary">Guardar Datos</button>
+        </div>
+    </form>
 </div>
 </div>
 
 <script>
 head.ready(function(){
-	$(function(){
-		 $(".multiselect").twosidedmultiselect();
-	});
+    $(function(){
+        $("#loader").delay(100).fadeOut(500)
+        $('#neweventForm').delay(600).fadeIn(500);
+        $('.timepicker2').timepicker({
+            minuteStep: 5,
+            showInputs: false
+        });
+        $('.datepicker2').datepicker({
+            'language': 'es',
+            'autoclose':true,
+            'startDate': 'd'
+        });
+
+        $("#invitados").chained("#visibilidad");
+        $("#invitados").trigger("liszt:updated");
+        $("#visibilidad").bind("change", function() {
+            var view = $(this).val();
+            if(view == "publico"){
+                $("#invitadosCG").fadeOut(300);
+                $("#invitados").trigger("liszt:updated");
+            } else {
+                $("#invitadosCG").fadeIn(300);
+                $("#invitados").trigger("liszt:updated");
+            }
+        });
+
+        $('#fechaInicio').datepicker().on('changeDate', function(ev){
+            var startDate = process($('#fechaInicio').val());
+            var endDate = process($('#fechaFin').val());
+            if (ev.date.valueOf() > endDate.valueOf()){
+                $('#alert').show().find('strong').text('La fecha de inicio debe ser anterior a la fecha de fin.');
+                $('#save').attr("disabled", "disabled");
+                $(this).blur();
+            } else {
+                $('#alert').hide();
+                $('#save').removeAttr("disabled");
+            }
+            $('#fechaInicio').datepicker('hide');
+        });
+
+        $('#fechaFin').datepicker().on('changeDate', function(ev){
+            var startDate = process($('#fechaInicio').val());
+            var endDate = process($('#fechaFin').val());
+            if (ev.date.valueOf() < startDate.valueOf()){
+                $('#alert').show().find('strong').text('La fecha de fin debe ser posterior a la fecha de inicio.');
+                $('#save').attr("disabled", "disabled");
+                $(this).blur();
+            } else {
+                $('#alert').hide();
+                $('#save').removeAttr("disabled");
+            }
+            $('#fechaFin').datepicker('hide');
+        });
+    });
 });
 </script>
 {% endblock %}

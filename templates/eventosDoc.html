@@ -1,87 +1,58 @@
 {% extends 'admin-base.html' %}
 {% block content %}
-<h3 align="center">Lista de eventos creados.</h3>
-<br/>
-<br/>
-
-<table class="table table-bordered table-condensed table-striped" id="listaEventos" >
-	<thead>
-		<tr>
-			<th class="ziseTable">#</th>
-			
-			<th class="ziseTable">Nombre de evento</th>
-			<th class="ziseTable">Descripcion</th>
-			<th class="ziseTable">Hora, de inicio</th>
-			<th class="ziseTable">Hora de terminacion</th>
-			<th class="ziseTable">Prioridad</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% if eventos is defined %}
-		{% if eventos |length > 0  %}
-		{% for evento in eventos %}
-		<tr>
-			<td >{{ loop.index }}</td>
-			<td >{{ evento.fecha_creado|date('d/m/y') }}</td>
-			<td >{{ evento.nombre }}</td>
-			<td >{{ evento.descripcion }}</td>
-			<td >{{ evento.hora_inicio }}</td>
-			<td >{{ evento.hora_fin }}</td>
-			<td >{% if evento.prioridad==0 %} Alta {% endif %} {% if evento.prioridad==1 %} Media {% endif %}{% if evento.prioridad==2 %} Baja {% endif %}</td>
-		</tr>
-		{% endfor %}
-		{% else %}
-		<tr>
-			<td></td>
-			<td>No se encontraron resultados</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		{% endif %}
-		{% endif %}
-	</tbody>
-	{##}
-
-</table>
+<div class="row">
+    <div class="span11">
+        <div class="page-header">
+            <h3>Eventos creados</h3>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="span11">
+        <table class="table table-bordered table-condensed table-striped" id="eventsTbl" name="eventsTbl">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th class="span3">Nombre</th>
+                    <th>Vigencia</th>
+                    <th>Visibilidad</th>
+                    <th>Prioridad</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% set priority = ['','Alta','Normal','Baja']%}
+            {% if (eventos is defined) and (eventos|length > 0) %}
+                {% for evento in eventos %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td class="span3">{{ evento.nombre }}</td>
+                    <td>{{ evento.fecha_inicio|date('d/m') }} {{ evento.hora_inicio }} &mdash; {{ evento.fecha_fin|date('d/m') }} {{ evento.hora_fin }}</td>
+                    <td>{{ evento.visibilidad|raw }}</td>
+                    <td>{{ priority[evento.prioridad] }}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <script>
-	head.ready(function() {
-		$(function() {
-			//$('#waiting').addClass('hide').fadeOut(2500);
-			$('#results').removeClass('hide').fadeIn(1500);
-			var usersTable = $('#listaEventos').dataTable({
-				"oLanguage" : {
-					"sUrl" : "{{ urlFor('home')}}js/dataTables.spanish.txt"
-				},
-				"fnDrawCallback" : function() {
-				},
-				"sDom" : "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
-				"sPaginationType" : "bootstrap"
-			});
-
-			$('#newUserForm').isHappy({
-				fields : {
-					'#usuario' : {
-						required : true,
-						message : 'Alias de acceso necesario'
-					},
-					'#email' : {
-						required : true,
-						message : 'Email válido necesario',
-						test : happy.email
-					},
-					'#rol' : {
-						required : true,
-						message : 'Especifica un rol',
-						arg : 0,
-						test : happy.nequal
-					}
-				}
-			});
-
-		});
-	}); 
+    head.ready(function() {
+        $(function() {
+            $('#results').removeClass('hide').fadeIn(1500);
+            var usersTable = $('#eventsTbl').dataTable({
+                "oLanguage" : {
+                    "sUrl" : "{{ urlFor('home')}}js/dataTables.spanish.txt"
+                },
+                "fnDrawCallback" : function() {
+                },
+                "sDom" : "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+                "sPaginationType" : "bootstrap"
+            });
+        });
+    });
 </script>
 {% endblock %}

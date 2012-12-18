@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+	<br />
+
+<legend align="center"" ">
+	<strong> Gestor de Publicaciones</strong>
+</legend>
+
+<div class="row">
+
+	<div class="span6">
+
+		<a class="btn btn-primary" data-toggle="modal" href="#modNuevoLibro"><i class="icon-plus-sign"></i> Libro</a>
+		<a class="btn btn-primary" data-toggle="modal" href="#modNuevoTrabajo"><i class="icon-plus-sign"></i> Trabajos</a>
+		<a class="btn btn-primary" data-toggle="modal" href="#modNuevaMemoria"><i class="icon-plus-sign"></i> Memorias</a>
+		<a class="btn btn-primary" data-toggle="modal" href="#modNuevaRevista"><i class="icon-plus-sign"></i> Revistas</a>
+
+	</div>
+
+</div>
+<br />
+<!-- AGREGAR PUBLICACIONES -->
+<ul class="nav nav-tabs" id="myTab">
+	<li class="active">
+		<a  href="#libro" data-toggle="tab">Libros</a>
+	</li>
+	<li>
+		<a href="#trabajo" data-toggle="tab">Trabajos</a>
+	</li>
+	<li>
+		<a href="#memoria" data-toggle="tab">Memorias</a>
+	</li>
+	<li>
+		<a href="#revista" data-toggle="tab">Revistas</a>
+	</li>
+
+</ul>
+
+<div class="tab-content">
+	<br />
+	<!-- TAB MEMORIAS -->
+	<div class="tab-pane fade" id="memoria" >
+
+		<div class="row">
+			<div class="span11">
+
+				<table class="table table-bordered table-condensed table-striped" id="memorias" >
+					<thead>
+						<tr>
+							<th class="ziseTable">#</th>
+							<th class="ziseTable">Titulo</th>
+							<th class="ziseTable">Coautor/s</th>
+							<th class="ziseTable">Lugar de Publicacion</th>
+							<th class="ziseTable">Fecha de publicación</th>
+							<th class="ziseTable">Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if publicaciones is defined %}
+						{% if publicaciones|length > 0  %}
+						{% for publicacion in publicaciones %}
+						{% if publicacion.tipo=="Memoria" %}
+						<tr>
+							<td align="center">{{ loop.index }}</td>
+							<td align="center">{{ publicacion.nombre}}</td>
+							<td align="center">{{ publicacion.coautores }}</td>
+							<td align="center">{{ publicacion.evento }}</td>
+							<td align="center">{{ publicacion.fecha_publicacion }}</td>
+							<td align="center">
+								<div class="btn-group">
+									<a class="btn btn-success" rel="tooltip" title="Editar" data-toggle="modal" href="#modEditPublicacion{{ publicacion.id }}">
+										<i class="icon-edit"></i>
+									</a>
+									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ publicacion.id }}">
+										<i class="icon-trash"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+						{% endif %}
+						{% endfor %}
+						{% else %}
+						<tr>
+							<td></td>
+							<td colspan="4" align="center">No se encontraron resultados</td>
+							<td></td>
+						</tr>
+						{% endif %}
+						{% endif %}
+					</tbody>
+
+				</table>
+
+			</div>
+		</div>
+
+		<script>
+			head.ready(function() {
+				$(function() {
+					//$('#waiting').addClass('hide').fadeOut(2500);
+					$('#results').removeClass('hide').fadeIn(1500);
+					var usersTable = $('#memorias').dataTable({
+						"oLanguage" : {
+							"sUrl" : "{{ urlFor('home')}}js/dataTables.spanish.txt"
+						},
+						"fnDrawCallback" : function() {
+						},
+						"sDom" : "<'row'<'span8'lf>r>t<'row'<'span3'i><'span4'p>>",
+						"sPaginationType" : "bootstrap"
+					});
+				});
+			});
+		</script>
+
+	</div>
+
+	<!-- TAB REVISTAS -->
+	<div class="tab-pane fade" id="revista" >
+		<div class="row">
+			<div class="span11">
+
+				<table class="table table-bordered table-condensed table-striped" id="revistas" >
+					<thead>
+						<tr>
+							<th class="ziseTable">#</th>
+							<th class="ziseTable">Titulo</th>
+							<th class="ziseTable">Coautor/s</th>
+							<th class="ziseTable">Revista de Publicacion</th>
+							<th class="ziseTable">Tipo de Revista</th>
+							<th class="ziseTable">Fecha de publicación</th>
+							<th class="ziseTable">Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if publicaciones is defined %}
+						{% if publicaciones|length > 0  %}
+						{% for publicacion in publicaciones %}
+						{% if publicacion.tipo=="Revista" %}
+						<tr>
+							<td align="center">{{ loop.index }}</td>
+							<td align="center">{{ publicacion.nombre}}</td>
+							<td align="center">{{ publicacion.coautores }}</td>
+							<td align="center">{{ publicacion.evento }}</td>
+							<td align="center">{{ publicacion.tipo_trabajo }}</td>
+							<td align="center">{{ publicacion.fecha_publicacion }}</td>
+							<td align="center">
+								<div class="btn-group">
+									<a class="btn btn-success" rel="tooltip" title="Editar" data-toggle="modal" href="#modEditPublicacion{{ publicacion.id }}">
+										<i class="icon-edit"></i>
+									</a>
+									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ publicacion.id }}">
+										<i class="icon-trash"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+						{% endif %}
+						{% endfor %}
+						{% else %}
+						<tr>
+							<td></td>
+							<td colspan="4" align="center">No se encontraron resultados</td>
+							<td></td>
+						</tr>
+						{% endif %}
+						{% endif %}
+					</tbody>
+
+				</table>
+
+			</div>
+		</div>
+
+		<script>
+			head.ready(function() {
+				$(function() {
+					//$('#waiting').addClass('hide').fadeOut(2500);
+					$('#results').removeClass('hide').fadeIn(1500);
+					var usersTable = $('#revistas').dataTable({
+						"oLanguage" : {
+							"sUrl" : "{{ urlFor('home')}}js/dataTables.spanish.txt"
+						},
+						"fnDrawCallback" : function() {
+						},
+						"sDom" : "<'row'<'span8'lf>r>t<'row'<'span3'i><'span4'p>>",
+						"sPaginationType" : "bootstrap"
+					});
+				});
+			});
+		</script>
+	</div>
+
+	<!-- TAB Libros-->
+	<div class="tab-pane fade active in" id="libro" >
+		<div class="row">
+			<div class="span11">
+
+				<table class="table table-bordered table-condensed table-striped" id="libros" >
+					<thead>
+						<tr>
+							<th class="ziseTable">#</th>
+							<th class="ziseTable">Titulo</th>
+							<th class="ziseTable">Coautor/s</th>
+							<th class="ziseTable">Editorial</th>
+							<th class="ziseTable">ISBN</th>
+							<th class="ziseTable">Fecha de publicación</th>
+							<th class="ziseTable">Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if publicaciones is defined %}
+						{% if publicaciones|length > 0  %}
+						{% for publicacion in publicaciones %}
+						{% if publicacion.tipo=="Libro" %}
+						<tr>
+							<td align="center">{{ loop.index }}</td>
+							<td align="center">{{ publicacion.nombre}}</td>
+							<td align="center">{{ publicacion.coautores }}</td>
+							<td align="center">{{ publicacion.editorial }}</td>
+							<td align="center">{{ publicacion.isbn }}</td>
+							<td align="center">{{ publicacion.fecha_publicacion }}</td>
+							<td align="center">
+								<div class="btn-group">
+									<a class="btn btn-success" rel="tooltip" title="Editar" data-toggle="modal" href="#modEditPublicacion{{ publicacion.id }}">
+										<i class="icon-edit"></i>
+									</a>
+									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ publicacion.id }}">
+										<i class="icon-trash"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+						{% endif %}
+						{% endfor %}
+						{% else %}
+						<tr>
+							<td></td>
+							<td colspan="4" align="center">No se encontraron resultados</td>
+							<td></td>
+						</tr>
+						{% endif %}
+						{% endif %}
+					</tbody>
+
+				</table>
+
+			</div>
+		</div>
+
+		<script>
+			head.ready(function() {
+				$(function() {
+					//$('#waiting').addClass('hide').fadeOut(2500);
+					$('#results').removeClass('hide').fadeIn(1500);
+					var usersTable = $('#libros').dataTable({
+						"oLanguage" : {
+							"sUrl" : "{{ urlFor('home')}}js/dataTables.spanish.txt"
+						},
+						"fnDrawCallback" : function() {
+						},
+						"sDom" : "<'row'<'span8'lf>r>t<'row'<'span3'i><'span4'p>>",
+						"sPaginationType" : "bootstrap"
+					});
+				});
+			});
+		</script>
+	</div>
+
+	<!-- TAB trabajos-->
+	<div class="tab-pane fade" id="trabajo" >
+		<div class="row">
+			<div class="span11">
+
+				<table class="table table-bordered table-condensed table-striped" id="trabajos" >
+					<thead>
+						<tr>
+							<th class="ziseTable">#</th>
+							<th class="ziseTable">Titulo</th>
+							<th class="ziseTable">Coautor/s</th>
+							<th class="ziseTable">Nacionalidad</th>
+							<th class="ziseTable">Tipo de Trabajo</th>
+							<th class="ziseTable">Fecha de publicación</th>
+							<th class="ziseTable">Opciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if publicaciones is defined %}
+						{% if publicaciones|length > 0  %}
+						{% for publicacion in publicaciones %}
+						{% if publicacion.tipo=="Trabajo" %}
+						<tr>
+							<td align="center">{{ loop.index }}</td>
+							<td align="center">{{ publicacion.nombre}}</td>
+							<td align="center">{{ publicacion.coautores }}</td>
+							<td align="center">{{ publicacion.nacionalidad }}</td>
+							<td align="center">{{ publicacion.tipo_trabajo }}</td>
+							<td align="center">{{ publicacion.fecha_publicacion }}</td>
+							<td align="center">
+								<div class="btn-group">
+									<a class="btn btn-success" rel="tooltip" title="Editar" data-toggle="modal" href="#modEditPublicacion{{ publicacion.id }}">
+										<i class="icon-edit"></i>
+									</a>
+									<a class="btn btn-danger" rel="tooltip" title="Borrar" data-toggle="modal" href="#modconfirmacion{{ publicacion.id }}">
+										<i class="icon-trash"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+						{% endif %}
+						{% endfor %}
+						{% else %}
+						<tr>
+							<td></td>
+							<td colspan="4" align="center">No se encontraron resultados</td>
+							<td></td>
+						</tr>
+						{% endif %}
+						{% endif %}
+					</tbody>
+
+				</table>
+
+			</div>
+		</div>
+
+		<script>
+			head.ready(function() {
+				$(function() {
+					//$('#waiting').addClass('hide').fadeOut(2500);
+					$('#results').removeClass('hide').fadeIn(1500);
+					var usersTable = $('#trabajos').dataTable({
+						"oLanguage" : {
+							"sUrl" : "{{ urlFor('home')}}js/dataTables.spanish.txt"
+						},
+						"fnDrawCallback" : function() {
+						},
+						"sDom" : "<'row'<'span8'lf>r>t<'row'<'span3'i><'span4'p>>",
+						"sPaginationType" : "bootstrap"
+					});
+				});
+			});
+		</script>
+	</div>
+	<br />
+</div>
+</div>
+{% endblock %} 
