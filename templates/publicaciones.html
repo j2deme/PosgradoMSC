@@ -38,20 +38,7 @@
 						<tr>
 							<td align="center">{{ loop.index }}</td>
 							<td align="center">{{ memoria.nombre|default('') }}</td>
-							<td align="center">{% for autor in autores[ memoria.id ] %} 
-								
-								{% if autores[memoria.id]|length==0 %}
-									{{ autor }} 
-								{% else %}
-									{% if loop.index==(autores[memoria.id]|length)-1 %}
-										{{ autor }}&nbsp;y&nbsp; 
-									{% else %}
-										{% if loop.index==autores[memoria.id]|length %}
-											{{ autor }}.&nbsp; 
-										{% endif %}
-									{% endif %}
-								{% endif %}
-							{% endfor %}</td>
+							<td align="center">{{ memoria.coautores|default('') }}</td>
 							<td align="center">{{ memoria.evento|default('') }}</td>
 							<td align="center">{{ memoria.fecha_publicacion|default('') }}</td>
 						</tr>
@@ -95,20 +82,7 @@
 						<tr>
 							<td align="center">{{ loop.index }}</td>
 							<td align="center">{{ revista.nombre|default('') }}</td>
-							<td align="center">{% for autor in autores[ revista.id ] %} 
-								
-								{% if autores[revista.id]|length==0 %}
-									{{ autor }} 
-								{% else %}
-									{% if loop.index==(autores[revista.id]|length)-1 %}
-										{{ autor }}&nbsp;y&nbsp; 
-									{% else %}
-										{% if loop.index==autores[revista.id]|length %}
-											{{ autor }}.&nbsp; 
-										{% endif %}
-									{% endif %}
-								{% endif %}
-							{% endfor %}</td>
+							<td align="center">{{ revista.coautores|default('') }}</td>
 							<td align="center">{{ revista.evento|default('') }}</td>
 							<td align="center">{{ revista.tipo_trabajo|default('') }}</td>
 							<td align="center">{{ revista.fecha_publicacion|default('') }}</td>
@@ -154,20 +128,7 @@
 						<tr>
 							<td align="center">{{ loop.index }}</td>
 							<td align="center">{{ libro.nombre|default('') }}</td>
-							<td align="center">{% for autor in autores[ libro.id ] %} 
-								
-								{% if autores[libro.id]|length==0 %}
-									{{ autor }} 
-								{% else %}
-									{% if loop.index==(autores[libro.id]|length)-1 %}
-										{{ autor }}&nbsp;y&nbsp; 
-									{% else %}
-										{% if loop.index==autores[libro.id]|length %}
-											{{ autor }}.&nbsp; 
-										{% endif %}
-									{% endif %}
-								{% endif %}
-							{% endfor %}</td>
+							<td align="center">{{ libro.coautores|default('') }}</td>
 							<td align="center">{{ libro.editorial|default('') }}</td>
 							<td align="center">{{ libro.isbn|default('') }}</td>
 							<td align="center">{{ libro.fecha_publicacion|default('') }}</td>
@@ -214,20 +175,7 @@
 						<tr>
 							<td align="center">{{ loop.index }}</td>
 							<td align="center">{{ trabajo.nombre|default('') }}</td>
-							<td align="center">{% for autor in autores[ trabajo.id ] %} 
-								
-								{% if autores[trabajo.id]|length==0 %}
-									{{ autor }} 
-								{% else %}
-									{% if loop.index==(autores[trabajo.id]|length)-1 %}
-										{{ autor }}&nbsp;y&nbsp; 
-									{% else %}
-										{% if loop.index==autores[trabajo.id]|length %}
-											{{ autor }}.&nbsp; 
-										{% endif %}
-									{% endif %}
-								{% endif %}
-							{% endfor %}</td>
+							<td align="center">{{ trabajo.coautores|default('') }}</td>
 							<td align="center">{{ trabajo.nacionalidad|default('') }}</td>
 							<td align="center">{{ trabajo.tipo_trabajo|default('') }}</td>
 							<td align="center">{{ trabajo.fecha_publicacion|default('') }}</td>

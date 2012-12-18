@@ -147,33 +147,20 @@ $app -> get('/productividad-academica/', function() use ($app) {
 
 $app -> get('/publicaciones/', function() use ($app) {
 	$data['user'] = isAllowed(array("Docente", "Aspirante", "Alumno", "Administrador"), false);
-	$rol = Rol::find_by_nombre('Docente', array('select' => 'id'));
-	$ur = UsuariosRoles::find_all_by_rol_id($rol -> id);
-	$ids = array();
-	foreach ($ur as $u) {
-		$ids[] = $u -> usuario_id;
-	}
-	//$data['usuarios'] = $usuarios = Usuario::find($ids, array('include' => array('personal')));
-	$data['usuarios'] = $usuarios = Publicacion::find('all', array('include' => array('upu')));
-	ladybug_dump_die($usuarios);
+	
+	$publicaciones = Publicacion::find('all');
+	ladybug_dump($usuarios);
 
-	//$data['usuarios'] = Rol::find_by_nombre('Docente', array('include' => array('ur'=>array('usuario'=>array('personal')))));
+	
 
 	$libros = array();
 	$trabajos = array();
 	$revistas = array();
 	$memorias = array();
 	$arr=array();
-	
-	if (is_array($usuarios)) {
-		foreach ($usuarios as $us) {
-				
-				$personal[] = $us->personal;
-			
-			if (is_array($us -> publicaciones)) {
-				$autores=array();
-				foreach ($us->publicaciones as $pub) {
-					if ($pub -> tipo=='Libro') {
+	if (is_array($publicaciones)) {
+		foreach ($publicaciones as $pub) {
+			if ($pub -> tipo=='Libro') {
 						$libros[] = $pub;
 
 					} else {
@@ -193,117 +180,14 @@ $app -> get('/publicaciones/', function() use ($app) {
 							}
 
 						}
-
-					}
-					$autores[]=$usuarios->personal->nombre." ".$usuarios->personal->paterno." ".$usuarios->personal->materno;
-				$autores[]=$pub->coautores;
-				natcasesort($autores);
-				}
-				$arr[$pub->id]=$autores;
-			} else {
-				$autores=array();
-				if ($pub -> tipo == 'Libro') {
-					$libros[] = $pub;
-
-				} else {
-					if ($pub -> tipo == 'Trabajo') {
-						$trabajos[] = $pub;
-
-					} else {
-						if ($pub -> tipo == 'Revista') {
-							$revistas[] = $pub;
-
-						} else {
-							if ($pub -> tipo == 'Memoria') {
-								$memorias[] = $pub;
-
-							}
-
-						}
-
-					}
-
-				}
-				$autores[]=$usuarios->personal->nombre." ".$usuarios->personal->paterno." ".$usuarios->personal->materno;
-				$autores[]=$pub->coautores;
-				natcasesort($autores);
-				$arr[$pub->id]=$autores;
-			}
-
 		}
-			
-	} else {
-
-
-		if (is_array($usuarios -> publicaciones)) {
-			foreach ($usuarios->publicaciones as $pub) {
-					$autores=array();
-				if ($pub->tipo == 'Libro') {
-					$libros[] = $pub;
-
-				} else {
-					if ($pub -> tipo == 'Trabajo') {
-						$trabajos[] = $pub;
-
-					} else {
-						if ($pub -> tipo == 'Revista') {
-							$revistas[] = $pub;
-
-						} else {
-							if ($pub -> tipo == 'Memoria') {
-								$memorias[] = $pub;
-
-							}
-
-						}
-
-					}
-
-				}
-				//ladybug_dump_die($libros);
-				$autores[]=$usuarios->personal->nombre." ".$usuarios->personal->paterno." ".$usuarios->personal->materno;
-				$autores[]=$pub->coautores;
-				natcasesort($autores);
-				$arr[$pub->id]=$autores;
-			}
-			//ladybug_dump_die($libros);
-		} else {
-
-			$autores=array();
-			if ($pub -> tipo == 'Libro') {
-				$libros[] = $usuarios -> publicaciones;
-
-			} else {
-				if ($pub -> tipo == 'Trabajo') {
-					$trabajos[] = $usuarios -> publicaciones;
-
-				} else {
-					if ($pub -> tipo == 'Revista') {
-						$revistas[] = $usuarios -> publicaciones;
-
-					} else {
-						if ($pub -> tipo == 'Memoria') {
-							$memorias[] = $usuarios -> publicaciones;
-
-						}
-
-					}
-
-				}
-
-			}
-			$autores[]=$usuarios->personal->nombre." ".$usuarios->personal->paterno." ".$usuarios->personal->materno;
-				$autores[]=$pub->coautores;
-				natcasesort($autores);
-				$arr[$pub->id]=$autores;
 		}
 	}
 	$data['libros'] = $libros;
 	$data['trabajos'] = $trabajos;
 	$data['revistas'] = $revistas;
 	$data['memorias'] = $memorias;
-	$data['autores'] = $arr;
-	//ladybug_dump_die($data['autores']);
+	//ladybug_dump_die($data);
 	$app -> render('publicaciones.html', $data);
 }) -> name('publicaciones');
 
