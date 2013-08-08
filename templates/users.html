@@ -30,8 +30,8 @@
 						{% for usuario in usuarios %}
 						<tr>
 							<td>{{ loop.index }}</td>
-							<td>{{ usuario.personal.nombre~" "~usuario.personal.paterno~" "~usuario.personal.materno}}</td>
-							<td>{{ usuario.ur[0].rol.nombre }}</td>
+							<td>{{ usuario.personal.nombre|default('')~" "~usuario.personal.paterno|default('')~" "~usuario.personal.materno|default('') }}</td>
+							<td>{{ usuario.ur[0].rol.nombre|default('') }}</td>
 							<td>
 								{% if usuario.activo == 1%}
 								Activo
@@ -73,12 +73,12 @@
     	<div class="control-group">
       		<label class="control-label" for="email">Email</label>
       		<div class="controls">
-        		<input type="email" class="input-xlarge" id="email-edit" name="email-edit" value="{{ usuario.contacto.email }}">
+        		<input type="email" class="input-xlarge" id="email-edit" name="email-edit" value="{{ usuario.contacto.email|default('') }}">
       		</div>
     	</div>
     	<div class="control-group">
       		<label class="control-label" for="password">
-      			Contraseña 
+      			Contraseña
       			<a data-content="Si se especifica un nuevo password sobreescribira al anterior" rel="popover" data-original-title="Atención" class="mute">
       				<i class="icon-info-sign"> </i>
       			</a>
@@ -93,7 +93,7 @@
       			<select id="rol-edit" name="rol-edit" class="input-xlarge">
       				<option value="0">Selecciona una opción</option>
       				{% for rol in roles %}
-      				<option value="{{ rol.id }}" {% if rol.id == usuario.ur[0].rol.id %} selected {% endif %}>{{ rol.nombre }}</option>
+      				<option value="{{ rol.id }}" {% if rol.id == usuario.ur[0].rol.id|default('') %} selected {% endif %}>{{ rol.nombre }}</option>
       				{% endfor %}
               	</select>
       		</div>
@@ -164,7 +164,6 @@
 <script>
 head.ready(function(){
 	$(function(){
-		//$('#waiting').addClass('hide').fadeOut(2500);
 		$('#results').fadeIn(1500);
 		var usersTable = $('#users-table').dataTable({
 			"oLanguage": {
@@ -175,8 +174,8 @@ head.ready(function(){
 			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
 			"sPaginationType": "bootstrap"
 		});
-		
-		$('form#newUserForm').isHappy({
+
+/*		$('form#newUserForm').isHappy({
 			fields: {
 				'#usuario':{
 					required: true,
@@ -194,21 +193,7 @@ head.ready(function(){
 					test: happy.nequal
 				}
 			}
-		});
-		
-		/*NO COPIAR == EN PRUEBAS*/
-/*		$('#newUserForma').handleForm({
-			closeModal: true,
-			onSuccess: function(){
-				usersTable.fnAddData([
-					usersTable.fnGetData().length + 1,
-					"",
-					$('#rol').find(":selected").text(),
-					""
-				]);
-			}
 		});*/
-		/*NO COPIAR == EN PRUEBAS*/
 	});
 });
 </script>

@@ -6,11 +6,6 @@
 			<div class="span2">
 				<h2>Aspirantes</h2>
 			</div>
-			{#<div class="span2">
-				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
-					<i class="icon-user icon-white"></i> Nuevo Usuario
-				</a>
-			</div>#}
 		</div>
 		<div class="row">
 			<div class="span11">
@@ -20,8 +15,9 @@
 						<tr>
 							<th>#</th>
 							<th>Nombre</th>
-							<th>Creado</th>
-							<th>Actualizado</th>
+							<th>Apellido paterno</th>
+							<th>Apellido materno</th>
+							<th>Ultima actividad</th>
 							<th>Opciones</th>
 						</tr>
 					</thead>
@@ -30,8 +26,9 @@
 						{% for aspirante in aspirantes %}
 						<tr>
 							<td>{{ loop.index }}</td>
-							<td>{{ aspirante.personal.nombre~" "~aspirante.personal.paterno~" "~aspirante.personal.materno}}</td>
-							<td>{{ aspirante.creado|date("d/m/Y") }}</td>
+							<td>{{ aspirante.personal.nombre }}</td>
+							<td>{{ aspirante.personal.paterno }}</td>
+							<td>{{ aspirante.personal.materno }}</td>
 							<td>{{ aspirante.actualizado|date("d/m/Y") }}</td>
 							<td>
 								{#<div class="btn-group">#}
@@ -47,11 +44,12 @@
 						{% endfor %}
 					{% else %}
 							<tr>
-								<td> </td>
+								<td></td>
 								<td>No existen aspirantes</td>
-								<td> </td>
-								<td> </td>
-								<td> </td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
 							</tr>
 					{% endif %}
 					</tbody>

@@ -4,7 +4,7 @@ $app->get('/admin/estadisticas/', function() use($app){
 		array("name" => "Panel de Control","alias" => "admin"),
 		array("name" => "Estadísticas", "alias" => "admin-estadisticas")
 	);
-	$data['user'] = isAllowed("Administrador", false);	
+	$data['user'] = isAllowed("Administrador", false);
 	$app->render('statistics.html',$data);
 })->name('admin-estadisticas');
 
@@ -52,9 +52,9 @@ $app->get('/graficas/matriculacion-anual/(:slug)', function($slug) use($app){
  	$data->addPoints($years,"Labels");
  	$data->setSerieDescription("Labels","Años");
  	$data->setAbscissa("Labels");
-	
+
  	$graph = new pImage($m->iw,$m->ih,$data);
- 	$graph->Antialias = true; 
+ 	$graph->Antialias = true;
  	$graph->setFontProperties(array("FontName"=>$forgotte,"FontSize"=>11));
  	$graph->drawText($m->tx,$m->ty,"Matriculación Anual",array("FontSize"=>$titleSize,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
 	$graph->setFontProperties(array("FontName"=>$calibri,"FontSize"=>$axisSize));
@@ -64,11 +64,11 @@ $app->get('/graficas/matriculacion-anual/(:slug)', function($slug) use($app){
 //	$graph->setFontProperties(array("FontName"=>$pfarma5,"FontSize"=>$axisSize));
  	$graph->drawLegend($m->lx,$m->ly,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
 	$graph->drawLineChart();
-	$graph->drawPlotChart(array("PlotBorder"=>true,"PlotSize"=>1,"BorderSize"=>1,"Surrounding"=>-60,"BorderAlpha"=>80)); 
+	$graph->drawPlotChart(array("PlotBorder"=>true,"PlotSize"=>1,"BorderSize"=>1,"Surrounding"=>-60,"BorderAlpha"=>80));
  	$graph->stroke();
 })->name('g-matriculacion');
 
-#TODO Estadistica Anual de Genero por roles 
+#TODO Estadistica Anual de Genero por roles
 $app->get('/graficas/estadistica-genero/(:slug)', function($slug) use($app){
 	//Settings
 	$forgotte = __DIR__."/vendor/pChart/fonts/Forgotte.ttf";
@@ -103,7 +103,7 @@ $app->get('/graficas/estadistica-genero/(:slug)', function($slug) use($app){
 		$exalumnos[] = $g->exalumnos;
 		$exalumnas[] = $g->exalumnas;
 	}
-	for ($i=2011; $i <= 2015; $i++) { 
+	for ($i=2011; $i <= 2015; $i++) {
 		$years[] = $i;
 		$candidatos[] = abs($faker->randomDigit);
 		$candidatas[] = abs($faker->randomDigit);
@@ -124,16 +124,13 @@ $app->get('/graficas/estadistica-genero/(:slug)', function($slug) use($app){
 	$data->addPoints($exalumnos,"Egresados");
 	$data->addPoints($exalumnas,"Egresadas");
 	$pink = array("R"=>250,"G"=>54,"B"=>100,"Alpha"=>100);
-//	$pink = array("R"=>225,"G"=>35,"B"=>35,"Alpha"=>100);
 	$blue = array("R"=>41,"G"=>138,"B"=>238,"Alpha"=>100);
-//	$data->setPalette(array('Candidatos','Aceptados','Alumnos','Egresados'),$blue);
-//	$data->setPalette(array('Candidatas','Aceptadas','Alumnas','Egresadas'),$pink);
 //	$data->setAxisName(0,"Relación por Genero");
 	$data->addPoints($years,"Labels");
 	$data->setSerieDescription("Labels","Años");
 	$data->setAbscissa("Labels");
 	$data->setAxisDisplay(0,AXIS_FORMAT_CUSTOM,"YAxisFormat");
-	
+
 	$graph = new pImage($m->iw, $m->ih, $data);
 	$graph->Antialias = true;
  	//$picture->drawRectangle(0,0,$m['rw'],$m['rh'],array("R"=>0,"G"=>0,"B"=>0));
@@ -142,7 +139,7 @@ $app->get('/graficas/estadistica-genero/(:slug)', function($slug) use($app){
 //	$graph->drawScale(array("Floating"=>true,"GridR"=>200,"GridG"=>200,"GridB"=>200,"DrawSubTicks"=>true,"CycleBackground"=>true,"Mode"=>SCALE_MODE_ADDALL));
 	$graph->drawScale($scaleSettings);
 	$graph->setShadow(false);
-	$graph->drawBarChart(array("DisplayValues"=>true,"DisplayColor"=>DISPLAY_AUTO,"Gradient"=>false,"Surrounding"=>10,"InnerSurrounding"=>10,"RecordImageMap"=>TRUE));
+	$graph->drawBarChart(array("DisplayValues"=>true, "DisplayColor"=>DISPLAY_AUTO, "Gradient"=>false, "Surrounding"=>10, "InnerSurrounding"=>10, "RecordImageMap"=>TRUE));
 //	$graph->writeLabel(array("Hombres","Mujeres"),1,array("DrawVerticalLine"=>TRUE));
 	$graph->drawLegend($m->lx, $m->ly,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
 	$graph->stroke();
@@ -181,7 +178,7 @@ $app->get('/graficas/estadistica-genero-rol/(:year)', function($year) use($app){
 	$data = new pData();
 	$data->addPoints($hombres,"Hombres");
 	$data->addPoints($mujeres,"Mujeres");
-	
+
 	$pink = array("R"=>250,"G"=>54,"B"=>100,"Alpha"=>100);
 	$blue = array("R"=>41,"G"=>138,"B"=>238,"Alpha"=>100);
 	$data->setPalette('Hombres',$blue);
@@ -190,7 +187,7 @@ $app->get('/graficas/estadistica-genero-rol/(:year)', function($year) use($app){
 	$data->setSerieDescription("roles","Roles");
 	$data->setAbscissa("roles");
 	$data->setAxisDisplay(0,AXIS_FORMAT_CUSTOM,"YAxisFormat");
-	
+
 	$graph = new pImage($m->iw, $m->ih, $data);
 	$graph->Antialias = true;
  	$graph->setFontProperties(array("FontName"=>$forgotte,"FontSize"=>11));
@@ -205,6 +202,7 @@ $app->get('/graficas/estadistica-genero-rol/(:year)', function($year) use($app){
 	$graph->stroke();
 })->name('g-genero-rol-anual');
 
+#XXX Estadistica de Procedencia
 $app->get('/graficas/procedencia/(:slug)', function($slug) use($app){
 	//Settings
 	$forgotte = __DIR__."/vendor/pChart/fonts/Forgotte.ttf";
@@ -225,65 +223,67 @@ $app->get('/graficas/procedencia/(:slug)', function($slug) use($app){
 	$m->tx = 150;//Title X
 	$m->ty = 35;//Title Y
 	$faker = Faker\Factory::create();
-	$users = Usuario::all(array('include'=>array('personal')));
+	$users = Usuario::find('all',array('include'=>array('personal')));
+//    $users = Usuario::find('all');
 	$ids = array();
-/*	foreach ($users as $u) {
+	foreach ($users as $u) {
 		$proc = $u->personal->procedencia;
 		if(isset($ids[$proc])){
 			$ids[$proc]++;
 		} else {
 			$ids[$proc] = 1;
 		}
-	}*/
-	for ($i=1; $i <= 10; $i++) { 
+	}
+/*	for ($i=1; $i <= 10; $i++) {
 		$proc = abs($faker->randomDigit);
 		if(isset($ids[$proc])){
 			$ids[$proc]++;
 		} else {
 			$ids[$proc] = 1;
 		}
-	}
-	sort($ids);
+	}*/
+	arsort($ids);
 	$count = count($ids);
 	$names = array();
-	for ($i=0; $i < $count; $i++) { 
-		$names[] = $faker->country();
+
+	foreach ($ids as $key => $value) {
+		$localidad = Localidad::find($key);
+		$municipio_id = $localidad->municipio;
+		$municipio = Municipio::find($municipio_id);
+        $estado_id = $municipio->estado;
+        $estado = Estado::find($estado_id);
+        $names[] = $localidad->nombre.",".$estado->abr;
 	}
-//	ladybug_dump($ids);
-	
+
+    #TODO It works!
+/*	for ($i=0; $i < $count; $i++) {
+		$names[] = $faker->country();
+	}*/
+
 	$data = new pData();
 	$data->addPoints($ids,"Procedencia");
 	$data->setSerieDescription("Procedencia","Procedencia de los aspirantes");
-	//$data->addPoints(array("A","B","C","D","E","F","G"),"Labels");
 	$data->addPoints($names,"Labels");
- 	$data->setAbscissa("Labels"); 
-	
-	$pink = array("R"=>250,"G"=>54,"B"=>100,"Alpha"=>100);
-	$blue = array("R"=>41,"G"=>138,"B"=>238,"Alpha"=>100);
-	$data->setPalette('Hombres',$blue);
-	$data->setPalette('Mujeres',$pink);
-		
+ 	$data->setAbscissa("Labels");
+
+#	$pink = array("R"=>250,"G"=>54,"B"=>100,"Alpha"=>100);
+#	$blue = array("R"=>41,"G"=>138,"B"=>238,"Alpha"=>100);
+#	$data->setPalette('Hombres',$blue);
+#	$data->setPalette('Mujeres',$pink);
+
 	$graph = new pImage($m->iw, $m->ih, $data,true);
 	$graph->Antialias = true;
  	$graph->setFontProperties(array("FontName"=>$forgotte,"FontSize"=>11));
- 	$graph->drawText($m->tx,$m->ty,"Procedencia de los Aspirantes",array("FontSize"=>$titleSize,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));	
+ 	$graph->drawText($m->tx,$m->ty,"Procedencia de los Aspirantes",array("FontSize"=>$titleSize,"Align"=>TEXT_ALIGN_BOTTOMMIDDLE));
 	$graph->setFontProperties(array("FontName"=>$calibri,"FontSize"=>12));
- 	$graph->setShadow(true,array("X"=>2,"Y"=>2,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20)); 
- 	
+ 	$graph->setShadow(true,array("X"=>2,"Y"=>2,"R"=>0,"G"=>0,"B"=>0,"Alpha"=>20));
+
  	$pie = new pPie($graph,$data);
-// 	$pie->setSliceColor(0,array("R"=>143,"G"=>197,"B"=>0));
-// 	$pie->setSliceColor(1,array("R"=>97,"G"=>77,"B"=>63));
-// 	$pie->setSliceColor(2,array("R"=>97,"G"=>113,"B"=>63));
-//	$pie->draw3DPie($m->gx,$m->gy,array("WriteValues"=>TRUE,"DataGapAngle"=>5,"DataGapRadius"=>5,"Border"=>TRUE));
+# 	$pie->setSliceColor(0,array("R"=>143,"G"=>197,"B"=>0));
 	$pie->draw3DPie($m->gx,$m->gy,array("Radius"=>125,"WriteValues"=>true,"LabelStacked"=>TRUE,"DataGapAngle"=>5,"DataGapRadius"=>5,"Border"=>TRUE));
-//	$graph->setGraphArea($m->gx, $m->gy, $m->gw, $m->gh);
-//	$graph->drawScale(array("Floating"=>true,"GridR"=>200,"GridG"=>200,"GridB"=>200,"DrawSubTicks"=>true,"CycleBackground"=>true,"Mode"=>SCALE_MODE_ADDALL));
-//	$graph->setShadow(false);
-//	$graph->drawStackedBarChart(array("DisplayValues"=>true,"DisplayColor"=>DISPLAY_AUTO,"Gradient"=>true,"Surrounding"=>10,"InnerSurrounding"=>10));
 	$graph->setFontProperties(array("FontName"=>$calibri,"FontSize"=>8));
 	$pie->drawPieLegend($m->lx, $m->ly,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_VERTICAL));
-//	$graph->drawLegend($m->lx, $m->ly,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
-	$graph->stroke(); 
+	$graph->stroke();
 })->name('g-procedencia');
 
 function YAxisFormat($Value) { return(abs($Value)); }

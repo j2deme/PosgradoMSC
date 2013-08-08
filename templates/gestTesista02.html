@@ -1,281 +1,404 @@
-{% extends 'base.html' %}
+{% extends 'admin-base.html' %}
 {% block content %}
-<h3 align="center">Gestor de tesistas</h3>
+<div class="row">
+	
+	<legend align="center"><strong>Gestor de Tesistas</strong> </legend>
+	
+	<div class="row">
+		<div class="span12 offset1">
+			
+			<a class="btn btn-primary" data-toggle="modal" href="#modTesista">
+				<i class="icon-plus-sign"></i>
+				Nuevo tesista
+				</a>
+		</div>
+		
+	</div>
+	<div class="row">
+		<div class="span10 offset1">
+			<br />
+			<br />
+			
+			<table class="table table-striped table-bordered table-condensed" >
+		<thead>
+			<tr>
+				<th align="center" >#</th>
+				<th align="center" >Nombre Tesista</th>
+				<th align="center" >Titulo de Tesis</th>
+				<th align="center" >Generacion</th>
+				<th align="center" >Opciones</th>
+			</tr>
+		</thead>
+		{% if posgrados is defined%}
+		<tbody>
+			{% for  posgrado in posgrados %}
+			<tr>
+				<td>
+					{{ loop.index }}
+				</td>
+				<td>
+					{% if posgrado.usuario_id is defined %}
+						{% for datostesista in datostesistas %}
+							{% if  datostesista.id==posgrado.usuario_id %}
+								{{ datostesista.nombrecompleto|trim }}
+							{% endif %}
+						{% endfor %}
+					{% endif %}
+				</td>
+				<td>
+					{% if posgrado.nombre %}
+						{{ posgrado.nombre }}
+					{% endif %}
+				</td>
+				<td>
+					{% if posgrado.generacion %}
+						{{ posgrado.generacion }}
+					{% endif %}
+				</td>
+				<td>
+					<div class="btn-group">
+						
+						<a class="btn" data-toggle="modal" href="#modInfTesista{{ posgrado.usuario_id }}" rel="tooltip" title="Ver">
+						<i class="icon-eye-open"></i></a>
+					
+					<a class="btn btn-primary" data-toggle="modal" href="#modEditTesista{{ posgrado.usuario_id }}" rel="tooltip" title="Editar">
+					<i class="icon-edit"></i></a>
+					
+					<a class="btn" data-toggle="modal" href="#modDocTesis{{ posgrado.usuario_id }}" rel="tooltip" title="Adjuntar">
+					<i class="icon-paper-clip"></i>	
+					</a>
+					
+					<a class="btn btn-danger" data-toggle="modal" href="#modconfirmacion{{ posgrado.usuario_id }}" rel="tooltip" title="Borrar">
+						
+					<i class="icon-trash"></i></a>						
+					</div>
+				</td>
+			</tr>
+			{% endfor%}
+			
+		</tbody>
+		{% else %}
 
-<button class="btn-primary" style="width: 100px; height: 35px" data-toggle="modal" href="#modTesista">
-	Nuevo tesista
-</button>
-<br />
-<br />
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<th align="center" >#</th>
-			<th align="center" >Nombre Tesista</th>
-			<th align="center" >Titulo de Tesis</th>
-			<th align="center" >Generacion</th>
-			<th align="center" >Opciones</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>1</td>
-			<td>tesista</td>
-			<td> <!--a data-toggle="modal" href="#modDocTesis"-->Tesis<!--/a--> </td>
-			<td>20xx</td>
-			<td>
-				<a data-toggle="modal" href="#modInfTesista">ver</a> <!-- quitar ver incluirlo en la tabla-->
-				<a data-toggle="modal" href="#modEditTesista">editar</a>
-				<a>borrar</a>
-			</td>
-		</tr>
-
-	</tbody>
-</table>
-
-<!-- NUEVO TESISTA -->
-
-<div class="modal hide fade" id="modEditTesista">
-    <div class="modal-header">
-    	<h3>Editar Tesista</h3>
-    </div>
-    <div class="modal-body">
-    	<p>
-    		<form>
-<!--LINEA DE INVESTIGACION-->    			
-    		<div class="row">
-    			<div class="span2 offset2"><label for="lineaInv">Linea de investigacion</label> 
-    				<select id="lineaInv" name="lineaInv">Linea de investigacion
-    					<option>Ingenieria de software</option>
-    				</select>  		
-    			</div>
-    		</div>
-    		
-<!--TESISTA-->    		
-    		<div class="row">
-    			<div class="span2 offset2"><label for="tesista"> Tesista</label>
-    				<select id="tesista" name="tesista"> Elija tesista
-    							<option>Alumno1</option>
-    							<option>Alumno2</option>
-    				</select>
-    			</div>
-    		</div>
-    		
-<!--NOMBRE DE ASESOR DE TESIS-->    		
-    		<div class="row">
-    			<div class="span2 offset2"><label for="nombreAsesor">Asesor de tesis </label>
-    				<select id="nombreAsesor" name="nombreAsesor"> Elija asesor de tesis
-    							<option>Docente 1</option>
-    							<option>Docente 2</option>
-    				</select>
-    			</div>
-    		</div>    		
-
-<!--TITULO DE TESIS-->
-    		<div class="row">
-    			<div class="span2 offset2"><label for="nameTesis">Titulo de tesis </label>
-    				<input id="nameTesis" name="nameTesis" class="span2" size="50" type="text">
-    			</div>
-    		</div>
-
-<!--FECHA DE INGRESO-->    		
-    		<div class="row">
-    			<div class="span4 offset2">
-    			<label for="ingreso">Fecha de Ingreso:</label>
-    				<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-    					<input id="ingreso" name="ingreso" class="span2 datepicker" size="16" type="text" value="12-02-2012">
-    					<span class="add-on datepicker"><i class="icon-caledar"></i></span>
-    				</div>
-           		</div>
-    		</div> 
-    		
-<!--FECHA DE FIN DE CURSO-->
-    		<div class="row">
-    			<div class="span4 offset2">
-    			<label for="finCur">Fecha de fin de curso:</label>
-    				<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-    					<input id="finCur" name="finCur" class="span2 datepicker" size="16" type="text" value="12-02-2012">
-    					<span class="add-on datepicker"><i class="icon-clendar"></i></span>
-    				</div>
-           		</div>
-    		</div> 
-    		
-<!--GENERACION-->
-    		<div class="row">
-    			<div class="span2 offset2"><label for="generacion">Generacion </label>
-    				<input id="generacion" name="generacion" class="span2" size="50" type="text">
-    			</div>
-    		</div>     		
-    		    		
-<!--AGREGAR DOCUMENTO DE TESIS-->    		
-    		<div class="row">
-    			<div class="span2 offset2"><label for="tituloTesis">Documento de tesis</label> 
-    				 
-    				 	<form action="subirArchivo.php" method="post" enctype="multipart/form-data" name="form"> 
-      						<input name="archivo" type="file" id="archivo" />       						
-    				 	</form>
-    				
-    			</div>
-    		</div>   		
-    		
-<!--AGREGAR EXPOSICION DE TESIS-->    		
-    		<div class="row">
-    			<div class="span2 offset2"><label for="exposicionTesis">Exposicion de tesis</label> 
-    				 <form action="subirArchivo.php" method="post" enctype="multipart/form-data" name="form"> 
-      						<input name="archivo" type="file" id="archivo" />       						
-    				 </form>
-    			</div>
-    		</div>    		   		    		      	    		
-    		    		  		
-            </form>
-    	</p>
-    </div>
-    <div class="modal-footer">
-    	<a href="#" class="btn" data-dismiss="modal">Cancelar</a>
-    	<a href="#" class="btn btn-primary">Guardar</a>
-    </div>
+		<tbody>
+			<tr>
+				<td colspan="5">
+					No tiene tesistas registrados
+				</td>
+				
+			</tr>
+			
+		</tbody>	
+	{% endif %}
+	</table>
+		</div>
+	</div>
 </div>
 
-<!-- EDITAR TESISTA-->
+<!-----------------------------------------Modales-----------------------------------------------------------------------------------_>
+	{% if posgrados is defined %}
+	{% for  posgrado in posgrados %}
+	<!-- Editar TESISTA -->
+	<div class="modal hide fade" id="modEditTesista{{ posgrado.usuario_id }}">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h3>Editar Tesista</h3>
+		</div>
+		<div class="modal-body">
+			<form class="form-horizontal" method="post" action="{{ urlFor('nuevo-tesista-post') }}">
+				<!--LINEA DE INVESTIGACION-->
+				<div class="row">
+					<input id="proc" name="proc" type="hidden" value="1" />
+					<div class="span2 offset1">
+						<label for="lineainv">Linea de investigacion</label>
+						<select id="lineainv" name="lineainv" class="chzn-select">
+							<option></option>
+							{% for linea in lineas %}
+							{% for  posgradon in posgrados %}
+							<option  {% if posgradon.linea== linea.id %} selected=""{% endif %} value="{{ linea.id }}" > {{ linea.nombre }} </option>
+							{% endfor %}
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<!--TESISTA-->
+				<div class="row">
+					<div class="span2 offset1">
+						<label for="tesista"> Tesista</label>
+						<input disabled="" id="tesist" name="tesist" value="{% if posgrado.usuario_id is defined %}{% for datostesista in datostesistas %}{% if  datostesista.id==posgrado.usuario_id %}{{ datostesista.nombrecompleto|trim }}{% endif %}{% endfor %}{% endif %}" 
+						type="text"/>
+						<input id="tesista" name="tesista" value="{% if posgrado.usuario_id is defined %}{% for datostesista in datostesistas %}{% if  datostesista.id==posgrado.usuario_id %}{{ posgrado.usuario_id }}{% endif %}{% endfor %}{% endif %}"
+						type="hidden"/>
+					</div>
+				</div>
 
-<div class="modal hide fade" id="modTesista">
-    <div class="modal-header">
-    	<h3>Nuevo Tesista</h3>
-    </div>
-    <div class="modal-body">
-    	<p>
-    		<form>
-    		<div class="row">
-    			<div class="span2 offset2"><label for="lineaInv">Linea de investigacion</label> 
-    				<select id="lineaInv" name="lineaInv">Linea de investigacion
-    					<option>Ingenieria de software</option>
-    				</select>  		
-    			</div>
-    		</div>
-    		
-    		<div class="row">
-    			<div class="span2 offset2"><label for="tesista"> Tesista</label>
-    				<input id="tesista" name="tesista" class="span2" size="50" type="text" 
-    				placeholder="Alumno1">
-    				
-    			</div>
-    		</div>
+				<!--TITULO DE TESIS-->
+				<div class="row">
+					<div class="span2 offset1">
+						<label for="nombreTesis">Titulo de tesis </label>
+						<input id="nombreTesis" name="nombreTesis" class="span2" size="50" type="text" value="{{ posgrado.nombre }}">
+					</div>
+				</div>
 
-    		<div class="row">
-    			<div class="span2 offset2"><label for="nameTesis">Titulo de tesis </label>
-    				<input id="nameTesis" name="nameTesis" class="span2" size="50" type="text"
-    				placeholder="Titulo de tesis bla bla bla tesis">
-    			</div>
-    		</div>
+				<!--FECHA DE ASIGNACION-->
+				<div class="row">
+					<div class="span4 offset1">
+						<label for="ingreso">Fecha de Asignacion:</label>
+						<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+							<input id="ingreso" name="ingreso" class="span2 datepicker" size="16" type="text" value="{{ posgrado.asignacion }}">
+							<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+				</div>
 
-    		<div class="row">
-    			<div class="span4 offset2">
-    			<label for="fechTitulacion">Fecha de titulacion:</label>
-    			<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-    				<input id="fechTitulacion" name="fechTitulacion" class="span2" size="16" type="text" value="12-02-2012">
-    				<span class="add-on datepicker"><i class="icon-th"></i></span>
-    			</div>
-           </div>
+				<!--FECHA DE FIN DE CURSO-->
+				<div class="row">
+					<div class="span4 offset1">
+						<label for="finCur">Fecha de Finalizacion Curso:</label>
+						<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+							<input id="finCur" name="finCur" class="span2 datepicker" size="16" type="text" value="{{ posgrado.fin }}">
+							<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+				</div>
 
-    		</div>
-    		
-    		<div class="row">
-    			<div class="span4 offset2">
-    			<label for="ingreso">Fecha de Ingreso:</label>
-    			<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
-    				<input id="ingreso" name="ingreso" class="span2" size="16" type="text" value="12-02-2012">
-    				<span class="add-on datepicker"><i class="icon-th"></i></span>
-    			</div>
-           </div>
+				<!--FECHA DE TITULACION-->
+				<div class="row">
+					<div class="span4 offset1">
+						<label for="ftitulacion">Fecha de Titulacion:</label>
+						<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+							<input id="ftitulacion" name="ftitulacion" class="span2 datepicker" size="16" type="text" value="{{ posgrado.titulacion }}">
+							<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+				</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" type="reset" data-dismiss="modal">
+				<i class="icon-remove-sign"></i>
+				Cancelar
+			</button>
+			<button class=" btn btn-primary" type="submit">
+				<i class="icon-save"></i>
+				Guardar
+			</button>
+		</div>
+		</form>
 
-    		</div>    		
-    		
-            </form>
-    	</p>
-    </div>
-    <div class="modal-footer">
-    	<a href="#" class="btn btn-danger" data-dismiss="modal">Cancelar</a> <!---->
-    	<button class="btn btn-primary" > Guardar</button>
-    </div>
-</div>
+	</div>
 
-<!-- VER INFORMACION DE TESISTA agregar a la tabla campos que faltan y kitar ver-->
+	<!-- VER INFORMACION DE TESISTA agregar a la tabla campos que faltan y kitar ver-->
 
-<div class="modal hide fade" id="modInfTesista">
-    <div class="modal-header">
-    	<h3>Nuevo Tesista</h3>
-    </div>
-    <div class="modal-body">
-    	<p>
-    		<form>
-    		<div class="row">
-    			<div class="span2 offset2"><label for="lineaInv">Linea de investigacion:</label> 
-    				xxxxxx 		
-    			</div>
-    		</div>
-    		
-    		<div class="row">
-    			<div class="span2 offset2"><label for="tesista"> Tesista:</label>
-    				Alumno 1
-    			</div>
-    		</div>
+	<div class="modal hide fade" id="modInfTesista{{ posgrado.usuario_id }}">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h3>Informacion Tesista</h3>
+		</div>
+		<div class="modal-body">
+			<p>
+				<dl class="dl-horizontal">
+					<dt title="Linea de Investigacion" rel="tooltip">
+						Linea:
+					</dt>
+					<dd>
+						{% if posgrado.linea is defined %}{% if posgrado.linea==1 %} Ingenieria de Software {% endif %}{% if posgrado.linea==2 %} Inteligencia Artificial {% endif %}{% endif %}
+					</dd>
+					<dt>
+						Tesista:
+					</dt>
+					<dd>
+						{% if posgrado.usuario_id is defined %}{% for datostesista in datostesistas %}{% if  datostesista.id==posgrado.usuario_id %}{{ datostesista.nombrecompleto }}{% endif %}{% endfor %}{% endif %}
+					</dd>
+					<dt >
+						Tesis:
+					</dt>
+					<dd>
+						{% if posgrado.nombre is defined %} {{ posgrado.nombre }} {% endif %}
+					</dd>
+					<dt title="Fecha de Asignacion de Tema de Tesis" rel="tooltip">
+						Asignacion:
+					</dt>
+					<dd>
+						{% if posgrado.asignacion is defined %} {{ posgrado.asignacion }} {% endif %}
+					</dd>
+					<dt title="Fecha de Terminacion de Curso" rel="tooltip">
+						Terminacion:
+					</dt>
+					<dd>
+						{% if posgrado.fin is defined %} {{ posgrado.fin }} {% endif %}
+					</dd>
+					<dt title="Fecha de Titulacion" rel="tooltip">
+						Titulacion:
+					</dt>
+					<dd>
+						{% if posgrado.titulacion is defined %} {{ posgrado.titulacion }} {% endif %}
+					</dd>
+					<dt>
+						Generacion:
+					</dt>
+					<dd>
+						{% if posgrado.generacion is defined %} {{ posgrado.generacion }} {% endif %}
+					</dd>
+				</dl>
+			</p>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal" >
+				<i class="icon-remove-sign"></i>
+				Cerrar
+				</a>
+			<!--    	<a href="#" class="btn btn-primary">Guardar</a>  -->
+		</div>
+	</div>
 
-    		<div class="row">
-    			<div class="span2 offset2"><label for="nameTesis">Titulo de tesis: </label>
-    				titulo tesis xxxxxx
-    			</div>
-    		</div>
+	<!-- AGREGAR DOCUMENTOS DE TESIS-->
+	<div class="modal hide fade" id="modDocTesis{{ posgrado.usuario_id }}">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h3>Documento de tesis</h3>
+		</div>
+		<div class="modal-body">
+			<p>
+				<form class="form-horizontal" method="post" action="{{ urlFor('nuevo-tesista-post') }}">
+					<div class="row">
+						<div class="span2 offset1">
+							<label>Documento de tesis</label>
 
-    		
-    		<div class="row">
-    			<div class="span4 offset2">
-    			<label for="ingreso">Fecha de Ingreso:</label>
-    			xx-xx-xxxx
-            </div>
+							<input name="doctesis" type="file" id="doctesis" />
 
-    		</div>    		
-    		
-            </form>
-    	</p>
-    </div>
-    <div class="modal-footer">
-    	<a href="#" class="btn" data-dismiss="modal" type="">Cerrar</a>
-<!--    	<a href="#" class="btn btn-primary">Guardar</a>  -->
-    </div>
-</div>
+						</div>
+					</div>
 
-<!-- AGREGAR DOCUMENTOS DE TESIS-->
-<div class="modal hide fade" id="modDocTesis">
-    <div class="modal-header">
-    	<h3>Documento de tesis</h3>
-    </div>
-    <div class="modal-body">
-    	<p>
-    		<form>
-    		<div class="row">
-    			<div class="span2 offset2"><label for="tituloTesis">Documento de tesis</label> 
-    				 
-    				 	<form action="subirArchivo.php" method="post" enctype="multipart/form-data" name="form"> 
-      						<input name="archivo" type="file" id="archivo" />       						
-    				 	</form>
-    				
-    			</div>
-    		</div>   		
-    		
-    		<div class="row">
-    			<div class="span2 offset2"><label for="exposicionTesis">Exposicion de tesis</label> 
-    				 <form action="subirArchivo.php" method="post" enctype="multipart/form-data" name="form"> 
-      						<input name="archivo" type="file" id="archivo" />       						
-    				 </form>
-    			</div>
-    		</div> 
-    		
-            </form>
-    	</p>
-    </div>
-    <div class="modal-footer">
-    	<a href="#" class="btn btn-danger" data-dismiss="modal">Cancelar</a> <!---->
-    	<input name="boton" class="btn btn-primary span1" id="boton" value="Enviar" />
-    </div>
-</div>
+					<div class="row">
+						<div class="span2 offset1">
+							<label>Exposicion de tesis</label>
+
+							<input name="docpresentacion" type="file" id="presentacion" />
+							<input name="boton" class="btn btn-primary span1" id="boton" value="Adjuntar" />
+						</div>
+					</div>
+
+				</form>
+			</p>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">
+				<i class="icon-remove-sign"></i>
+				Cancelar
+				</a><!---->
+			
+		</div>
+	</div>
+	
+	<!-- Confirmacion de borrado-->
+	<div class="modal hide fade" id="modconfirmacion{{ posgrado.usuario_id }}">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h3>Confirmacion de Borrado</h3>
+		</div>
+		<div class="modal-body">
+			{% for datostesista in datostesistas %}
+			<label>¿Esta seguro que desea borrar a {% if datostesista.id==posgrado.usuario_id %} {{ datostesista.nombrecompleto }} {% endif %} como su tesista? </label>
+			{% endfor %}
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">
+				<i class="icon-remove-sign"></i>
+				No  
+				
+				</a><!---->
+			<a class="btn btn-danger" href="{{ urlFor('borrar-tesista',{'id': posgrado.id}) }}">
+				<i class="icon-trash"></i>
+				Si</a>
+		</div>
+	</div>
+	{% endfor %}
+	{% endif %}
+	<!-- NUEVA TESISTA-->
+
+	<div class="modal hide fade" id="modTesista">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h3>Nuevo Tesista</h3>
+		</div>
+		<div class="modal-body">
+			<form class="" method="post" action="{{ urlFor('nuevo-tesista-post') }}">
+				<div class="row">
+					<div class="span2 offset1">
+						<label for="lineainve">Linea de investigacion</label>
+						<select id="lineainve" name="lineainve" data-placeholder="Seleccione Linea de Investigacion " class="chzn-select" >
+							<option></option>
+							{% for linea in lineas %}
+							<option value="{{ linea.id }}">{{ linea.nombre }}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="span2 offset1">
+						<label for="tesista">Tesista:</label>
+						<select id="tesista" name="tesista" class="chzn-select" data-placeholder="Selecciona Tesista" >
+							<option></option>
+							{% for alumno in alumnos %}
+							<option value="{{ alumno.id }}" >{{ alumno.nombrecompleto|default('') }}</option>
+							{% endfor %}
+						</select>
+
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="span2 offset1">
+						<label for="nombreTesis">Titulo de tesis </label>
+						<input id="nombreTesis" name="nombreTesis" class="span2" size="50" type="text"
+						placeholder="Titulo de Tesis">
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="span4 offset1">
+						<label for="ingreso">Fecha de Ingreso:</label>
+						<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+							<input id="ingreso" name="ingreso" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
+							<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+
+				</div>
+
+				<!--FECHA DE FIN DE CURSO-->
+				<div class="row">
+					<div class="span4 offset1">
+						<label for="finCur">Fecha de Finalizacion Curso:</label>
+						<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy" >
+							<input id="finCur" name="finCur" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
+							<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+				</div>
+
+				<!--FECHA DE TITULACION-->
+				<div class="row">
+					<div class="span4 offset1">
+						<label for="ftitulacion">Fecha de Titulacion:</label>
+						<div class="input-append date" id="dp4" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
+							<input id="ftitulacion" name="ftitulacion" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
+							<span class="add-on"><i class="icon-calendar"></i></span>
+						</div>
+					</div>
+				</div>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal">
+				<i class="icon-remove-sign"></i>
+				Cancelar
+				</a><!---->
+			<button class="btn btn-primary" type="submit" >
+				<i class="icon-save"></i>
+				Guardar
+			</button>
+		</div>
+		</form>
+	</div>
+	
 {% endblock %}

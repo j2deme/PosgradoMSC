@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row" id="indice">
+	<br />
+
+<div class="row">
+	<h2 class="span7 offset3"><strong> Publicaciones</strong></h2>
+</div>
+	<ul >
+		<li><a href="#memorias">Memorias</a></li>
+		<li><a href="#revistas">Revistas</a></li>
+		<li><a href="#libros">Libros</a></li>
+		<li><a href="#trabajos">Trabajos</a></li>
+	</ul>
+
+<br />
+	<!-- TAB MEMORIAS -->
+		{% if memorias is not null %}
+	
+		<div class="row">
+			<div class="span9">
+
+				<table class="table table-bordered table-condensed table-striped" id="memorias" >
+					<thead>
+						<tr>
+							<th class="centertext" colspan="5"><h4>Memorias</h4></th>
+						</tr>
+						<tr>
+							<th >#</th>
+							<th >Titulo</th>
+							<th >Autores</th>
+							<th >Lugar de Publicacion</th>
+							<th >Fecha de publicación</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for memoria in memorias %}
+						<tr>
+							<td align="center">{{ loop.index }}</td>
+							<td align="center">{{ memoria.nombre|default('') }}</td>
+							<td align="center">{{ memoria.coautores|default('') }}</td>
+							<td align="center">{{ memoria.evento|default('') }}</td>
+							<td align="center">{{ memoria.fecha_publicacion|default('') }}</td>
+						</tr>
+						{% endfor %}
+			    	</tbody>
+
+				</table>
+			</div>
+		</div>
+<div class="row">
+			<div class="span3 offset8">
+				<a href="#indice">Subir&#10548;</a>
+			</div>
+		</div>
+		
+		{% endif %}
+		<br />
+		<br />
+		{% if revistas is not null %}
+		<!-- TAB REVISTAS -->
+		
+			<div class="row">
+			<div class="span9">
+
+				<table class="table table-bordered table-condensed table-striped" id="revistas" >
+					<thead>
+						<tr>
+							<th class="centertext" colspan="6"><h4>Revista</h4></th>
+						</tr>
+						<tr>
+							<th >#</th>
+							<th >Titulo</th>
+							<th >Autores</th>
+							<th >Revista de Publicacion</th>
+							<th >Tipo de Revista</th>
+							<th >Fecha de publicación</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for revista in revistas %}
+						<tr>
+							<td align="center">{{ loop.index }}</td>
+							<td align="center">{{ revista.nombre|default('') }}</td>
+							<td align="center">{{ revista.coautores|default('') }}</td>
+							<td align="center">{{ revista.evento|default('') }}</td>
+							<td align="center">{{ revista.tipo_trabajo|default('') }}</td>
+							<td align="center">{{ revista.fecha_publicacion|default('') }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+
+				</table>
+			</div>
+		</div>
+<div class="row">
+			<div class="span3 offset8">
+				<a href="#indice">Subir&#10548;</a>
+			</div>
+		</div>
+		
+
+		{% endif %}
+		<br />
+		<br />
+		{% if libros is not null %}
+			<!-- TAB Libros-->
+		
+		<div class="row">
+			<div class="span9">
+
+				<table class="table table-bordered table-condensed table-striped" id="libros" >
+					<thead>
+						<tr>
+							<th class="centertext" colspan="6"><h4>Libros</h4></th>
+						</tr>
+						<tr>
+							<th >#</th>
+							<th >Titulo</th>
+							<th >Autores</th>
+							<th >Editorial</th>
+							<th >ISBN</th>
+							<th >Fecha de publicación</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for libro in libros %}
+						<tr>
+							<td align="center">{{ loop.index }}</td>
+							<td align="center">{{ libro.nombre|default('') }}</td>
+							<td align="center">{{ libro.coautores|default('') }}</td>
+							<td align="center">{{ libro.editorial|default('') }}</td>
+							<td align="center">{{ libro.isbn|default('') }}</td>
+							<td align="center">{{ libro.fecha_publicacion|default('') }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="span3 offset8">
+				<a href="#indice">Subir&#10548;</a>
+			</div>
+		</div>
+
+		
+
+		{% endif %}
+		<br />
+		<br />
+		{% if trabajos is not null %}
+			<!-- TAB trabajos-->
+		
+		<div class="row">
+			<div class="span9">
+
+				<table class="table table-bordered table-condensed table-striped" id="trabajos" >
+					<thead>
+						<tr>
+							<th class="centertext" colspan="6"><h4>Trabajos</h4></th>
+						</tr>
+						<tr>
+							<th >#</th>
+							<th >Titulo</th>
+							<th >Autores</th>
+							<th >Nacionalidad</th>
+							<th >Tipo de Trabajo</th>
+							<th >Fecha de publicación</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for trabajo in trabajos %}
+						<tr>
+							<td align="center">{{ loop.index }}</td>
+							<td align="center">{{ trabajo.nombre|default('') }}</td>
+							<td align="center">{{ trabajo.coautores|default('') }}</td>
+							<td align="center">{{ trabajo.nacionalidad|default('') }}</td>
+							<td align="center">{{ trabajo.tipo_trabajo|default('') }}</td>
+							<td align="center">{{ trabajo.fecha_publicacion|default('') }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+
+				</table>
+				
+			</div>
+		</div>
+		<div class="row">
+			<div class="span3 offset8">
+				<a href="#indice">Subir&#10548;</a>
+			</div>
+		</div>
+		{% endif %}
+	<br />
+{% endblock %} 

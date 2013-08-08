@@ -28,7 +28,7 @@ function humanize_gump($errors, $dictionary = array (),$html = TRUE) {
 	foreach ($errors as $e) {
 		$campo = $e['field'];
 		$regla = $e['rule'];
-		$response[$campo][] = $m = $messages($regla,$campo);
+		$response[$campo][] = $m = $message($regla,$campo);
 		$list .= "<li>" . $m . "</li>";
 	}
 	$list .= "</ul>";
@@ -77,6 +77,69 @@ function sendMail($to, $subject, $body, $from, $alias) {
 	return $status;
 }
 
+function sincBd($idPost,$user,$tabla){
+		echo "entre en la funcion";
+		foreach ($idPost as $key) {
+			$res=$tabla::find_all_by_usuario_id_and_conocimiento($user,$key);
+			if (count($res)==0) {
+				echo "no estoy en la bd";
+				$inc= new $tabla;
+				$inc->usuario_id=$user;
+				$inc->conocimiento=$key;
+				$inc->save();
+				echo "guarde";
+				unset($inc);
+			}
+		}
+		$db=$tabla::find_all_by_usuario_id($user);
+		foreach ($db as $obj) {
+			if (!(in_array($obj->conocimiento, $idPost))) {
+				echo "no estoy en el arreglo";
+				$obj->delete();
+				unset($obj);
+				echo "borre";
+			}
+		}
+		unset($db);
+
+		echo "sali de la funcion";
+}
+
+function sincUsuariosPublicacion($idU,$publicacion){
+	foreach ($idU as $usuario) {
+		$cons=UsuariosPublicaciones::find_by_usuario_id_and_publicacion_id($usuario,$publicacion);
+		if (count($cons)==0) {
+			$pub=new UsuariosPublicaciones;
+			$pub->usuario_id=$usuario;
+			$pub->publicacion_id=$publicacion;
+			$pub->save();
+		}
+			unset($cons);
+	}
+
+	$db=UsuariosPublicaciones::find_all_by_publicacion_id($publicacion);
+	foreach ($db as $usuario) {
+		if (!(in_array($usuario->usuario_id,$idU))) {
+		//	ladybug_dump_die($usuario);
+			$usuario->delete();
+		}
+		unset($db);
+	}
+}
+
+function unionCat($objs){
+	$arr= array();
+	foreach ($objs as $obj) {
+		$objgen= new Generic;
+		$objgen->id=$obj->id;
+		$objgen->nombre=$obj->nombre;
+		$objgen->tipo=get_class($obj);
+		$arr[]=$objgen;
+		unset($objgen);
+	}
+	return $arr;
+}
+
 function isAllowed($roles,$redirect = TRUE,$permisos = array()){
 	$app = Slim::getInstance();
 	$id = $app -> getCookie('userId');
@@ -95,8 +158,8 @@ function isAllowed($roles,$redirect = TRUE,$permisos = array()){
 		} else {
 			$login = TRUE;
 		}
-		
-		return $user; 
+
+		return $user;
 	} else {
 		$login = TRUE;
 	}
@@ -112,19 +175,19 @@ function replace_hashes($content){
 		"@mision-y-vision",
 		"@objetivos",
 		"@logros-y-reconocimientos",
-		"@lineas-de-generacion-y-aplicacion-de-conocimiento",		
+		"@lineas-de-generacion-y-aplicacion-de-conocimiento",
 		"@vinculacion",
-		"@proceso-de-admision",		
-		"@perfil-de-ingreso",	
+		"@proceso-de-admision",
+		"@perfil-de-ingreso",
 		"@perfil-de-egreso",
-		"@curso-propedeutico",	
-		"@material-de-apoyo",		
+		"@curso-propedeutico",
+		"@material-de-apoyo",
 		"@relacion-aceptados",
 		"@plan-estudios",
 //		"@horarios",
 		"@requisitos-para-obtencion-de-grado",
 		"@lineas-de-investigacion",
-		"@publicaciones",
+//		"@publicaciones",
 		"@egresados",
 		"@estadisticas",
 		"@matriculacion",
@@ -150,14 +213,14 @@ function replace_hashes($content){
 //		'<a href="'.$app->urlFor('horarios').'" >Horarios</a>',
 		'<a href="'.$app->urlFor('home', array('slug' => 'requisitos-para-obtencion-de-grado')).'" >Requisitos para Obtención de Grado</a>',
 		'<a href="'.$app->urlFor('home', array('slug' => 'lineas-de-investigacion')).'" >Líneas de Investigación</a>',
-		'<a href="'.$app->urlFor('publicaciones').'" >Publicaciones</a>',
+//		'<a href="'.$app->urlFor('publicaciones').'" >Publicaciones</a>',
 		'<a href="'.$app->urlFor('egresados').'" >Egresados</a>',
 		'<a href="'.$app->urlFor('home', array('slug' => 'estadisticas')).'" >Estadísticas</a>',
 		'<a href="'.$app->urlFor('matriculacion').'" >Matriculación</a>',
 		'<a href="'.$app->urlFor('productividad-academica').'" >Productividad Académica</a>',
 		'<a href="'.$app->urlFor('nucleo-academico').'" >Núcleo Básico Académico</a>',
 		'<a href="'.$app->urlFor('calendario').'" >Calendario</a>',
-		'<a href="'.$app->urlFor('registro-aspirante').'" >Calendario</a>',
+		'<a href="'.$app->urlFor('registro').'" >Registro Aspirantes</a>',
 	);
 	$newContent = str_replace($hashes, $urls, $content);
 	return $newContent;

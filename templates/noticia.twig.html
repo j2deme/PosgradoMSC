@@ -1,0 +1,54 @@
+{% set url = urlFor('home')~"uploads/news/" %}
+<div class="page-header">
+    <a class="btn btn-mini btn-info" rel="tooltip" href="{{ urlFor('noticias') }}" title="Volver a noticias"><i class="icon-caret-left"></i> Atrás</a>
+    <h2>{{ noticia.titulo }}</h2>
+</div>
+<div class="row">
+    {% if (imgs is defined) and (imgs|length > 0) %}
+        {% set spanSize = 6 %}
+    {% else %}
+        {% set spanSize = 8 %}
+    {% endif %}
+    <div class="span{{ spanSize }}">
+      {{ noticia.contenido|raw }}
+    </div>
+    {% if (imgs is defined) and (imgs|length > 0) %}
+    <div class="span2">
+        <ul class="thumbnails">
+        {% for img in imgs %}
+        <li class="span2">
+            <a href="#preview_{{ loop.index }}" class="thumbnail" data-toggle="modal">
+                <img src="{{ url~'thumb_'~img }}" alt="{{ img }}">
+            </a>
+            <div class="modal hide fade" id="preview_{{ loop.index }}">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4>{{ img }}</h4>
+                </div>
+                <div class="modal-body">
+                    <img src="{{ url~img }}" alt="{{ img }}">
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-mini" data-dismiss="modal"><i class="icon-remove-sign"></i>Cerrar</a>
+                    <a href="{{ url~img }}" target="_blank" class="btn btn-primary btn-mini"><i class="icon-download"></i>Descargar</a>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% if (files is defined) and (files|length > 0) %}
+<div class="row">
+    <div class="span8">
+        <hr/>
+        <h4>Adjuntos <i class="icon-paper-clip"> </i></h4>
+        <ul>
+            {% for file in files %}
+            <li><a href="{{ urlFor('home') }}uploads/sections/{{ file }}" target="_blank">{{ file }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}

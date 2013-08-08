@@ -21,19 +21,42 @@
 						<tr>
 							<th>#</th>
 							<th>Nombre</th>
+							<th>Opciones</th>
 						</tr>
 					</thead>
 					<tbody>
-					{% if areas_interes is defined %}
-						{% for area in areas_interes %}
+					{% if areas is defined %}
+						{% for area in areas %}
 						<tr>
 							<td>{{ loop.index }}</td>
 							<td>{{ area.nombre}}</td>
 							<td>
-								<a href="#" data-toggle="modal" data-target="#editar-ainteres{{ area.id }}-modal">Editar</a>
-								<a href="{{ urlFor('borrar-ainteres',{'id': area.id}) }}">Borrar</a>
+								<a href="#" data-toggle="modal" data-target="#editar-ainteres{{ area.id }}-modal" rel="tooltip" title="Editar" class="btn btn-success">
+									<i class="icon-edit"></i>
+								</a>
+								<a href="{{ urlFor('borrar-ainteres',{'id': area.id}) }}" rel="tooltip" title="Borrar" class="btn btn-danger">
+									<i class="icon-trash"></i>
+								</a>
 							</td>
 						</tr>
+						{% endfor %}
+					{% else %}
+							<tr>
+								<td> </td>
+								<td>No se encontraron resultados</td>
+								<td> </td>
+								<td> </td>
+							</tr>
+					{% endif %}
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-------------------------------------------Modal----------------------------------------------->
+{% for area in areas %}
 <div class="modal hide fade" id="editar-ainteres{{ area.id }}-modal">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -56,22 +79,7 @@
 	</div>
     </form>
 </div>
-						{% endfor %}
-					{% else %}
-							<tr>
-								<td> </td>
-								<td>No se encontraron resultados</td>
-								<td> </td>
-								<td> </td>
-							</tr>
-					{% endif %}
-					</tbody>
-				</table>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+{% endfor %}	
 
 <div class="modal hide fade" id="newUser">
 	<div class="modal-header">
@@ -98,17 +106,15 @@
 <script>
 head.ready(function(){
 	$(function(){
-		var areaiTable = $('#areas-table').dataTable({
+		$('#results').fadeIn(1500);
+		var usersTable = $('#areas-table').dataTable({
 			"oLanguage": {
 			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
 			},
 			"fnDrawCallback": function () {
 			},
 			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
-			"sPaginationType": "bootstrap",
-			"fnInitComplete": function(oSettings, json) {
-      			$('#results').fadeIn(500);
-    		}
+			"sPaginationType": "bootstrap"
 		});
 		
 		$('#newAIForm').isHappy({

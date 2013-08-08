@@ -15,7 +15,11 @@
 </div>
 
 <script>
-	head.ready(function() {
+	head.js(
+		{elFinder: "{{ urlFor('home') }}js/elfinder.min.js"},
+		"{{ urlFor('home') }}js/elfinder.es.js",
+	);
+	head.ready("elFinder", function() {
 		$(function() {
 			var elf = $('#elfinder').elfinder({
 				url : '{{ urlFor("elFinder") }}',
@@ -23,6 +27,6 @@
 				width: '940px'
 			}).elfinder('instance');
 		});
-	}); 
+	});
 </script>
 {% endblock %}

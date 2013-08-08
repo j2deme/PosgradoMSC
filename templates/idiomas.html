@@ -21,6 +21,7 @@
 						<tr>
 							<th>#</th>
 							<th>Nombre</th>
+							<th>Opciones</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -98,6 +99,7 @@
 <script>
 head.ready(function(){
 	$(function(){
+		$('#results').fadeIn(1500);
 		var areaiTable = $('#idioma-table').dataTable({
 			"oLanguage": {
 			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"

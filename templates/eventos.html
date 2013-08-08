@@ -1,9 +1,5 @@
 {% extends 'admin-base.html' %}
 {% block content %}
-<script type="text/javascript" src="datepicker.js"></script>
-<script type="text/javascript" src="timepicker.js"></script>
-<div class="row">
-	
 	<div class="span12">
 		<div class="row">
 			<div class="span2">
@@ -15,9 +11,10 @@
 				</a>
 			</div>
 		</div>
+
 		<div class="row">
 			<div class="span11">
-				<div id="results" class="hide">
+
 				<table id="evento-table" name="evento-table" class="table table-bordered table-condensed table-striped">
 					<thead>
 						<tr>
@@ -54,7 +51,54 @@
 								<a href="{{ urlFor('borrar-evento',{'id': evento.id}) }}">Borrar</a>
 							</td>
 						</tr>
-						<div class="modal hide fade" id="editar-evento{{ evento.id }}-modal">
+
+					{% endfor %}
+					{% else %}
+							<tr>
+								<td> </td>
+								<td>No se encontraron resultados</td>
+								<td> </td>
+								<td> </td>
+							</tr>
+					{% endif %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+<script>
+head.ready(function(){
+	$(function(){
+		//$('#waiting').addClass('hide').fadeOut(2500);
+		$('#results').removeClass('hide').fadeIn(1500);
+		var areaiTable = $('#areasinteres-table').dataTable({
+			"oLanguage": {
+			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
+			},
+			"fnDrawCallback": function () {
+			},
+			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
+			"sPaginationType": "bootstrap"
+		});
+
+		$('#newAIForm').isHappy({
+			fields: {
+				'#nombre':{
+					required: true,
+					message: 'nombre válido necesario',
+					test: happy.nombre
+				},
+			}
+		});
+	});
+});
+</script>
+
+
+
+	{% for evento in eventos %}
+	<div class="modal hide fade" id="editar-evento{{ evento.id }}-modal">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 								<h3>Editar Evento</h3>
@@ -95,20 +139,20 @@
 										<div class="controls">
 											<input type="fecha_fin" class="input-xlarge" id="fecha_fin-edit" name="fecha_fin-edit" value="{{ evento.fecha_fin }}">
 										</div>
-									</div>									
+									</div>
 -->
 									<div class="control-group">
 									<!-- <div class="span4"> -->
 										<label class="control-label" for="fecha_inicio">Fecha de Inicio</label>
 										<div class="controls">
-										  <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy"> 
+										  <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy">
 											<input id="fecha_inicio-edit" name="fecha_inicio-edit" class="span2 datepicker" size="16" type="text" value="{{ evento.fecha_inicio }}">
 											<span class="add-on"><i class="icon-calendar"></i></span>
-										  </div> 
-										</div> 
+										  </div>
+										</div>
 									<!--  </div> -->
-									</div>									
-									
+									</div>
+
 									<div class="control-group">
 										<label class="control-label" for="fecha_fin">Fecha Final</label>
 										<div class="controls">
@@ -116,7 +160,7 @@
 											<input id="fecha_fin-edit" name="fecha_fin-edit" class="span2 datepicker" size="16" type="text" value="{{ evento.fecha_fin }}">
 											<span class="add-on"><i class="icon-calendar"></i></span>
 										  </div>
-										</div> 
+										</div>
 									</div>
 
 									<div class="control-group">
@@ -140,16 +184,16 @@
 											<input id="fecha_creado-edit" name="fecha_creado-edit" class="span2 datepicker" size="16" type="text" value="{{ evento.fecha_creado }}">
 											<span class="add-on"><i class="icon-calendar"></i></span>
 										  </div>
-										</div> 
-									</div>	
-									
+										</div>
+									</div>
+
 									<div class="control-group">
 										<label class="control-label" for="nombre">Hora de Inicio</label>
 										<div class="controls">
 											<input type="hora_inicio" class="input-xlarge" id="hora_inicio-edit" name="hora_inicio-edit" value="{{ evento.hora_inicio }}">
 										</div>
 									</div>
-									
+
 									<div class="control-group">
 										<label class="control-label" for="nombre">Hora Final</label>
 										<div class="controls">
@@ -171,22 +215,8 @@
 									</div>
 								</form>
 							</div>
-					{% endfor %}
-					{% else %}
-							<tr>
-								<td> </td>
-								<td>No se encontraron resultados</td>
-								<td> </td>
-								<td> </td>
-							</tr>
-					{% endif %}
-					</tbody>
-				</table>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+{% endfor %}
+
 
 <div class="modal hide fade" id="newUser">
 	<div class="modal-header">
@@ -229,17 +259,17 @@
 				<div class="controls">
 					<input type="fecha_fin" class="input-xlarge" id="fecha_fin" name="fecha_fin" value="">
 				</div>
-			</div>			
+			</div>
 -->
 			<div class="control-group">
 			<!-- <div class="span4"> -->
 				<label class="control-label" for="fecha_inicio">Fecha de Inicio</label>
 				<div class="controls">
-				  <div class="input-append date" id="dp3" data-date="19-07-2012" data-date-format="dd-mm-yyyy"> 
+				  <div class="input-append date" id="dp3" data-date="19-07-2012" data-date-format="dd-mm-yyyy">
 					<input class="span2 datepicker" size="16" id="fecha_inicio" name="fecha_inicio"  type="text" value="{{ 'now'|date('d/m/Y') }}">
 					<span class="add-on"><i class="icon-calendar"></i></span>
-				  </div> 
-				</div> 
+				  </div>
+				</div>
 			<!--  </div> -->
 			</div>
 
@@ -249,10 +279,10 @@
 					<div class="input-append date" id="dp3" data-date="19-07-2012" data-date-format="dd-mm-yyyy">
 						<input id="fecha_fin" name="fecha_fin" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
 						<span class="add-on"><i class="icon-calendar"></i></span>
-					</div> 
-				</div> 
+					</div>
+				</div>
 			</div>
-			
+
 			<div class="control-group">
 				<label class="control-label" for="nombre">Prioridad</label>
 				<div class="controls">
@@ -274,9 +304,9 @@
 					<input id="fecha_creado" name="fecha_creado" class="span2 datepicker" size="16" type="text" value="{{ 'now'|date('d/m/Y') }}">
 					<span class="add-on"><i class="icon-calendar"></i></span>
 				  </div>
-				</div> 
-			</div>			
-<!--			
+				</div>
+			</div>
+<!--
 			<div class="control-group">
 				<label class="control-label" for="nombre">Hora de Inicio</label>
 				<div class="controls">
@@ -289,7 +319,7 @@
 				<div class="controls">
 					<input type="hora_fin" class="input-xlarge" id="hora_fin" name="hora_fin" value="">
 				</div>
-			</div>			
+			</div>
 -->
 <!--
 			<div class="control-group">
@@ -297,20 +327,20 @@
 				<div class="controls">
 					<input type="text" data-provide="timepicker" minuteStep="05" showMeridian="false" id="hora_inicio" name="hora_inicio" value="">
 					<span class="add-on"><i class="icon-clock"></i></span>
-				</div> 
-			</div>	
+				</div>
+			</div>
 -->
 			<div class="control-group">
 				<label class="control-label" for="hora_inicio">Hora de Inicio</label>
 				<div class="controls">
 				  <!-- <div class="input-append date" id="dp3" data-date="12-02-2012" data-date-format="dd-mm-yyyy"> -->
 					<input id="hora_inicio" name="hora_inicio" class="span2 timepicker" size="16" type="text" value="{{ 'time' }}">
-					<span class="add-on"><i class="icon-calendar"></i></span>
+					<span class="add-on timepicker"><i class="icon-calendar"></i></span>
 				  <!-- </div> -->
-				</div> 
-			</div>			
+				</div>
+			</div>
 
-			
+
 			<div class="control-group">
 				<label class="control-label" for="hora_fin">Hora Final</label>
 				<div class="controls">
@@ -318,9 +348,9 @@
 					<input type="text" id="hora_fin" name="hora_fin" class="span2 timepicker" value="{{ 'time'}}">
 					<span class="add-on"><i class="icon-calendar"></i></span>
 				   <!-- </div> -->
-				</div> 
-			</div>	
-			
+				</div>
+			</div>
+
 			<div class="control-group">
 				<label class="control-label" for="nombre">Validado</label>
 				<div class="controls">
@@ -335,31 +365,4 @@
 	</form>
 </div>
 
-<script>
-head.ready(function(){
-	$(function(){
-		//$('#waiting').addClass('hide').fadeOut(2500);
-		$('#results').removeClass('hide').fadeIn(1500);
-		var areaiTable = $('#areasinteres-table').dataTable({
-			"oLanguage": {
-			    "sUrl":          "{{ urlFor('home')}}js/dataTables.spanish.txt"
-			},
-			"fnDrawCallback": function () {
-			},
-			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
-			"sPaginationType": "bootstrap"
-		});
-		
-		$('#newAIForm').isHappy({
-			fields: {
-				'#nombre':{
-					required: true,
-					message: 'nombre válido necesario',
-					test: happy.nombre
-				},
-			}
-		});
-	});
-});
-</script>
 {% endblock %}

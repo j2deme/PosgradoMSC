@@ -14,7 +14,7 @@
 						<li>
 							<a href="{{ urlFor('explorador-archivos') }}">Inicio</a>
 						</li>
-			            <li class="floatRight" style="display: hidden;">
+			            <li class="floatRight hidden">
 			                <a href="#" id="pageTopLink">Subir</a>
 			            </li>
 			        </ul>
@@ -40,7 +40,7 @@ head.ready(function() {
 	    });
 	    
 	    $('#directoryListing').fileTree({
-	    	root: '/Drive/verificacion/',
+	    	root: '/uploads/verification/',
 	    	script: '{{ urlFor("dirlist") }}',
 	    	multiFolder: false
 	    }, function(file) {

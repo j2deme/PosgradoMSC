@@ -7,7 +7,7 @@ class Usuario extends ActiveRecord\Model {
 		array('contacto', 'class_name' => 'Contacto'),
 		array('laboral', 'class_name' => 'Laboral'),
 		array('pg', 'class_name' => 'Posgrado'),
-		array('docente', 'class_name' => 'Docente')		
+		array('docente', 'class_name' => 'Docente')
 	);
 	static $has_many = array(
 		array('oauth','class_name' => 'Oauth'),
@@ -23,13 +23,15 @@ class Usuario extends ActiveRecord\Model {
 		array('lenguajes', 'class_name' => 'Lenguaje', 'through' => 'ul'),
 		array('up', 'class_name' => 'UsuariosPlataformas'),
 		array('plataformas', 'class_name' => 'Plataforma', 'through' => 'up'),
-		array('publicaciones', 'class_name' => 'Publicacion'),
 		array('ur', 'class_name' => 'UsuariosRoles'),
-		array('roles', 'class_name' => 'Rol', 'through' => 'ur')
+		array('upu', 'class_name' => 'UsuariosPublicaciones'),
+		array('roles', 'class_name' => 'Rol', 'through' => 'ur'),
+		array('publicaciones', 'class_name' => 'Publicacion')
+//		array('publicaciones', 'class_name' => 'Publicacion'),
 	);
 	static $belongs_to = array(
 	);
-	
+
 	static $alias_attribute = array(
 #		'personal' => 'personal_id',
 #		'academico' => 'academico_id',

@@ -11,8 +11,8 @@ class UsuariosIdiomas extends ActiveRecord\Model {
 	);
 	
 	static $alias_attribute = array(
-//		'herramienta' => 'herramienta_id',
-//		'usuario' => 'usuario_id'
+		//'idioma' => 'idioma_id',
+		'usuario' => 'usuario_id'
 	);
 }
 ?>

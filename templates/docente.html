@@ -1,51 +1,56 @@
 
-{% extends 'docente-base.html' %}
+{% extends 'admin-base.html' %}
 {% block content %}
+{% set fontSize = 40 %}
 <div class="row">
 		<div class="offset3 span2">
-		<a href="#" class="btn btn-primary square">
+		<a href="{{ urlFor('perfil-docente') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-user" style="font-size: 50px;"> </i>
+			<i class="icon-user" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Editar perfil</strong>
+		</a>
+	</div>
+		<div class="span2">
+		<a href="{{ urlFor('docente-publicaciones') }}" class="btn btn-primary square">
+			<br />
+			<i class="icon-book" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Gestor de Publicaciones</strong>
+		</a>
+	</div>
+	<div class="span2">
+		<a href="{{ urlFor('docente-tesistas') }}" class="btn btn-primary square">
+			<br />
+			<i class="icon-group" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Gestor de Tesistas</strong>
 		</a>
 	</div>
 </div>
 <br />
 <div class="row">
+	
 	<div class="offset3 span2">
-		<a href="{{ urlFor('tesistas') }}" class="btn btn-primary square">
+		<a href="{{ urlFor('calendario') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-group" style="font-size: 50px;"> </i>
-			<br /><strong>Gestor de Tesistas</strong>
+			<i class="icon-calendar" style="font-size: {{ fontSize }}px;"> </i>
+			<br /><strong>Calendario</strong>
 		</a>
 	</div>
 	<div class="span2">
-		<a href="#" class="btn btn-primary square">
+		<a href="{{ urlFor('nuevo-evento') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-plus-sign" style="font-size: 50px;"> </i>
+			<i class="icon-plus-sign" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Crear Eventos</strong>
 		</a>
 	</div>
+	
 	<div class="span2">
 		<a href="{{ urlFor('eventosDoc') }}" class="btn btn-primary square">
 			<br />
-			<i class="icon-list" style="font-size: 50px;"> </i>
+			<i class="icon-list" style="font-size: {{ fontSize }}px;"> </i>
 			<br /><strong>Listar eventos</strong>
 		</a>
 	</div>
 </div>
 
-<!--
-<h3 align="center">Seleccione una opcion a realizar</h3>
-<div class="row">
-	<div class="offset2 span3">
-		<a href="{{ urlFor('tesistas') }}" class="btn btn-primary ziseTable">Gestionar tesistas</a>
-	</div>
-	<div class="span3">
-		<a href="#" class="btn btn-primary ziseTable">Crear evento</a>
-	</div>
-	<div class="span3">
-		<a href="{{ urlFor('eventosDoc') }}" class="btn btn-primary ziseTable">Listar eventos</a>
-	</div>
-</div>-->
+
 {% endblock %}

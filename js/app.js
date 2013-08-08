@@ -1,35 +1,32 @@
 $(function(){
 	$('.datepicker').datepicker({
 		'language': 'es',
+		'autoclose':true
 //		'startDate': 'd'
 	});
 	$("a[rel=popover]")
     .popover()
     .click(function(e) {
-        e.preventDefault()
+        e.preventDefault();
 	});
-	$('.timepicker').timepicker();
-//	$('.wysihtml5').wysihtml5();
+	$('.carousel').carousel();
+	$('.timepicker').timepicker({
+        minuteStep: 5,
+        disableFocus: true
+    });
     $(".chzn-select").chosen();
+//    $(".chzn-select").select2();
     $('[rel=tooltip]').tooltip();
-/*    $('#fileupload').fileupload({
-        dataType: 'json',
-        done: function (e, data) {
-            $.each(data.result, function (index, file) {
-                $('<p/>').text(file.name).appendTo(document.body);
-            });
-        }
-    });*/
-    
+
 	var fullDate = new Date();
 	//convert month to 2 digits
 	var twoDigitMonth = ((fullDate.getMonth().length+1) === 1)? (fullDate.getMonth()+1) : '0' + (fullDate.getMonth()+1);
 	var currentDate = fullDate.getFullYear() + "-" + twoDigitMonth + "-" + fullDate.getDate();
-	
+
 	$('#start-date')
 	.datepicker()
     .on('changeDate', function(ev){
-    	var startDate = process($('#start-date').val());
+        var startDate = process($('#start-date').val());
 		var endDate = process($('#end-date').val());
         if (ev.date.valueOf() > endDate.valueOf()){
             $('#alert').show().find('strong').text('La fecha de inicio debe ser anterior a la fecha de fin.');
@@ -46,7 +43,7 @@ $(function(){
 	$('#end-date')
     .datepicker()
     .on('changeDate', function(ev){
-    	var startDate = process($('#start-date').val());
+        var startDate = process($('#start-date').val());
 		var endDate = process($('#end-date').val());
         if (ev.date.valueOf() < startDate.valueOf()){
             $('#alert').show().find('strong').text('La fecha de fin debe ser posterior a la fecha de inicio.');
@@ -66,3 +63,12 @@ function process(date){
    var parts = date.split("/");
    return new Date(parts[2], parts[1] - 1, parts[0]);
 }
+
+$.fn.hasAttr = function(name) {
+   var attr = $(this).attr('name');
+    if (typeof attr !== 'undefined' && attr !== false) {
+        return false;
+    } else {
+        return true;
+    }
+};

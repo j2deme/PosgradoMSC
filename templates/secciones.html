@@ -6,11 +6,6 @@
 			<div class="span3">
 				<h2>Secciones</h2>
 			</div>
-			{#<div class="span2">
-				<a href="#" class="btn btn-primary" data-target="#newUser" data-toggle="modal">
-					<i class="icon-user icon-white"></i> Nuevo Usuario
-				</a>
-			</div>#}
 		</div>
 		<div class="row">
 			<div class="span11">
@@ -21,11 +16,11 @@
 							<th>#</th>
 							<th>Nombre</th>
 							<th class="hidden-phone">Contenido</th>
-							<th class="hidden-tablet hidden-phone">Sección</th>
+{#							<th class="hidden-tablet hidden-phone">Sección</th>#}
 							<th class="hidden-phone">Actualizado</th>
 							<th>Opciones</th>
 						</tr>
-					</thead>
+				</thead>
 					<tbody>
 					{% if secciones is defined %}
 						{% for seccion in secciones %}
@@ -33,13 +28,13 @@
 							<td>{{ loop.index }}</td>
 							<td>{{ seccion.nombre }}</td>
 							<td class="hidden-phone">
-								{{ seccion.contenido|slice(0,80)|trim|raw|striptags }}{% if seccion.contenido|length > 80 %}&hellip;{% endif %}
+								{{ sections[seccion.id]|trim|striptags|slice(0,80)|raw }}
 							</td>
-							<td class="hidden-tablet hidden-phone">
+{#							<td class="hidden-tablet hidden-phone">
 								{% set contenedor = ['General','Aspirantes','Alumnos','Posgrado'] %}
 								{{ contenedor[seccion.contenedor] }}
-							</td>
-							<td class="hidden-phone">{{ seccion.actualizado|date("d/m/Y H:i") }}</td>
+</td>#}
+							<td class="hidden-phone ago">{{ seccion.actualizado|date("d/m/Y H:i") }}</td>
 							<td>
 								<div class="btn-group">
 									<a class="btn btn-primary" href="{{ urlFor('editor-seccion',{'slug': seccion.slug}) }}" rel="tooltip" data-original-title="Editar">
@@ -70,7 +65,7 @@
 								<td> </td>
 								<td>No se han dado de alta las secciones</td>
 								<td> </td>
-								<td> </td>
+{#								<td> </td>#}
 								<td> </td>
 								<td> </td>
 							</tr>
@@ -86,8 +81,8 @@
 <script>
 head.ready(function(){
 	$(function(){
-		$('#results').removeClass('hide').fadeIn(1500);
-/*		var seccionesTable = $('#secciones-table').dataTable({
+		$('#results').fadeIn(1500);
+		var seccionesTable = $('#secciones-table').dataTable({
 			"oLanguage": {
 			    "sUrl": "{{ urlFor('home')}}js/dataTables.spanish.txt"
 			},
@@ -95,7 +90,18 @@ head.ready(function(){
 			},
 			"sDom": "<'row'<'span9'lf>r>t<'row'<'span4'i><'span5'p>>",
 			"sPaginationType": "bootstrap"
-		});*/		
+		});
+		
+		$(".ago").each(function() {
+		    moment.lang('es');
+		    var now = moment();
+		    var text = $(this).text();
+		    var date = moment(text, "DD/MM/YYYY H:m");
+		    $(this).text(date.from(now));
+		    $(this).attr('title',text); 
+		    $(this).attr('rel','tooltip'); 
+        });
+
 	});
 });
 </script>

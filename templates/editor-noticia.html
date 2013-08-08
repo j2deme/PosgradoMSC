@@ -1,0 +1,149 @@
+{% extends 'admin-base.html' %}
+{% block content %}
+<div class="row">
+    <div class="span12">
+        <div class="row">
+            <div class="span11">
+                <div class="page-header">
+                    <h3>Editor de Noticia <small>{{ noticia.titulo }}</small></h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span11">
+                <div class="tabbable tabs-left">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#tab1" data-toggle="tab">Editor</a>
+                        </li>
+                        <li>
+                            <a href="#tab2" data-toggle="tab">Adjuntos
+                                {% if (numFiles is defined) and (numFiles != 0) %}
+                                <span class="badge badge-info">{{ numFiles }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#tab3" data-toggle="tab">Adjuntar Archivos</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab1" name="tab1">
+                            <div id="loader" name="loader" class="hidden">
+                                Cargando Editor <img src="{{ urlFor('home') }}img/loader.gif">
+                            </div>
+                            <form id="editor" method="post" class="form-horizontal hide" action="{{ urlFor('editar-noticia-post', {'id': noticia.id }) }}">
+                                <div class="control-group">
+                                    <label class="control-label" for="titulo">Título</label>
+                                    <div class="controls">
+                                        <input type="text" id="titulo" name="titulo" class="span7" value="{{ noticia.titulo|default('') }}"/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="contenido">Contenido</label>
+                                    <div class="controls">
+                                        <textarea id="contenido" name="contenido" class="wysihtml5 span7" style="height: 220px">{% if noticia is defined %}{{ noticia.contenido|raw }}{% endif %}</textarea>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <a href="{{ urlFor('admin-noticias') }}" class="btn"><i class="icon-circle-arrow-left"> </i> Atrás</a>
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="icon-save"> </i> Guardar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="tab-pane" id="tab2" name="tab2">
+                            <h2>Archivos</h2>
+                            <ul>
+                            <table class="table table-condensed table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Archivo</th>
+                                        <th>Tamaño</th>
+                                        <th>Opciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if (files is defined) and (files|length > 0) %}
+                                        {% for file in files %}
+                                        {% if (starred is defined) and (starred)%}
+                                        {% set star = "btn-warning" %}
+                                        {% endif %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ file.name }}</td>
+                                        <td>{{ file.size }}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                            <a class="btn btn-info" rel="tooltip" title="Descargar" href="{{ urlFor('home') }}files/news/{{ file.name }}" target="_blank"><i class="icon-download"> </i></a>
+                                            <a class="btn {{ star|default('') }}" href="{{ urlFor('home') }}" rel="tooltip" title="Marcar como principal"><i class="icon-star"></i></a>
+                                            <a class="btn btn-danger" rel="tooltip" title="Eliminar" href="{{ urlFor('delete-file',{'type':'news', 'id': noticia.id, 'name': file.name}) }}"><i class="icon-trash"> </i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="4">No hay archivos adjuntos</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                            </ul>
+                        </div>
+                        <div class="tab-pane" id="tab3" name="tab3">
+                            <h2>Adjuntar Archivos</h2>
+                            <form action="{{ urlFor('upload-file',{'type':'news','id': noticia.id })}}" method="post" enctype="multipart/form-data">
+                                <input type="file" id="files" name="files[]" data-pretty-file="" multiple="multiple">
+                                <div class="form-actions">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="icon-save"> </i> Subir archivos
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    head.ready("app", function() {
+        head.js(
+            {wysihtml5 : "{{ urlFor('home') }}js/wysihtml5-0.3.0.js"},
+            {bwysihtml5 : "{{ urlFor('home') }}js/bootstrap-wysihtml5.js"},
+            {pretty_upload: "{{ urlFor('home') }}js/jquery.prettify-upload.js"}
+            );
+        $(function() {
+            $('.wysihtml5').wysihtml5();
+            var modal = $('.bootstrap-wysihtml5-insert-section-link-modal');
+            var urlSelect = modal.find('.bootstrap-wysihtml5-insert-link-url');
+            {% if secciones is defined%}
+            {% for seccion in secciones %}
+            $(urlSelect).append('<option value="@{{ seccion.slug }}">{{ seccion.nombre }}</option>');
+            {% endfor %}
+            $(urlSelect).append('<option value="@relacion-aceptados">Relación de Aceptados</option>');
+            $(urlSelect).append('<option value="@plan-estudios">Estructura del Plan de Estudios</option>');
+            $(urlSelect).append('<option value="@horarios">Horarios</option>');
+            $(urlSelect).append('<option value="@publicaciones">Publicaciones</option>');
+            $(urlSelect).append('<option value="@egresados">Egresados</option>');
+            $(urlSelect).append('<option value="@matriculacion">Matriculación</option>');
+            $(urlSelect).append('<option value="@productividad-academica">Productividad Académica</option>');
+            $(urlSelect).append('<option value="@nucleo-basico-academico">Núcleo Básico Académico</option>');
+            $(urlSelect).append('<option value="@registro-aspirante">Registro de Aspirante</option>');
+            {% endif %}
+            $('#editor').delay(500).fadeIn(300);
+            $('[data-pretty-file]').prettifyUpload({
+                buttonClass: 'btn btn-info span2',
+                iconClass: 'icon-upload',
+                text: ' Examinar archivos',
+                wrapperWidth: '200px'
+            });
+        });
+    });
+</script>
+{% endblock %}
